@@ -838,4 +838,188 @@ button {
   color: hsl(var(--magenta-300));
 }
 
+/* WHY CHOOSE US - SPLIT EDITORIAL */
+.why-split-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  align-items: center;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .why-split-layout {
+    grid-template-columns: 1fr 1.1fr;
+    gap: 5rem;
+  }
+}
+
+.why-feature-badge-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.why-feature-badge-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-left: 4px solid var(--primary);
+  padding: 1.6rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.why-feature-badge-card:hover {
+  transform: translateY(-2px);
+  border-left-color: var(--gold-primary);
+  box-shadow: var(--shadow-lg), 0 0 20px rgba(212, 175, 55, 0.08);
+}
+
+.why-icon-container {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  background-color: var(--primary-light);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+/* WHAT WE OFFER - DARK CANVAS & MOCK CHAT PREVIEW */
+.what-dark-canvas {
+  background: linear-gradient(180deg, hsl(var(--neutral-800)), #0c0e14) !important;
+  color: #ffffff;
+  border-top: 1px solid #1a202c !important;
+  border-bottom: 1px solid #1a202c !important;
+}
+
+.what-dark-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  align-items: center;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .what-dark-layout {
+    grid-template-columns: 1fr 1.2fr;
+    gap: 5rem;
+  }
+}
+
+.mock-chat-widget-landing {
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(12px);
+  text-align: left;
+}
+
+.mock-chat-bubble-bot {
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  padding: 0.75rem 1.1rem;
+  border-radius: 2px 14px 14px 14px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  align-self: flex-start;
+  max-width: 85%;
+}
+
+.mock-chat-bubble-user {
+  background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+  color: #ffffff;
+  padding: 0.7rem 1rem;
+  border-radius: 14px 14px 2px 14px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  align-self: flex-end;
+  max-width: 80%;
+  box-shadow: 0 4px 10px rgba(216, 27, 96, 0.2);
+}
+
+/* WHO WE ARE - TRUST METRICS STATS GRID */
+.who-stats-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: center;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .who-stats-layout {
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+}
+
+.stats-grid-landing {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+@media (min-width: 480px) {
+  .stats-grid-landing {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.stat-dashboard-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.stat-dashboard-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--gold-primary);
+  box-shadow: var(--shadow-lg), 0 0 20px rgba(212, 175, 55, 0.08);
+}
+
+.stat-number-large {
+  font-family: var(--font-sans);
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.stat-label-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+
 

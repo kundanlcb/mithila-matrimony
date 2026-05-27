@@ -287,58 +287,188 @@ function App() {
               </div>
             </section>
 
-            {/* SECTION A: WHY CHOOSE US */}
+            {/* SECTION A: WHY CHOOSE US (SPLIT EDITORIAL VIEW) */}
             <section className="full-bleed-row">
               <div className="section-wrapper">
-                <h2 className="section-title">{t('landing_why_title')}</h2>
-                <p className="section-subtitle">{t('landing_why_desc')}</p>
-                
-                <div className="premium-features-grid">
-                  <div className="feature-card">
-                    <h3 className="feature-title">{t('landing_why_item1_title')}</h3>
-                    <p className="feature-desc">{t('landing_why_item1_desc')}</p>
+                <div className="why-split-layout">
+                  {/* Left Column: Bold Copy & Subtitles */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', textAlign: 'left' }}>
+                    <div style={{ alignSelf: 'flex-start', padding: '0.35rem 0.9rem', background: 'var(--primary-light)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-full)', color: 'var(--primary)', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                      {locale === 'en' ? 'Cultural Heritage Safeties' : 'सांस्कृतिक विरासत और गोत्र सुरक्षा'}
+                    </div>
+                    <h2 className="display" style={{ fontSize: '2.5rem', lineHeight: '1.2', color: 'var(--text-headers)' }}>
+                      {t('landing_why_title')}
+                    </h2>
+                    <p style={{ fontSize: '1.05rem', color: 'var(--text-muted)', lineHeight: '1.7' }}>
+                      {t('landing_why_desc')}
+                    </p>
+                    <div style={{ marginTop: '0.5rem' }}>
+                      <button onClick={() => setActiveView('auth')} className="widget-submit-btn" style={{ width: 'auto', padding: '0.75rem 2rem', borderRadius: 'var(--radius-md)' }}>
+                        {t('btn_begin_search')}
+                      </button>
+                    </div>
                   </div>
-                  <div className="feature-card">
-                    <h3 className="feature-title">{t('landing_why_item2_title')}</h3>
-                    <p className="feature-desc">{t('landing_why_item2_desc')}</p>
+
+                  {/* Right Column: Visual Feature Badges */}
+                  <div className="why-feature-badge-list">
+                    <div className="why-feature-badge-card">
+                      <div className="why-icon-container">🧬</div>
+                      <div>
+                        <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-headers)', marginBottom: '0.3rem' }}>
+                          {t('landing_why_item1_title')}
+                        </h4>
+                        <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
+                          {t('landing_why_item1_desc')}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="why-feature-badge-card">
+                      <div className="why-icon-container">🔒</div>
+                      <div>
+                        <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-headers)', marginBottom: '0.3rem' }}>
+                          {t('landing_why_item2_title')}
+                        </h4>
+                        <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
+                          {t('landing_why_item2_desc')}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </section>
 
-            {/* SECTION B: WHAT WE OFFER */}
-            <section className="full-bleed-row">
+            {/* SECTION B: WHAT WE OFFER (DARK CANVAS & CONVERSATIONAL PREVIEW WIDGET) */}
+            <section className="full-bleed-row what-dark-canvas">
               <div className="section-wrapper">
-                <h2 className="section-title">{t('landing_what_title')}</h2>
-                <p className="section-subtitle">{t('landing_what_desc')}</p>
-                
-                <div className="premium-features-grid">
-                  <div className="feature-card">
-                    <h3 className="feature-title">{t('landing_what_item1_title')}</h3>
-                    <p className="feature-desc">{t('landing_what_item1_desc')}</p>
+                <div className="what-dark-layout">
+                  {/* Left Column: Conversational Chat Mock Widget */}
+                  <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <div className="mock-chat-widget-landing animate-scale">
+                      <div style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '0.6rem', marginBottom: '0.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#4caf50' }}></div>
+                        <span style={{ fontSize: '0.75rem', color: 'hsl(var(--magenta-200))', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                          {locale === 'en' ? 'Live Chat Preview' : 'लाइव चैट पूर्वावलोकन'}
+                        </span>
+                      </div>
+                      
+                      {/* Bubble 1: Bot welcome */}
+                      <div className="mock-chat-bubble-bot">
+                        💬 {locale === 'en' ? "Welcome to Mithila Matrimony! First, what is your full name?" : "मिथिला मैट्रिमोनी में आपका स्वागत है! सबसे पहले, आपका पूरा नाम क्या है?"}
+                      </div>
+
+                      {/* Bubble 2: User reply */}
+                      <div className="mock-chat-bubble-user">
+                        {locale === 'en' ? "Ananya Jha" : "अनन्या झा"}
+                      </div>
+
+                      {/* Bubble 3: Bot gotra */}
+                      <div className="mock-chat-bubble-bot">
+                        🧬 {locale === 'en' ? "Important! What is your cultural Gotra?" : "महत्वपूर्ण! आपका सांस्कृतिक गोत्र क्या है?"}
+                      </div>
+
+                      {/* Bubble 4: User gotra */}
+                      <div className="mock-chat-bubble-user">
+                        {locale === 'en' ? "Kashyap" : "कश्यप"}
+                      </div>
+                    </div>
                   </div>
-                  <div className="feature-card">
-                    <h3 className="feature-title">{t('landing_what_item2_title')}</h3>
-                    <p className="feature-desc">{t('landing_what_item2_desc')}</p>
+
+                  {/* Right Column: Editorial Text Copy */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', textAlign: 'left' }}>
+                    <div style={{ alignSelf: 'flex-start', padding: '0.35rem 0.9rem', background: 'rgba(216, 27, 96, 0.15)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: 'var(--radius-full)', color: 'var(--primary-dark)', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                      {locale === 'en' ? 'Interactive Onboarding' : 'संवादात्मक ऑनबोर्डिंग ऑन-द-फ्लाई'}
+                    </div>
+                    <h2 className="display" style={{ fontSize: '2.5rem', lineHeight: '1.2', color: '#ffffff' }}>
+                      {t('landing_what_title')}
+                    </h2>
+                    <p style={{ fontSize: '1.05rem', color: 'hsl(var(--magenta-200))', lineHeight: '1.7' }}>
+                      {t('landing_what_desc')}
+                    </p>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem', marginTop: '0.5rem' }}>
+                      <div>
+                        <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#ffffff', marginBottom: '0.3rem' }}>
+                          {t('landing_what_item1_title')}
+                        </h4>
+                        <p style={{ fontSize: '0.88rem', color: 'hsl(var(--magenta-200))', lineHeight: '1.5' }}>
+                          {t('landing_what_item1_desc')}
+                        </p>
+                      </div>
+
+                      <div>
+                        <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#ffffff', marginBottom: '0.3rem' }}>
+                          {t('landing_what_item2_title')}
+                        </h4>
+                        <p style={{ fontSize: '0.88rem', color: 'hsl(var(--magenta-200))', lineHeight: '1.5' }}>
+                          {t('landing_what_item2_desc')}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </section>
 
-            {/* SECTION C: WHO WE ARE */}
+            {/* SECTION C: WHO WE ARE (TRUSTED STATS DASHBOARD & LINEAGE GEOGRAPHY) */}
             <section className="full-bleed-row">
               <div className="section-wrapper">
-                <h2 className="section-title">{t('landing_who_title')}</h2>
-                <p className="section-subtitle">{t('landing_who_desc')}</p>
-                
-                <div className="premium-features-grid">
-                  <div className="feature-card">
-                    <h3 className="feature-title">{t('landing_who_item1_title')}</h3>
-                    <p className="feature-desc">{t('landing_who_item1_desc')}</p>
+                <div className="who-stats-layout">
+                  {/* Left Column: Brand Story & Trust Description */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', textAlign: 'left' }}>
+                    <div style={{ alignSelf: 'flex-start', padding: '0.35rem 0.9rem', background: 'var(--primary-light)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-full)', color: 'var(--primary)', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                      {locale === 'en' ? 'Global Maithil Alliance' : 'वैश्विक मैथिल गठबंधन'}
+                    </div>
+                    <h2 className="display" style={{ fontSize: '2.5rem', lineHeight: '1.2', color: 'var(--text-headers)' }}>
+                      {t('landing_who_title')}
+                    </h2>
+                    <p style={{ fontSize: '1.05rem', color: 'var(--text-muted)', lineHeight: '1.7' }}>
+                      {t('landing_who_desc')}
+                    </p>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.2rem', marginTop: '0.3rem' }}>
+                      <div>
+                        <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-headers)', marginBottom: '0.2rem' }}>
+                          📍 {t('landing_who_item1_title')}
+                        </h4>
+                        <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
+                          {t('landing_who_item1_desc')}
+                        </p>
+                      </div>
+
+                      <div>
+                        <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-headers)', marginBottom: '0.2rem' }}>
+                          🤝 {t('landing_who_item2_title')}
+                        </h4>
+                        <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
+                          {t('landing_who_item2_desc')}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="feature-card">
-                    <h3 className="feature-title">{t('landing_who_item2_title')}</h3>
-                    <p className="feature-desc">{t('landing_who_item2_desc')}</p>
+
+                  {/* Right Column: Dynamic Statistics Dashboard */}
+                  <div className="stats-grid-landing">
+                    <div className="stat-dashboard-card animate-scale" style={{ borderLeft: '3px solid var(--gold-primary)' }}>
+                      <span className="stat-number-large">12K+</span>
+                      <span className="stat-label-desc">{locale === 'en' ? 'Verified Couples' : 'सत्यापित जोड़े'}</span>
+                    </div>
+
+                    <div className="stat-dashboard-card animate-scale" style={{ borderLeft: '3px solid var(--primary)' }}>
+                      <span className="stat-number-large">99.8%</span>
+                      <span className="stat-label-desc">{locale === 'en' ? 'Gotra Match Rating' : 'गोत्र अनुकूलता दर'}</span>
+                    </div>
+
+                    <div className="stat-dashboard-card animate-scale" style={{ borderLeft: '3px solid var(--primary)' }}>
+                      <span className="stat-number-large">100%</span>
+                      <span className="stat-label-desc">{locale === 'en' ? 'Privacy Secured' : 'पूर्ण गोपनीयता'}</span>
+                    </div>
+
+                    <div className="stat-dashboard-card animate-scale" style={{ borderLeft: '3px solid var(--gold-primary)' }}>
+                      <span className="stat-number-large">50+</span>
+                      <span className="stat-label-desc">{locale === 'en' ? 'Maithil Cities' : 'वैश्विक मैथिल शहर'}</span>
+                    </div>
                   </div>
                 </div>
               </div>
