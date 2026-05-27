@@ -139,25 +139,6 @@ function App() {
           </div>
           
           <nav style={styles.navMenu}>
-            {/* Switchers Row (Localization & Theme controls) */}
-            <div className="theme-lang-row" style={{ marginRight: '1.5rem' }}>
-              {/* Language Selector Toggle */}
-              <button 
-                className="btn-toggle-switch"
-                onClick={() => setLanguage(locale === 'en' ? 'hi' : 'en')}
-              >
-                🌐 {locale === 'en' ? 'हिंदी' : 'English'}
-              </button>
-              
-              {/* Theme Selector Toggle */}
-              <button 
-                className="btn-toggle-switch"
-                onClick={toggleTheme}
-              >
-                {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
-              </button>
-            </div>
-
             {activeUser ? (
               <div style={styles.loggedInRow}>
                 {activeUser.registrationStep === 'completed' && activeBiodata && (
@@ -512,9 +493,94 @@ function App() {
         )}
       </main>
 
-      {/* Visual Footer (Stretches 100% full screen width) */}
-      <footer style={styles.footer}>
-        <p>© 2026 {t('brand_title')}. {locale === 'en' ? 'Styled beautifully with pure Vanilla CSS Magenta System guidelines.' : 'प्योर वैनिला सीएसएस मैजेंटा सिस्टम के साथ खूबसूरती से तैयार किया गया।'}</p>
+      {/* Visual Premium Footer (Stretches 100% full screen width) */}
+      <footer className="premium-footer">
+        <div className="section-wrapper" style={{ margin: '0 auto' }}>
+          <div className="footer-grid">
+            {/* Column 1: Brand Info */}
+            <div className="footer-col">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem' }}>
+                <span style={{ ...styles.logoSerif, color: '#ffffff' }}>{t('brand_serif')}</span>
+                <span style={{ ...styles.logoSans, color: 'var(--gold-primary)' }}>{t('brand_sans')}</span>
+              </div>
+              <p className="footer-brand-desc">
+                {locale === 'en' 
+                  ? 'The premier cultural matrimonial portal tailored for global Maithil families. Designed with heritage aesthetics, secure gotra rules, and high-fidelity compatibility algorithms.' 
+                  : 'वैश्विक मैथिल परिवारों के लिए विशेष रूप से तैयार किया गया प्रमुख सांस्कृतिक विवाह मंच। समृद्ध सांस्कृतिक विरासत, सुरक्षित गोत्र नियमों और उच्च-सटीकता अनुकूलता एल्गोरिदम के साथ डिज़ाइन किया गया।'}
+              </p>
+            </div>
+
+            {/* Column 2: Quick Links */}
+            <div className="footer-col">
+              <h4 className="footer-col-title">{locale === 'en' ? 'Navigate' : 'नेविगेट'}</h4>
+              <ul className="footer-links">
+                <li className="footer-link-item" onClick={() => setActiveView(activeUser ? (activeUser.registrationStep === 'completed' ? 'browse' : 'register') : 'home')}>
+                  {locale === 'en' ? 'Home' : 'मुख्य पृष्ठ'}
+                </li>
+                {!activeUser ? (
+                  <li className="footer-link-item" onClick={() => setActiveView('auth')}>
+                    {t('btn_auth')}
+                  </li>
+                ) : (
+                  <li className="footer-link-item" onClick={() => setActiveView(activeUser.registrationStep === 'completed' ? 'browse' : 'register')}>
+                    {activeUser.registrationStep === 'completed' ? (locale === 'en' ? 'Browse Matches' : 'मैच खोजें') : (locale === 'en' ? 'Complete Profile' : 'बायोडाटा पूरा करें')}
+                  </li>
+                )}
+                <li className="footer-link-item" onClick={() => { initMockDb(); setActiveView('browse'); setMatchingProfiles(mockGetMatchingProfiles()); }}>
+                  {t('btn_explore_mocks')}
+                </li>
+              </ul>
+            </div>
+
+            {/* Column 3: Gotras & Customs */}
+            <div className="footer-col">
+              <h4 className="footer-col-title">{locale === 'en' ? 'Lineages' : 'प्रमुख गोत्र'}</h4>
+              <ul className="footer-links" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem' }}>
+                <li className="footer-link-item" style={{ cursor: 'default' }}>Kashyap</li>
+                <li className="footer-link-item" style={{ cursor: 'default' }}>Shandilya</li>
+                <li className="footer-link-item" style={{ cursor: 'default' }}>Vatsa</li>
+                <li className="footer-link-item" style={{ cursor: 'default' }}>Katyayan</li>
+                <li className="footer-link-item" style={{ cursor: 'default' }}>Parashar</li>
+                <li className="footer-link-item" style={{ cursor: 'default' }}>Bhardwaj</li>
+              </ul>
+            </div>
+
+            {/* Column 4: Highly Optimized System Controls */}
+            <div className="footer-col">
+              <h4 className="footer-col-title">{locale === 'en' ? 'Settings' : 'सिस्टम विकल्प'}</h4>
+              <div className="footer-controls-group">
+                {/* Language Switcher Button */}
+                <button 
+                  className="footer-toggle-btn"
+                  onClick={() => setLanguage(locale === 'en' ? 'hi' : 'en')}
+                  title={locale === 'en' ? 'Switch Language to Hindi' : 'भाषा हिंदी से अंग्रेजी में बदलें'}
+                >
+                  🌐 {locale === 'en' ? 'हिंदी (Hindi)' : 'English (अंग्रेजी)'}
+                </button>
+                
+                {/* Theme Selector Switcher */}
+                <button 
+                  className="footer-toggle-btn"
+                  onClick={toggleTheme}
+                  title={locale === 'en' ? 'Switch Color Theme' : 'थीम बदलें'}
+                >
+                  {theme === 'light' ? '🌙 Dark Mode' : '☀️ Light Mode'}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <hr className="footer-divider" />
+
+          <div className="footer-bottom-row">
+            <p className="footer-copyright">
+              © 2026 {t('brand_serif')}{t('brand_sans')}. {locale === 'en' ? 'All Rights Reserved. Proudly protecting Maithil heritage and lineage custom safeties.' : 'सर्वाधिकार सुरक्षित। गर्व से मैथिल परंपराओं और गोत्र अनुकूलता नियमों की रक्षा करता है।'}
+            </p>
+            <p style={{ fontSize: '0.85rem', color: 'hsl(var(--magenta-300))' }}>
+              {locale === 'en' ? 'Developed with Pure Vanilla CSS & React 19' : 'प्योर वैनिला सीएसएस और रिएक्ट 19 द्वारा संचालित'}
+            </p>
+          </div>
+        </div>
       </footer>
     </div>
   );
