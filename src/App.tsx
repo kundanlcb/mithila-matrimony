@@ -105,7 +105,7 @@ function App() {
 
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-      {/* Visual Navigation Bar */}
+      {/* Visual Navigation Bar (Stretches 100% full screen width) */}
       <header className="header-nav" style={styles.header}>
         <div style={styles.navContainer}>
           <div 
@@ -156,63 +156,124 @@ function App() {
         </div>
       </header>
 
-      {/* Main Container */}
-      <main style={styles.mainContainer}>
-        {/* VIEW 1: HOME LANDING SKELETON */}
+      {/* Main Container (Removed top-level max-width limits to enable full-bleed screen blocks!) */}
+      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%' }}>
+        {/* VIEW 1: HOME LANDING VIEW (MODERN FULL-SCREEN SECTION GRIDS) */}
         {activeView === 'home' && (
-          <section className="animate-fade" style={styles.heroSection}>
-            <div style={styles.heroLayout}>
-              <div style={styles.heroTextContent}>
-                <h1 className="display" style={styles.heroTitle}>
-                  {t('hero_title_prefix')}
-                  <span style={{ color: 'var(--primary)' }}>{t('hero_title_accent')}</span>
-                </h1>
-                <p style={styles.heroSub}>
-                  {t('hero_subtitle')}
-                </p>
-                <div style={styles.heroBtnRow}>
-                  <button onClick={() => setActiveView('auth')} style={styles.primaryBtn}>
-                    {t('btn_begin_search')}
-                  </button>
-                  <button 
-                    onClick={() => {
-                      initMockDb();
-                      setActiveView('browse');
-                      setMatchingProfiles(mockGetMatchingProfiles());
-                    }} 
-                    style={styles.secondaryBtn}
-                  >
-                    {t('btn_explore_mocks')}
-                  </button>
-                </div>
-              </div>
-              
-              <div style={styles.heroVisualBox}>
-                {/* Visual Identity Palette demo */}
-                <div style={styles.visualAestheticCard} className="animate-scale">
-                  <h3 style={styles.visualCardTitle}>{t('visual_card_title')}</h3>
-                  <div style={styles.paletteGrid}>
-                    <div style={{ ...styles.paletteBox, backgroundColor: 'hsl(var(--magenta-800))' }}>#880E4F</div>
-                    <div style={{ ...styles.paletteBox, backgroundColor: 'hsl(var(--magenta-600))' }}>#B71C1C</div>
-                    <div style={{ ...styles.paletteBox, backgroundColor: 'hsl(var(--magenta-500))' }}>#D81B60</div>
-                    <div style={{ ...styles.paletteBox, backgroundColor: 'hsl(var(--magenta-300))' }}>#F48FB1</div>
-                  </div>
-                  <div style={styles.typographySample}>
-                    <h2 className="display" style={{ fontSize: '1.4rem', color: 'var(--text-headers)' }}>{t('visual_card_serif')}</h2>
-                    <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem' }}>{t('visual_card_sub')}</p>
-                  </div>
-                  <div style={styles.glassBadge} className="flex-center">
-                    <span>{t('visual_card_glass')}</span>
+          <div className="animate-fade" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+            
+            {/* HERO HERO SECTION */}
+            <section className="full-bleed-row" style={{ padding: '6rem 0' }}>
+              <div className="section-wrapper" style={styles.heroLayout}>
+                <div style={styles.heroTextContent}>
+                  <h1 className="display" style={styles.heroTitle}>
+                    {t('hero_title_prefix')}
+                    <span style={{ color: 'var(--primary)' }}>{t('hero_title_accent')}</span>
+                  </h1>
+                  <p style={styles.heroSub}>
+                    {t('hero_subtitle')}
+                  </p>
+                  <div style={styles.heroBtnRow}>
+                    <button onClick={() => setActiveView('auth')} style={styles.primaryBtn}>
+                      {t('btn_begin_search')}
+                    </button>
+                    <button 
+                      onClick={() => {
+                        initMockDb();
+                        setActiveView('browse');
+                        setMatchingProfiles(mockGetMatchingProfiles());
+                      }} 
+                      style={styles.secondaryBtn}
+                    >
+                      {t('btn_explore_mocks')}
+                    </button>
                   </div>
                 </div>
+                
+                <div style={styles.heroVisualBox}>
+                  {/* Visual Identity Palette card demo */}
+                  <div style={styles.visualAestheticCard} className="animate-scale">
+                    <h3 style={styles.visualCardTitle}>{t('visual_card_title')}</h3>
+                    <div style={styles.paletteGrid}>
+                      <div style={{ ...styles.paletteBox, backgroundColor: 'hsl(var(--magenta-800))' }}>#880E4F</div>
+                      <div style={{ ...styles.paletteBox, backgroundColor: 'hsl(var(--magenta-600))' }}>#B71C1C</div>
+                      <div style={{ ...styles.paletteBox, backgroundColor: 'hsl(var(--magenta-500))' }}>#D81B60</div>
+                      <div style={{ ...styles.paletteBox, backgroundColor: 'hsl(var(--magenta-300))' }}>#F48FB1</div>
+                    </div>
+                    <div style={styles.typographySample}>
+                      <h2 className="display" style={{ fontSize: '1.4rem', color: 'var(--text-headers)' }}>{t('visual_card_serif')}</h2>
+                      <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem' }}>{t('visual_card_sub')}</p>
+                    </div>
+                    <div style={styles.glassBadge} className="flex-center">
+                      <span>{t('visual_card_glass')}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
+
+            {/* SECTION A: WHY CHOOSE US */}
+            <section className="full-bleed-row">
+              <div className="section-wrapper">
+                <h2 className="section-title">{t('landing_why_title')}</h2>
+                <p className="section-subtitle">{t('landing_why_desc')}</p>
+                
+                <div className="premium-features-grid">
+                  <div className="feature-card">
+                    <h3 className="feature-title">{t('landing_why_item1_title')}</h3>
+                    <p className="feature-desc">{t('landing_why_item1_desc')}</p>
+                  </div>
+                  <div className="feature-card">
+                    <h3 className="feature-title">{t('landing_why_item2_title')}</h3>
+                    <p className="feature-desc">{t('landing_why_item2_desc')}</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* SECTION B: WHAT WE OFFER */}
+            <section className="full-bleed-row">
+              <div className="section-wrapper">
+                <h2 className="section-title">{t('landing_what_title')}</h2>
+                <p className="section-subtitle">{t('landing_what_desc')}</p>
+                
+                <div className="premium-features-grid">
+                  <div className="feature-card">
+                    <h3 className="feature-title">{t('landing_what_item1_title')}</h3>
+                    <p className="feature-desc">{t('landing_what_item1_desc')}</p>
+                  </div>
+                  <div className="feature-card">
+                    <h3 className="feature-title">{t('landing_what_item2_title')}</h3>
+                    <p className="feature-desc">{t('landing_what_item2_desc')}</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* SECTION C: WHO WE ARE */}
+            <section className="full-bleed-row">
+              <div className="section-wrapper">
+                <h2 className="section-title">{t('landing_who_title')}</h2>
+                <p className="section-subtitle">{t('landing_who_desc')}</p>
+                
+                <div className="premium-features-grid">
+                  <div className="feature-card">
+                    <h3 className="feature-title">{t('landing_who_item1_title')}</h3>
+                    <p className="feature-desc">{t('landing_who_item1_desc')}</p>
+                  </div>
+                  <div className="feature-card">
+                    <h3 className="feature-title">{t('landing_who_item2_title')}</h3>
+                    <p className="feature-desc">{t('landing_who_item2_desc')}</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
         )}
 
-        {/* VIEW 2: OTP SIGN IN/REGISTER SKELETON */}
+        {/* VIEW 2: OTP SIGN IN/REGISTER SKELETON (PERFECT CENTERING ALIGNMENT WRAPPERS) */}
         {activeView === 'auth' && (
-          <section className="flex-center animate-fade" style={{ minHeight: '60vh' }}>
+          <div className="auth-layout-wrapper animate-fade">
             <div style={styles.authCard}>
               <h2 className="display" style={styles.authTitle}>{t('auth_title')}</h2>
               <p style={styles.authSubtitle}>{t('auth_subtitle')}</p>
@@ -264,12 +325,12 @@ function App() {
                 </form>
               )}
             </div>
-          </section>
+          </div>
         )}
 
         {/* VIEW 3: MULTI-STEP CONVERSATIONAL REGISTRATION WIZARD */}
         {activeView === 'register' && (
-          <section className="animate-fade" style={styles.registerSection}>
+          <div className="animate-fade" style={{ width: '100%', padding: '3rem 2rem' }}>
             <div style={{ maxWidth: '650px', margin: '0 auto' }}>
               <RegistrationChat 
                 onComplete={() => {
@@ -279,83 +340,85 @@ function App() {
                 }}
               />
             </div>
-          </section>
+          </div>
         )}
 
         {/* VIEW 4: MATRIMONIAL BROWSE GRID (HIGH QUALITY PROFILE CARDS) */}
         {activeView === 'browse' && (
-          <section className="animate-fade" style={styles.browseSection}>
-            <div style={styles.browseHeader}>
-              <div style={styles.browseHeadline}>
-                <h1 className="display">{t('browse_title')}</h1>
-                <p>{t('browse_subtitle')}</p>
+          <div className="animate-fade" style={{ width: '100%', padding: '3rem 2rem' }}>
+            <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+              <div style={styles.browseHeader}>
+                <div style={styles.browseHeadline}>
+                  <h1 className="display">{t('browse_title')}</h1>
+                  <p>{t('browse_subtitle')}</p>
+                </div>
+                {/* Optional filters preview */}
+                <div style={styles.quickFiltersContainer}>
+                  <span>{t('browse_alert')}</span>
+                </div>
               </div>
-              {/* Optional filters preview */}
-              <div style={styles.quickFiltersContainer}>
-                <span>{t('browse_alert')}</span>
-              </div>
-            </div>
 
-            {matchingProfiles.length === 0 ? (
-              <div style={styles.noMatchesBox} className="flex-center">
-                <p>{t('no_matches')}</p>
-              </div>
-            ) : (
-              <div style={styles.profileGrid} className="grid-responsive">
-                {matchingProfiles.map((profile) => (
-                  <div key={profile.biodataId} className="animate-scale" style={styles.profileCard}>
-                    <div style={styles.profileImgContainer}>
-                      <img src={profile.photoUrl} alt={profile.fullName} style={styles.profileImg} />
-                      <div style={styles.compatibilityBadge}>
-                        🎯 {profile.compatibilityScore}% {t('card_match')}
+              {matchingProfiles.length === 0 ? (
+                <div style={styles.noMatchesBox} className="flex-center">
+                  <p>{t('no_matches')}</p>
+                </div>
+              ) : (
+                <div style={styles.profileGrid} className="grid-responsive">
+                  {matchingProfiles.map((profile) => (
+                    <div key={profile.biodataId} className="animate-scale" style={styles.profileCard}>
+                      <div style={styles.profileImgContainer}>
+                        <img src={profile.photoUrl} alt={profile.fullName} style={styles.profileImg} />
+                        <div style={styles.compatibilityBadge}>
+                          🎯 {profile.compatibilityScore}% {t('card_match')}
+                        </div>
+                      </div>
+                      
+                      <div style={styles.profileDetails}>
+                        <div style={styles.detailsRow}>
+                          <h3 style={styles.profileName}>{profile.fullName}</h3>
+                          <span style={styles.ageGender}>
+                            {profile.age} {locale === 'en' ? 'Yrs' : 'वर्ष'} • {profile.gender === 'Female' ? (locale === 'en' ? 'Female' : 'महिला') : (locale === 'en' ? 'Male' : 'पुरुष')}
+                          </span>
+                        </div>
+                        
+                        <div style={styles.metaBadgeRow}>
+                          <span style={styles.metaBadge}>🧬 {t('summary_gotra')}: {profile.gotra}</span>
+                          <span style={styles.metaBadge}>📍 {profile.location}</span>
+                        </div>
+                        
+                        <div style={styles.professionalDetail}>
+                          💼 <strong>{profile.profession}</strong> ({profile.education})
+                        </div>
+                        
+                        <div style={styles.salaryText}>
+                          💰 {t('summary_income')}: <strong>₹{(profile.annualIncome / 100000).toFixed(1)} {t('summary_lakh')}</strong>
+                        </div>
+                        
+                        <p style={styles.aboutSnippet}>{profile.aboutMe}</p>
+                        
+                        <div style={styles.interestsRow}>
+                          {profile.interests.slice(0, 3).map((interest, i) => (
+                            <span key={i} style={styles.interestMiniBadge}>{interest}</span>
+                          ))}
+                        </div>
+                        
+                        <button 
+                          onClick={() => alert(locale === 'en' ? `Connect request simulated successfully to ${profile.fullName}!` : `${profile.fullName} को कनेक्ट अनुरोध सफलतापूर्वक भेजा गया!`)} 
+                          style={styles.connectBtn}
+                        >
+                          {t('btn_request_connect')}
+                        </button>
                       </div>
                     </div>
-                    
-                    <div style={styles.profileDetails}>
-                      <div style={styles.detailsRow}>
-                        <h3 style={styles.profileName}>{profile.fullName}</h3>
-                        <span style={styles.ageGender}>
-                          {profile.age} {locale === 'en' ? 'Yrs' : 'वर्ष'} • {profile.gender === 'Female' ? (locale === 'en' ? 'Female' : 'महिला') : (locale === 'en' ? 'Male' : 'पुरुष')}
-                        </span>
-                      </div>
-                      
-                      <div style={styles.metaBadgeRow}>
-                        <span style={styles.metaBadge}>🧬 {t('summary_gotra')}: {profile.gotra}</span>
-                        <span style={styles.metaBadge}>📍 {profile.location}</span>
-                      </div>
-                      
-                      <div style={styles.professionalDetail}>
-                        💼 <strong>{profile.profession}</strong> ({profile.education})
-                      </div>
-                      
-                      <div style={styles.salaryText}>
-                        💰 {t('summary_income')}: <strong>₹{(profile.annualIncome / 100000).toFixed(1)} {t('summary_lakh')}</strong>
-                      </div>
-                      
-                      <p style={styles.aboutSnippet}>{profile.aboutMe}</p>
-                      
-                      <div style={styles.interestsRow}>
-                        {profile.interests.slice(0, 3).map((interest, i) => (
-                          <span key={i} style={styles.interestMiniBadge}>{interest}</span>
-                        ))}
-                      </div>
-                      
-                      <button 
-                        onClick={() => alert(locale === 'en' ? `Connect request simulated successfully to ${profile.fullName}!` : `${profile.fullName} को कनेक्ट अनुरोध सफलतापूर्वक भेजा गया!`)} 
-                        style={styles.connectBtn}
-                      >
-                        {t('btn_request_connect')}
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         )}
       </main>
 
-      {/* Visual Footer */}
+      {/* Visual Footer (Stretches 100% full screen width) */}
       <footer style={styles.footer}>
         <p>© 2026 {t('brand_title')}. {locale === 'en' ? 'Styled beautifully with pure Vanilla CSS Magenta System guidelines.' : 'प्योर वैनिला सीएसएस मैजेंटा सिस्टम के साथ खूबसूरती से तैयार किया गया।'}</p>
       </footer>
@@ -373,14 +436,16 @@ const styles = {
     top: 0,
     zIndex: 100,
     boxShadow: 'var(--shadow-sm)',
-    transition: 'all 0.3s ease'
+    transition: 'all 0.3s ease',
+    width: '100%'
   },
   navContainer: {
     maxWidth: '1200px',
     margin: '0 auto',
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    width: '100%'
   },
   logoBox: {
     cursor: 'pointer',
@@ -431,13 +496,6 @@ const styles = {
     fontWeight: '600',
     borderRadius: 'var(--radius-full)',
     fontSize: '0.85rem'
-  },
-  mainContainer: {
-    flex: 1,
-    maxWidth: '1200px',
-    width: '100%',
-    margin: '0 auto',
-    padding: '2rem'
   },
   heroSection: {
     padding: '4rem 0'
@@ -774,7 +832,8 @@ const styles = {
     padding: '1.5rem',
     fontSize: '0.85rem',
     borderTop: '1px solid var(--primary)',
-    transition: 'all 0.3s ease'
+    transition: 'all 0.3s ease',
+    width: '100%'
   }
 };
 

@@ -27,6 +27,30 @@ export const TRANSLATIONS: Record<string, TranslationItem> = {
   visual_card_serif: { en: "Playfair Serif Header", hi: "प्लेफेयर सेरिफ़ हेडर" },
   visual_card_glass: { en: "✨ Modern Glassmorphism Blur", hi: "✨ आधुनिक ग्लासमोर्फिज्म ब्लर" },
 
+  // Landing "Why Choose Us" Localizations
+  landing_why_title: { en: "Why Mithila Matrimony?", hi: "क्यूं Mithila Matrimony?" },
+  landing_why_desc: { en: "Preserving legacy through verified cultural lineage, secure gotra rules, and trusted connections.", hi: "विश्वसनीय गोत्र मिलान और समृद्ध सांस्कृतिक परंपराओं के माध्यम से परिवारों को जोड़ना।" },
+  landing_why_item1_title: { en: "🧬 Gotra Compatibility Safeguards", hi: "🧬 गोत्र मिलान सुरक्षा" },
+  landing_why_item1_desc: { en: "Automated filters screen matches based on traditional gotra customs to align with lineage values.", hi: "हमारी प्रणाली पारंपरिक गोत्र नियमों के अनुसार अनुकूल मिलान स्वतः और सुरक्षित रूप से खोजती है।" },
+  landing_why_item2_title: { en: "🔒 Secure Contact Verification", hi: "🔒 सुरक्षित संपर्क सत्यापन" },
+  landing_why_item2_desc: { en: "Off-line simulated OTP authentication prevents unverified profiles and secures contact databases.", hi: "ओटीपी सत्यापन द्वारा सुरक्षित प्रोफाइल पंजीकरण ताकि केवल विश्वसनीय और सत्यापित लोग ही जुड़ सकें।" },
+
+  // Landing "What We Offer" Localizations
+  landing_what_title: { en: "What We Offer", hi: "क्या है हमारी सेवा?" },
+  landing_what_desc: { en: "A modern visual experience designed to make matrimonial search delightful, interactive, and fast.", hi: "आपके जीवनसाथी की खोज को बेहद सरल, सुंदर, मनोरंजक और आधुनिक बनाने के लिए नवीन सुविधाएं।" },
+  landing_what_item1_title: { en: "💬 Conversational Chat Onboarding", hi: "💬 संवादात्मक चैट पंजीकरण" },
+  landing_what_item1_desc: { en: "Assemble your biodata through a friendly, engaging chatbot instead of tiring standard forms.", hi: "उबाऊ फॉर्म्स के बजाय एक प्यारे चैटबॉट से बात करते हुए खेल-खेल में अपना बायोडाटा बनाएं।" },
+  landing_what_item2_title: { en: "🌓 Responsive Theme & i18n Toggles", hi: "🌓 डार्क थीम और द्विभाषी अनुभव" },
+  landing_what_item2_desc: { en: "Switch seamlessly between English/Hindi translations and comfortable dark mode visual canvases.", hi: "अंग्रेजी और हिंदी भाषा के साथ-साथ रात में आरामदायक देखने के लिए लाइट एवं डार्क मोड का सहज अनुभव।" },
+
+  // Landing "Who We Are" Localizations
+  landing_who_title: { en: "Who We Are", hi: "कौन हैं हम?" },
+  landing_who_desc: { en: "Bridging legacy roots and progressive hearts to connect Maithil families globally.", hi: "मैथिल परिवारों को वैश्विक स्तर पर जोड़ने के लिए समर्पित एक आधुनिक और सुरक्षित साझा मंच।" },
+  landing_who_item1_title: { en: "🌎 Global Maithil Community", hi: "🌎 वैश्विक मैथिल समुदाय" },
+  landing_who_item1_desc: { en: "Connecting candidates across Bangalore, Delhi NCR, Mumbai, Patna, Darbhanga, and globally.", hi: "दरभंगा, पटना, दिल्ली, मुंबई, बेंगलुरु से लेकर देश-विदेश में बसे मैथिल वर-वधू का विशाल मंच।" },
+  landing_who_item2_title: { en: "🤝 Core Respect & Privacy", hi: "🤝 पूर्ण गोपनीयता एवं सम्मान" },
+  landing_who_item2_desc: { en: "Respecting your privacy, values, and traditions while providing cutting edge searching interfaces.", hi: "आपकी गोपनीयता और परंपराओं का पूरा सम्मान करते हुए आधुनिकतम खोज और सुरक्षा उपकरण।" },
+
   // Auth / OTP screen
   auth_title: { en: "Sign In / SignUp", hi: "साइन इन / पंजीकरण" },
   auth_subtitle: { en: "Enter your mobile number to receive a simulated verification OTP", hi: "सत्यापन कोड (सिम्युलेटेड ओटीपी) प्राप्त करने के लिए अपना मोबाइल नंबर दर्ज करें" },
@@ -42,7 +66,7 @@ export const TRANSLATIONS: Record<string, TranslationItem> = {
   // ChatBot Dialogue Sequence
   bot_welcome: { 
     en: "Namaste! Welcome to Mithila Matrimony. Let's create your matrimonial biodata in an engaging way. First, what is your full name?", 
-    hi: "नमस्ते! मिथिला मैट्रिमोनी में आपका स्वागत है। चलिए एक संवादात्मक बातचीत के माध्यम से आपका बायोडाटा बनाते हैं। सबसे पहले, आपका पूरा नाम क्या है?" 
+    hi: "नमस्ते! मिथिला मैट्रिमोनी में स्वागत है। चलिए एक संवादात्मक बातचीत के माध्यम से आपका बायोडाटा बनाते हैं। सबसे पहले, आपका पूरा नाम क्या है?" 
   },
   bot_gender: { 
     en: "Pleasure to meet you, {name}! Please select your gender.", 
