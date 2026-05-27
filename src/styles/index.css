@@ -1021,5 +1021,58 @@ button {
   letter-spacing: 0.8px;
 }
 
+/* RESPONSIVE SCALING FOR HERO CARD DECK ON MOBILE VIEWPORTS */
+@media (max-width: 480px) {
+  .floating-card-deck {
+    max-width: 280px;
+    height: 320px;
+  }
+  .deck-card-primary {
+    width: 210px;
+    height: 275px;
+  }
+  .deck-card-candidate-img {
+    height: 165px;
+  }
+  .deck-card-candidate-details {
+    padding: 0.6rem var(--space-sm);
+  }
+  .deck-card-candidate-details h3 {
+    font-size: 1.05rem !important;
+  }
+  .deck-card-candidate-details p {
+    font-size: 0.75rem !important;
+  }
+  .deck-card-secondary {
+    width: 135px;
+    padding: 0.5rem;
+    bottom: 10px;
+    right: -15px;
+  }
+  .deck-card-secondary h4 {
+    font-size: 0.75rem !important;
+  }
+  .deck-card-secondary p {
+    font-size: 0.65rem !important;
+  }
+  .deck-card-tertiary {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.7rem;
+    top: 20px;
+    right: -15px;
+  }
+  .stat-floating-pill {
+    font-size: 0.7rem !important;
+    padding: 0.35rem 0.75rem !important;
+  }
+  .deck-floating-badge-gotra {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.65rem;
+    top: 8px;
+    left: 8px;
+  }
+}
+
+
 
 

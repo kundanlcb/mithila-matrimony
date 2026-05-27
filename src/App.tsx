@@ -37,6 +37,9 @@ function App() {
   const [searchLook, setSearchLook] = useState<'Male' | 'Female'>('Female');
   const [searchGotra, setSearchGotra] = useState('Any');
 
+  // Expanded Profile Cards States
+  const [expandedProfileIds, setExpandedProfileIds] = useState<string[]>([]);
+
   // Load Initial Sessions
   useEffect(() => {
     initMockDb();
@@ -569,53 +572,95 @@ function App() {
                 </div>
               ) : (
                 <div style={styles.profileGrid} className="grid-responsive">
-                  {matchingProfiles.map((profile) => (
-                    <div key={profile.biodataId} className="animate-scale" style={styles.profileCard}>
-                      <div style={styles.profileImgContainer}>
-                        <img src={profile.photoUrl} alt={profile.fullName} style={styles.profileImg} />
-                        <div style={styles.compatibilityBadge}>
-                          🎯 {profile.compatibilityScore}% {t('card_match')}
+                  {matchingProfiles.map((profile) => {
+                    const isExpanded = expandedProfileIds.includes(profile.biodataId);
+                    return (
+                      <div key={profile.biodataId} className="animate-scale" style={styles.profileCard}>
+                        <div style={styles.profileImgContainer}>
+                          <img src={profile.photoUrl} alt={profile.fullName} style={styles.profileImg} />
+                          <div style={styles.compatibilityBadge}>
+                            🎯 {profile.compatibilityScore}% {t('card_match')}
+                          </div>
+                        </div>
+                        
+                        <div style={styles.profileDetails}>
+                          <div style={styles.detailsRow}>
+                            <h3 style={styles.profileName}>{profile.fullName}</h3>
+                            <span style={styles.ageGender}>
+                              {profile.age} {locale === 'en' ? 'Yrs' : 'वर्ष'}
+                            </span>
+                          </div>
+                          
+                          <div style={styles.metaBadgeRow}>
+                            <span style={styles.metaBadge}>🧬 {t('summary_gotra')}: {profile.gotra}</span>
+                          </div>
+                          
+                          <div style={styles.salaryText}>
+                            💰 {t('summary_income')}: <strong>₹{(profile.annualIncome / 100000).toFixed(1)} {t('summary_lakh')}</strong>
+                          </div>
+                          
+                          <p style={styles.aboutSnippet}>{profile.aboutMe}</p>
+                          
+                          {/* COLLAPSIBLE REGION: Shown only when expanded */}
+                          {isExpanded && (
+                            <div className="animate-fade" style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', borderTop: '1px solid var(--border-light)', paddingTop: '0.8rem', marginTop: '0.4rem', textAlign: 'left' }}>
+                              <div style={styles.metaBadgeRow}>
+                                <span style={styles.metaBadge}>📍 {profile.location}</span>
+                                <span style={styles.metaBadge}>🧬 {locale === 'en' ? 'Gender: ' : 'लिंग: '}{profile.gender === 'Female' ? (locale === 'en' ? 'Female' : 'महिला') : (locale === 'en' ? 'Male' : 'पुरुष')}</span>
+                              </div>
+                              
+                              <div style={styles.professionalDetail}>
+                                💼 <strong>{profile.profession}</strong> ({profile.education})
+                              </div>
+                              
+                              <div style={styles.interestsRow}>
+                                {profile.interests.map((interest, i) => (
+                                  <span key={i} style={styles.interestMiniBadge}>{interest}</span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Expansion Toggle Button */}
+                          <button 
+                            onClick={() => {
+                              setExpandedProfileIds(prev => 
+                                prev.includes(profile.biodataId) 
+                                  ? prev.filter(id => id !== profile.biodataId) 
+                                  : [...prev, profile.biodataId]
+                              );
+                            }}
+                            style={{ 
+                              background: 'transparent', 
+                              border: 'none', 
+                              color: 'var(--primary)', 
+                              fontWeight: '700', 
+                              fontSize: '0.85rem', 
+                              cursor: 'pointer', 
+                              padding: '0.4rem 0',
+                              textAlign: 'left',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.2rem',
+                              marginTop: '0.4rem',
+                              width: 'fit-content'
+                            }}
+                          >
+                            {isExpanded 
+                              ? (locale === 'en' ? '▲ Show Less Details' : '▲ कम विवरण दिखाएं') 
+                              : (locale === 'en' ? '▼ Show Full Profile' : '▼ पूरा विवरण देखें')}
+                          </button>
+
+                          <button 
+                            onClick={() => alert(locale === 'en' ? `Connect request simulated successfully to ${profile.fullName}!` : `${profile.fullName} को कनेक्ट अनुरोध सफलतापूर्वक भेजा गया!`)} 
+                            style={styles.connectBtn}
+                          >
+                            {t('btn_request_connect')}
+                          </button>
                         </div>
                       </div>
-                      
-                      <div style={styles.profileDetails}>
-                        <div style={styles.detailsRow}>
-                          <h3 style={styles.profileName}>{profile.fullName}</h3>
-                          <span style={styles.ageGender}>
-                            {profile.age} {locale === 'en' ? 'Yrs' : 'वर्ष'} • {profile.gender === 'Female' ? (locale === 'en' ? 'Female' : 'महिला') : (locale === 'en' ? 'Male' : 'पुरुष')}
-                          </span>
-                        </div>
-                        
-                        <div style={styles.metaBadgeRow}>
-                          <span style={styles.metaBadge}>🧬 {t('summary_gotra')}: {profile.gotra}</span>
-                          <span style={styles.metaBadge}>📍 {profile.location}</span>
-                        </div>
-                        
-                        <div style={styles.professionalDetail}>
-                          💼 <strong>{profile.profession}</strong> ({profile.education})
-                        </div>
-                        
-                        <div style={styles.salaryText}>
-                          💰 {t('summary_income')}: <strong>₹{(profile.annualIncome / 100000).toFixed(1)} {t('summary_lakh')}</strong>
-                        </div>
-                        
-                        <p style={styles.aboutSnippet}>{profile.aboutMe}</p>
-                        
-                        <div style={styles.interestsRow}>
-                          {profile.interests.slice(0, 3).map((interest, i) => (
-                            <span key={i} style={styles.interestMiniBadge}>{interest}</span>
-                          ))}
-                        </div>
-                        
-                        <button 
-                          onClick={() => alert(locale === 'en' ? `Connect request simulated successfully to ${profile.fullName}!` : `${profile.fullName} को कनेक्ट अनुरोध सफलतापूर्वक भेजा गया!`)} 
-                          style={styles.connectBtn}
-                        >
-                          {t('btn_request_connect')}
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
