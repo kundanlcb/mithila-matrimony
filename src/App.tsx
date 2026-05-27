@@ -624,6 +624,14 @@ function App() {
                           {/* Expansion Toggle Button */}
                           <button 
                             onClick={() => {
+                              if (!activeUser) {
+                                alert(locale === 'en' 
+                                  ? "Authentication Required: Please register or sign in to view full candidate details!" 
+                                  : "साइन इन आवश्यक: कृपया पूरा उम्मीदवार विवरण देखने के लिए रजिस्टर या साइन इन करें!"
+                                );
+                                setActiveView('auth');
+                                return;
+                              }
                               setExpandedProfileIds(prev => 
                                 prev.includes(profile.biodataId) 
                                   ? prev.filter(id => id !== profile.biodataId) 
@@ -652,7 +660,20 @@ function App() {
                           </button>
 
                           <button 
-                            onClick={() => alert(locale === 'en' ? `Connect request simulated successfully to ${profile.fullName}!` : `${profile.fullName} को कनेक्ट अनुरोध सफलतापूर्वक भेजा गया!`)} 
+                            onClick={() => {
+                              if (!activeUser) {
+                                alert(locale === 'en' 
+                                  ? "Registration Required: Please register or sign in to send connect requests to matches!" 
+                                  : "पंजीकरण आवश्यक: कृपया कनेक्ट अनुरोध भेजने के लिए रजिस्टर या साइन इन करें!"
+                                );
+                                setActiveView('auth');
+                                return;
+                              }
+                              alert(locale === 'en' 
+                                ? `Connect request simulated successfully to ${profile.fullName}!` 
+                                : `${profile.fullName} को कनेक्ट अनुरोध सफलतापूर्वक भेजा गया!`
+                              );
+                            }}
                             style={styles.connectBtn}
                           >
                             {t('btn_request_connect')}
