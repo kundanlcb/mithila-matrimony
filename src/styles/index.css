@@ -1,6 +1,6 @@
 /* 
  * Mithila Matrimony - Global Styling System
- * Cohesive Magenta Palette & Modern Minimalist Aesthetics
+ * Cohesive Magenta Palette, Chat Bubble Layouts, and Light/Dark Modes
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
@@ -45,6 +45,9 @@
   --bg-glass: rgba(255, 255, 255, 0.7);
   --border-glass: rgba(255, 255, 255, 0.4);
   --border-light: hsl(var(--neutral-200));
+  --text-main: hsl(var(--neutral-700));
+  --text-muted: hsl(var(--neutral-500));
+  --text-headers: hsl(var(--magenta-900));
 
   /* Shadow & Blur System */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -57,7 +60,7 @@
   --font-sans: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-serif: 'Playfair Display', Georgia, Cambria, serif;
 
-  /* Spacing (Fluid Scale) */
+  /* Spacing */
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
   --space-md: 1rem;
@@ -82,6 +85,41 @@
   --breakpoint-desktop: 1024px;
 }
 
+/* DARK MODE OVERRIDES */
+[data-theme="dark"] {
+  /* System Backgrounds */
+  --bg-app: hsl(224 71% 4%);
+  --bg-card: hsl(220 16% 12%);
+  --bg-glass: rgba(15, 17, 23, 0.7);
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --border-light: hsl(220 16% 20%);
+  
+  /* Text Semantic Colors */
+  --text-main: hsl(220 8% 90%);
+  --text-muted: hsl(220 8% 65%);
+  --text-headers: #ffffff;
+
+  /* Color Semantics adjustments */
+  --primary-light: rgba(216, 27, 96, 0.15);
+  --primary-dark: hsl(var(--magenta-300));
+  
+  /* Neutral Mappings Overrides */
+  --neutral-50: 224 71% 4%;
+  --neutral-100: 220 16% 15%;
+  --neutral-200: 220 16% 22%;
+  --neutral-300: 220 12% 35%;
+  --neutral-400: 220 10% 55%;
+  --neutral-500: 220 8% 65%;
+  --neutral-600: 220 8% 75%;
+  --neutral-700: 220 8% 90%;
+
+  /* Shadows adjustments */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+}
+
 /* CSS Reset & Baseline Setup */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -94,12 +132,13 @@ html, body {
   width: 100%;
   font-size: 16px;
   background-color: var(--bg-app);
-  color: hsl(var(--neutral-700));
+  color: var(--text-main);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   scroll-behavior: smooth;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
 #root {
@@ -111,7 +150,7 @@ html, body {
 /* Typography Classes */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-sans);
-  color: hsl(var(--magenta-900));
+  color: var(--text-headers);
   font-weight: 700;
   line-height: 1.25;
 }
@@ -124,7 +163,7 @@ h1.display, h2.display {
 p {
   line-height: 1.6;
   font-size: 1rem;
-  color: hsl(var(--neutral-600));
+  color: var(--text-muted);
 }
 
 a {
@@ -175,9 +214,9 @@ button {
   to { transform: scale(1); opacity: 1; }
 }
 
-@keyframes pulseSimulate {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.2); opacity: 1; }
 }
 
 .animate-fade {
@@ -188,13 +227,111 @@ button {
   animation: scaleIn var(--transition-spring) forwards;
 }
 
-/* Responsive Grid/Flex Helpers */
-.flex-center {
+/* Dynamic Conversational Chat UI Elements */
+.chat-container {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  height: 520px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
 }
 
+.chat-scroller {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  scroll-behavior: smooth;
+}
+
+.chat-bubble-bot {
+  max-width: 85%;
+  align-self: flex-start;
+  background-color: var(--primary-light);
+  border: 1px solid var(--border-glass);
+  color: var(--text-main);
+  padding: 0.9rem 1.3rem;
+  border-radius: 4px var(--radius-md) var(--radius-md) var(--radius-md);
+  line-height: 1.5;
+  box-shadow: var(--shadow-sm);
+  animation: fadeIn 0.35s ease forwards;
+}
+
+.chat-bubble-user {
+  max-width: 80%;
+  align-self: flex-end;
+  background-color: var(--primary);
+  color: #ffffff;
+  padding: 0.8rem 1.2rem;
+  border-radius: var(--radius-md) var(--radius-md) 4px var(--radius-md);
+  line-height: 1.5;
+  box-shadow: var(--shadow-md);
+  animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.chat-input-bar {
+  display: flex;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  background-color: var(--bg-app);
+  border-top: 1px solid var(--border-light);
+  align-items: center;
+}
+
+.chat-choices-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-lg);
+  background-color: var(--bg-card);
+  border-top: 1px solid var(--border-light);
+}
+
+.typing-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  background-color: var(--primary);
+  border-radius: 50%;
+  margin: 0 2px;
+  animation: pulseDot 1s infinite ease-in-out;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* Themes & Localization Toggle Switches Header UI */
+.theme-lang-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.btn-toggle-switch {
+  background: var(--bg-app);
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: var(--transition-fast);
+}
+
+.btn-toggle-switch:hover {
+  background-color: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Card details responsive layout */
 .grid-responsive {
   display: grid;
   grid-template-columns: 1fr;

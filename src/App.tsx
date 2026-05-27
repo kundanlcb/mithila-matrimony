@@ -4,15 +4,21 @@ import {
   initMockDb,
   mockSendOtp,
   mockVerifyOtp,
-  mockSubmitBiodata,
   mockGetMatchingProfiles,
   getStoredActiveUser,
   getStoredActiveBiodata,
   mockLogout
 } from './mock/mockDb';
 import type { Biodata, MatchingProfile, UserProfile } from './types';
+import { useLanguage } from './context/LanguageContext';
+import { useTheme } from './context/ThemeContext';
+import { RegistrationChat } from './components/RegistrationChat';
 
 function App() {
+  // Localization & Theme Hooks
+  const { t, locale, setLanguage } = useLanguage();
+  const { theme, toggleTheme } = useTheme();
+
   // Application State
   const [activeUser, setActiveUser] = useState<UserProfile | null>(null);
   const [activeBiodata, setActiveBiodata] = useState<Biodata | null>(null);
@@ -25,22 +31,6 @@ function App() {
   const [simulatedOtpHint, setSimulatedOtpHint] = useState<string | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
   const [otpSent, setOtpSent] = useState(false);
-
-  // Multi-step Registration Wizard State
-  const [registerStep, setRegisterStep] = useState(1);
-  const [biodataForm, setBiodataForm] = useState<Omit<Biodata, 'biodataId' | 'userId'>>({
-    fullName: '',
-    gender: 'Female',
-    age: 24,
-    gotra: 'Kashyap',
-    profession: 'Software Engineer',
-    annualIncome: 1200000,
-    location: 'Darbhanga',
-    education: 'B.Tech CSE',
-    interests: ['Reading', 'Madhubani Painting'],
-    photoUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400&h=400',
-    aboutMe: 'Looking for a compatible, grounded soul who values family, culture, and progress.'
-  });
 
   // Load Initial Sessions
   useEffect(() => {
@@ -76,7 +66,7 @@ function App() {
       setOtpSent(true);
       setSimulatedOtpHint(res.otpCode);
     } else {
-      setAuthError(res.message);
+      setAuthError(t(res.message) || res.message);
     }
   };
 
@@ -94,26 +84,12 @@ function App() {
 
       if (res.registrationStep === 'biodata') {
         setActiveView('register');
-        setRegisterStep(1);
       } else {
         setActiveBiodata(getStoredActiveBiodata());
         setActiveView('browse');
       }
     } else {
-      setAuthError(res.message || 'OTP verification failed.');
-    }
-  };
-
-  // Onboarding Wizard Submit handler
-  const handleBiodataSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const res = mockSubmitBiodata(biodataForm);
-    if (res.success) {
-      const user = getStoredActiveUser();
-      const bio = getStoredActiveBiodata();
-      setActiveUser(user);
-      setActiveBiodata(bio);
-      setActiveView('browse');
+      setAuthError(t('error_invalid_otp'));
     }
   };
 
@@ -127,42 +103,53 @@ function App() {
     setMobileNumber('');
   };
 
-  // Helper to append/remove interests
-  const toggleInterest = (interest: string) => {
-    const list = [...biodataForm.interests];
-    const index = list.indexOf(interest);
-    if (index !== -1) {
-      list.splice(index, 1);
-    } else {
-      list.push(interest);
-    }
-    setBiodataForm({ ...biodataForm, interests: list });
-  };
-
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
       {/* Visual Navigation Bar */}
       <header className="header-nav" style={styles.header}>
         <div style={styles.navContainer}>
-          <div style={styles.logoBox} onClick={() => setActiveView(activeUser ? (activeUser.registrationStep === 'completed' ? 'browse' : 'register') : 'home')}>
-            <span style={styles.logoSerif}>Mithila</span>
-            <span style={styles.logoSans}>Matrimony</span>
+          <div 
+            style={styles.logoBox} 
+            onClick={() => setActiveView(activeUser ? (activeUser.registrationStep === 'completed' ? 'browse' : 'register') : 'home')}
+          >
+            <span style={styles.logoSerif}>{t('brand_serif')}</span>
+            <span style={styles.logoSans}>{t('brand_sans')}</span>
           </div>
+          
           <nav style={styles.navMenu}>
+            {/* Switchers Row (Localization & Theme controls) */}
+            <div className="theme-lang-row" style={{ marginRight: '1.5rem' }}>
+              {/* Language Selector Toggle */}
+              <button 
+                className="btn-toggle-switch"
+                onClick={() => setLanguage(locale === 'en' ? 'hi' : 'en')}
+              >
+                🌐 {locale === 'en' ? 'हिंदी' : 'English'}
+              </button>
+              
+              {/* Theme Selector Toggle */}
+              <button 
+                className="btn-toggle-switch"
+                onClick={toggleTheme}
+              >
+                {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
+              </button>
+            </div>
+
             {activeUser ? (
               <div style={styles.loggedInRow}>
                 {activeUser.registrationStep === 'completed' && activeBiodata && (
                   <span style={styles.welcomeText}>
-                    Namaste, <strong>{activeBiodata.fullName}</strong> ({activeBiodata.gotra})
+                    {t('namaste')}, <strong>{activeBiodata.fullName}</strong>
                   </span>
                 )}
                 <button className="btn-logout" onClick={handleLogout} style={styles.logoutBtn}>
-                  Log Out
+                  {t('btn_logout')}
                 </button>
               </div>
             ) : (
               <button className="btn-auth" onClick={() => setActiveView('auth')} style={styles.authLinkBtn}>
-                Register / Sign In
+                {t('btn_auth')}
               </button>
             )}
           </nav>
@@ -177,29 +164,33 @@ function App() {
             <div style={styles.heroLayout}>
               <div style={styles.heroTextContent}>
                 <h1 className="display" style={styles.heroTitle}>
-                  Discover Soulmates Embedded in <span style={{ color: 'var(--primary)' }}>Maithil Heritage</span>
+                  {t('hero_title_prefix')}
+                  <span style={{ color: 'var(--primary)' }}>{t('hero_title_accent')}</span>
                 </h1>
                 <p style={styles.heroSub}>
-                  An elegant, minimalist portal crafted with vibrant magenta design lines. Simulates OTP-based authentication, custom biodata setup, gotra rules, and high-fidelity compatibility calculations.
+                  {t('hero_subtitle')}
                 </p>
                 <div style={styles.heroBtnRow}>
                   <button onClick={() => setActiveView('auth')} style={styles.primaryBtn}>
-                    Begin Free Search
+                    {t('btn_begin_search')}
                   </button>
-                  <button onClick={() => {
-                    // Seed local storage with default profiles automatically
-                    initMockDb();
-                    setActiveView('browse');
-                    setMatchingProfiles(mockGetMatchingProfiles());
-                  }} style={styles.secondaryBtn}>
-                    Explore Mock Profiles
+                  <button 
+                    onClick={() => {
+                      initMockDb();
+                      setActiveView('browse');
+                      setMatchingProfiles(mockGetMatchingProfiles());
+                    }} 
+                    style={styles.secondaryBtn}
+                  >
+                    {t('btn_explore_mocks')}
                   </button>
                 </div>
               </div>
+              
               <div style={styles.heroVisualBox}>
                 {/* Visual Identity Palette demo */}
                 <div style={styles.visualAestheticCard} className="animate-scale">
-                  <h3 style={styles.visualCardTitle}>Design Identity System</h3>
+                  <h3 style={styles.visualCardTitle}>{t('visual_card_title')}</h3>
                   <div style={styles.paletteGrid}>
                     <div style={{ ...styles.paletteBox, backgroundColor: 'hsl(var(--magenta-800))' }}>#880E4F</div>
                     <div style={{ ...styles.paletteBox, backgroundColor: 'hsl(var(--magenta-600))' }}>#B71C1C</div>
@@ -207,11 +198,11 @@ function App() {
                     <div style={{ ...styles.paletteBox, backgroundColor: 'hsl(var(--magenta-300))' }}>#F48FB1</div>
                   </div>
                   <div style={styles.typographySample}>
-                    <h2 className="display" style={{ fontSize: '1.4rem' }}>Playfair Serif Header</h2>
-                    <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem' }}>Outfit Sans-Serif Body Copy</p>
+                    <h2 className="display" style={{ fontSize: '1.4rem', color: 'var(--text-headers)' }}>{t('visual_card_serif')}</h2>
+                    <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem' }}>{t('visual_card_sub')}</p>
                   </div>
                   <div style={styles.glassBadge} className="flex-center">
-                    <span>✨ Modern Glassmorphism Blur</span>
+                    <span>{t('visual_card_glass')}</span>
                   </div>
                 </div>
               </div>
@@ -223,15 +214,15 @@ function App() {
         {activeView === 'auth' && (
           <section className="flex-center animate-fade" style={{ minHeight: '60vh' }}>
             <div style={styles.authCard}>
-              <h2 className="display" style={styles.authTitle}>Sign In / SignUp</h2>
-              <p style={styles.authSubtitle}>Enter your mobile number to receive a simulated verification OTP</p>
+              <h2 className="display" style={styles.authTitle}>{t('auth_title')}</h2>
+              <p style={styles.authSubtitle}>{t('auth_subtitle')}</p>
 
               {authError && <div style={styles.errorBanner}>{authError}</div>}
 
               {!otpSent ? (
                 <form onSubmit={handleSendOtp} style={styles.form}>
                   <div style={styles.inputGroup}>
-                    <label style={styles.label}>Mobile Number (E.164 format)</label>
+                    <label style={styles.label}>{t('label_phone')}</label>
                     <input
                       type="tel"
                       placeholder="e.g. +919876543210"
@@ -242,13 +233,13 @@ function App() {
                     />
                   </div>
                   <button type="submit" style={styles.primaryBtnWidth}>
-                    Request Verification OTP
+                    {t('btn_request_otp')}
                   </button>
                 </form>
               ) : (
                 <form onSubmit={handleVerifyOtp} style={styles.form}>
                   <div style={styles.inputGroup}>
-                    <label style={styles.label}>Enter 6-Digit OTP Code</label>
+                    <label style={styles.label}>{t('label_otp')}</label>
                     <input
                       type="text"
                       maxLength={6}
@@ -261,14 +252,14 @@ function App() {
                   </div>
                   {simulatedOtpHint && (
                     <div style={styles.simulatedOtpHintBox}>
-                      🔔 <strong>Mock Server Message:</strong> Your verification code is: <code>{simulatedOtpHint}</code>
+                      🔔 <strong>{t('simulated_otp_alert')}:</strong> {t('simulated_otp_alert') === 'Mock Server Message' ? 'Your verification code is' : 'आपका सत्यापन कोड है'}: <code>{simulatedOtpHint}</code>
                     </div>
                   )}
                   <button type="submit" style={styles.primaryBtnWidth}>
-                    Verify & Authenticate
+                    {t('btn_verify_otp')}
                   </button>
                   <button type="button" onClick={() => setOtpSent(false)} style={styles.backBtn}>
-                    Change Mobile Number
+                    {t('btn_change_phone')}
                   </button>
                 </form>
               )}
@@ -276,186 +267,17 @@ function App() {
           </section>
         )}
 
-        {/* VIEW 3: MULTI-STEP BIODATA REGISTRATION WIZARD */}
+        {/* VIEW 3: MULTI-STEP CONVERSATIONAL REGISTRATION WIZARD */}
         {activeView === 'register' && (
           <section className="animate-fade" style={styles.registerSection}>
-            <div style={styles.registerContainer}>
-              <div style={styles.wizardHeader}>
-                <h2 className="display">Complete Your Matrimonial Biodata</h2>
-                <p>Provide details to find highly compatible matches in the community.</p>
-                {/* Visual Step Indicator */}
-                <div style={styles.stepIndicatorRow}>
-                  <div style={{ ...styles.stepDot, backgroundColor: registerStep >= 1 ? 'var(--primary)' : '#ddd' }}>1</div>
-                  <div style={{ ...styles.stepLine, backgroundColor: registerStep >= 2 ? 'var(--primary)' : '#ddd' }}></div>
-                  <div style={{ ...styles.stepDot, backgroundColor: registerStep >= 2 ? 'var(--primary)' : '#ddd' }}>2</div>
-                  <div style={{ ...styles.stepLine, backgroundColor: registerStep >= 3 ? 'var(--primary)' : '#ddd' }}></div>
-                  <div style={{ ...styles.stepDot, backgroundColor: registerStep >= 3 ? 'var(--primary)' : '#ddd' }}>3</div>
-                </div>
-              </div>
-
-              <form onSubmit={handleBiodataSubmit} style={styles.formContainer}>
-                {registerStep === 1 && (
-                  <div className="animate-fade">
-                    <h3 style={styles.stepTitle}>Step 1: General Details</h3>
-                    <div style={styles.formGrid}>
-                      <div style={styles.inputGroup}>
-                        <label style={styles.label}>Full Name</label>
-                        <input
-                          type="text"
-                          required
-                          value={biodataForm.fullName}
-                          onChange={(e) => setBiodataForm({ ...biodataForm, fullName: e.target.value })}
-                          style={styles.input}
-                          placeholder="e.g. Priyadarshani Thakur"
-                        />
-                      </div>
-                      <div style={styles.inputGroup}>
-                        <label style={styles.label}>Gender</label>
-                        <select
-                          value={biodataForm.gender}
-                          onChange={(e) => setBiodataForm({ ...biodataForm, gender: e.target.value as 'Male' | 'Female' })}
-                          style={styles.input}
-                        >
-                          <option value="Female">Female</option>
-                          <option value="Male">Male</option>
-                        </select>
-                      </div>
-                      <div style={styles.inputGroup}>
-                        <label style={styles.label}>Age (Must be 18 to 70)</label>
-                        <input
-                          type="number"
-                          min={18}
-                          max={70}
-                          required
-                          value={biodataForm.age}
-                          onChange={(e) => setBiodataForm({ ...biodataForm, age: parseInt(e.target.value) || 18 })}
-                          style={styles.input}
-                        />
-                      </div>
-                      <div style={styles.inputGroup}>
-                        <label style={styles.label}>Highest Education</label>
-                        <input
-                          type="text"
-                          required
-                          value={biodataForm.education}
-                          onChange={(e) => setBiodataForm({ ...biodataForm, education: e.target.value })}
-                          style={styles.input}
-                          placeholder="e.g. B.Tech / MBA / Ph.D"
-                        />
-                      </div>
-                    </div>
-                    <button type="button" onClick={() => setRegisterStep(2)} style={styles.stepBtn}>
-                      Continue to Step 2
-                    </button>
-                  </div>
-                )}
-
-                {registerStep === 2 && (
-                  <div className="animate-fade">
-                    <h3 style={styles.stepTitle}>Step 2: Lineage & Occupation</h3>
-                    <div style={styles.formGrid}>
-                      <div style={styles.inputGroup}>
-                        <label style={styles.label}>Gotra</label>
-                        <select
-                          value={biodataForm.gotra}
-                          onChange={(e) => setBiodataForm({ ...biodataForm, gotra: e.target.value })}
-                          style={styles.input}
-                        >
-                          <option value="Kashyap">Kashyap</option>
-                          <option value="Shandilya">Shandilya</option>
-                          <option value="Vatsa">Vatsa</option>
-                          <option value="Bhardwaj">Bhardwaj</option>
-                          <option value="Parashar">Parashar</option>
-                          <option value="Katyayan">Katyayan</option>
-                        </select>
-                      </div>
-                      <div style={styles.inputGroup}>
-                        <label style={styles.label}>Profession</label>
-                        <input
-                          type="text"
-                          required
-                          value={biodataForm.profession}
-                          onChange={(e) => setBiodataForm({ ...biodataForm, profession: e.target.value })}
-                          style={styles.input}
-                          placeholder="e.g. Software Engineer"
-                        />
-                      </div>
-                      <div style={styles.inputGroup}>
-                        <label style={styles.label}>Annual Income (INR)</label>
-                        <input
-                          type="number"
-                          required
-                          value={biodataForm.annualIncome}
-                          onChange={(e) => setBiodataForm({ ...biodataForm, annualIncome: parseInt(e.target.value) || 0 })}
-                          style={styles.input}
-                        />
-                      </div>
-                      <div style={styles.inputGroup}>
-                        <label style={styles.label}>Current City Location</label>
-                        <input
-                          type="text"
-                          required
-                          value={biodataForm.location}
-                          onChange={(e) => setBiodataForm({ ...biodataForm, location: e.target.value })}
-                          style={styles.input}
-                          placeholder="e.g. Darbhanga / Bangalore"
-                        />
-                      </div>
-                    </div>
-                    <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-                      <button type="button" onClick={() => setRegisterStep(1)} style={styles.secondaryBtn}>
-                        Back
-                      </button>
-                      <button type="button" onClick={() => setRegisterStep(3)} style={styles.stepBtn}>
-                        Continue to Step 3
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {registerStep === 3 && (
-                  <div className="animate-fade">
-                    <h3 style={styles.stepTitle}>Step 3: Background & Preferences</h3>
-                    <div style={styles.inputGroup}>
-                      <label style={styles.label}>About Me</label>
-                      <textarea
-                        rows={3}
-                        required
-                        value={biodataForm.aboutMe}
-                        onChange={(e) => setBiodataForm({ ...biodataForm, aboutMe: e.target.value })}
-                        style={{ ...styles.input, resize: 'none' }}
-                        placeholder="Write a brief intro..."
-                      />
-                    </div>
-                    <div style={{ ...styles.inputGroup, marginTop: '1rem' }}>
-                      <label style={styles.label}>Interests & Hobbies</label>
-                      <div style={styles.tagWrapper}>
-                        {['Madhubani Painting', 'Classical Music', 'Cooking', 'Reading', 'Travel', 'Gardening', 'Yoga'].map(item => (
-                          <div
-                            key={item}
-                            onClick={() => toggleInterest(item)}
-                            style={{
-                              ...styles.tagItem,
-                              backgroundColor: biodataForm.interests.includes(item) ? 'var(--primary)' : '#e0e0e0',
-                              color: biodataForm.interests.includes(item) ? '#fff' : '#444'
-                            }}
-                          >
-                            {item}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
-                      <button type="button" onClick={() => setRegisterStep(2)} style={styles.secondaryBtn}>
-                        Back
-                      </button>
-                      <button type="submit" style={styles.submitBtn}>
-                        Submit & Complete Profile
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </form>
+            <div style={{ maxWidth: '650px', margin: '0 auto' }}>
+              <RegistrationChat 
+                onComplete={() => {
+                  setActiveUser(getStoredActiveUser());
+                  setActiveBiodata(getStoredActiveBiodata());
+                  setActiveView('browse');
+                }}
+              />
             </div>
           </section>
         )}
@@ -465,18 +287,18 @@ function App() {
           <section className="animate-fade" style={styles.browseSection}>
             <div style={styles.browseHeader}>
               <div style={styles.browseHeadline}>
-                <h1 className="display">Discover Compatibilities</h1>
-                <p>Calculating scores based on gotra matching, ages, and target preferences.</p>
+                <h1 className="display">{t('browse_title')}</h1>
+                <p>{t('browse_subtitle')}</p>
               </div>
               {/* Optional filters preview */}
               <div style={styles.quickFiltersContainer}>
-                <span>✨ Auto-filtered by Gotra Compatibility rules & opposites gender configurations</span>
+                <span>{t('browse_alert')}</span>
               </div>
             </div>
 
             {matchingProfiles.length === 0 ? (
               <div style={styles.noMatchesBox} className="flex-center">
-                <p>No compatible profiles matching your compatibility score threshold found. Try editing preferences!</p>
+                <p>{t('no_matches')}</p>
               </div>
             ) : (
               <div style={styles.profileGrid} className="grid-responsive">
@@ -485,24 +307,31 @@ function App() {
                     <div style={styles.profileImgContainer}>
                       <img src={profile.photoUrl} alt={profile.fullName} style={styles.profileImg} />
                       <div style={styles.compatibilityBadge}>
-                        🎯 {profile.compatibilityScore}% Match
+                        🎯 {profile.compatibilityScore}% {t('card_match')}
                       </div>
                     </div>
+                    
                     <div style={styles.profileDetails}>
                       <div style={styles.detailsRow}>
                         <h3 style={styles.profileName}>{profile.fullName}</h3>
-                        <span style={styles.ageGender}>{profile.age} Yrs • {profile.gender}</span>
+                        <span style={styles.ageGender}>
+                          {profile.age} {locale === 'en' ? 'Yrs' : 'वर्ष'} • {profile.gender === 'Female' ? (locale === 'en' ? 'Female' : 'महिला') : (locale === 'en' ? 'Male' : 'पुरुष')}
+                        </span>
                       </div>
+                      
                       <div style={styles.metaBadgeRow}>
-                        <span style={styles.metaBadge}>🧬 Gotra: {profile.gotra}</span>
+                        <span style={styles.metaBadge}>🧬 {t('summary_gotra')}: {profile.gotra}</span>
                         <span style={styles.metaBadge}>📍 {profile.location}</span>
                       </div>
+                      
                       <div style={styles.professionalDetail}>
                         💼 <strong>{profile.profession}</strong> ({profile.education})
                       </div>
+                      
                       <div style={styles.salaryText}>
-                        💰 Annual Income: <strong>₹{(profile.annualIncome / 100000).toFixed(1)} Lakh</strong>
+                        💰 {t('summary_income')}: <strong>₹{(profile.annualIncome / 100000).toFixed(1)} {t('summary_lakh')}</strong>
                       </div>
+                      
                       <p style={styles.aboutSnippet}>{profile.aboutMe}</p>
                       
                       <div style={styles.interestsRow}>
@@ -511,8 +340,11 @@ function App() {
                         ))}
                       </div>
                       
-                      <button onClick={() => alert(`Connect request simulated successfully to ${profile.fullName}!`)} style={styles.connectBtn}>
-                        Request Match Connect
+                      <button 
+                        onClick={() => alert(locale === 'en' ? `Connect request simulated successfully to ${profile.fullName}!` : `${profile.fullName} को कनेक्ट अनुरोध सफलतापूर्वक भेजा गया!`)} 
+                        style={styles.connectBtn}
+                      >
+                        {t('btn_request_connect')}
                       </button>
                     </div>
                   </div>
@@ -525,23 +357,23 @@ function App() {
 
       {/* Visual Footer */}
       <footer style={styles.footer}>
-        <p>© 2026 Mithila Matrimony. Styled beautifully with pure Vanilla CSS Magenta System guidelines.</p>
+        <p>© 2026 {t('brand_title')}. {locale === 'en' ? 'Styled beautifully with pure Vanilla CSS Magenta System guidelines.' : 'प्योर वैनिला सीएसएस मैजेंटा सिस्टम के साथ खूबसूरती से तैयार किया गया।'}</p>
       </footer>
     </div>
   );
 }
 
-// In-file stylesheet mapping so it compiles seamlessly in standalone environments 
-// while drawing all color styling variables from our newly configured index.css global variables!
+// Visual style definitions
 const styles = {
   header: {
-    backgroundColor: '#ffffff',
+    backgroundColor: 'var(--bg-card)',
     borderBottom: '1px solid var(--border-light)',
     padding: '1rem 2rem',
     position: 'sticky' as const,
     top: 0,
     zIndex: 100,
-    boxShadow: 'var(--shadow-sm)'
+    boxShadow: 'var(--shadow-sm)',
+    transition: 'all 0.3s ease'
   },
   navContainer: {
     maxWidth: '1200px',
@@ -590,12 +422,12 @@ const styles = {
   },
   welcomeText: {
     fontSize: '0.9rem',
-    color: 'hsl(var(--neutral-600))'
+    color: 'var(--text-muted)'
   },
   logoutBtn: {
     padding: '0.5rem 1.2rem',
-    backgroundColor: 'hsl(var(--neutral-200))',
-    color: 'hsl(var(--neutral-700))',
+    backgroundColor: 'var(--border-light)',
+    color: 'var(--text-main)',
     fontWeight: '600',
     borderRadius: 'var(--radius-full)',
     fontSize: '0.85rem'
@@ -627,7 +459,7 @@ const styles = {
   },
   heroSub: {
     fontSize: '1.15rem',
-    color: 'hsl(var(--neutral-500))'
+    color: 'var(--text-muted)'
   },
   heroBtnRow: {
     display: 'flex',
@@ -646,7 +478,7 @@ const styles = {
   },
   secondaryBtn: {
     padding: '0.8rem 2rem',
-    backgroundColor: '#ffffff',
+    backgroundColor: 'var(--bg-card)',
     color: 'var(--primary-dark)',
     border: '1px solid var(--border-light)',
     fontWeight: '600',
@@ -706,7 +538,7 @@ const styles = {
   authCard: {
     width: '100%',
     maxWidth: '420px',
-    backgroundColor: '#ffffff',
+    backgroundColor: 'var(--bg-card)',
     border: '1px solid var(--border-light)',
     padding: '2.5rem',
     borderRadius: 'var(--radius-lg)',
@@ -722,7 +554,7 @@ const styles = {
   authSubtitle: {
     fontSize: '0.9rem',
     textAlign: 'center' as const,
-    color: 'hsl(var(--neutral-500))'
+    color: 'var(--text-muted)'
   },
   form: {
     display: 'flex',
@@ -737,12 +569,14 @@ const styles = {
   label: {
     fontSize: '0.85rem',
     fontWeight: '600',
-    color: 'hsl(var(--neutral-600))'
+    color: 'var(--text-muted)'
   },
   input: {
     padding: '0.8rem 1rem',
     borderRadius: 'var(--radius-sm)',
     border: '1px solid var(--border-light)',
+    backgroundColor: 'var(--bg-card)',
+    color: 'var(--text-main)',
     fontSize: '0.95rem',
     fontFamily: 'var(--font-sans)',
     outline: 'none',
@@ -778,99 +612,14 @@ const styles = {
   },
   backBtn: {
     backgroundColor: 'transparent',
-    color: 'hsl(var(--neutral-500))',
+    color: 'var(--text-muted)',
     fontSize: '0.85rem',
     textAlign: 'center' as const,
     marginTop: '0.5rem',
     textDecoration: 'underline'
   },
   registerSection: {
-    padding: '2rem 0'
-  },
-  registerContainer: {
-    maxWidth: '650px',
-    margin: '0 auto',
-    backgroundColor: '#ffffff',
-    border: '1px solid var(--border-light)',
-    padding: '3rem',
-    borderRadius: 'var(--radius-lg)',
-    boxShadow: 'var(--shadow-lg)'
-  },
-  wizardHeader: {
-    textAlign: 'center' as const,
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '0.6rem',
-    marginBottom: '2.5rem'
-  },
-  stepIndicatorRow: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '0.5rem',
-    marginTop: '1rem'
-  },
-  stepDot: {
-    width: '30px',
-    height: '30px',
-    borderRadius: '50%',
-    color: '#ffffff',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontWeight: '700',
-    fontSize: '0.85rem'
-  },
-  stepLine: {
-    height: '2px',
-    width: '50px'
-  },
-  formContainer: {
-    display: 'flex',
-    flexDirection: 'column' as const
-  },
-  stepTitle: {
-    fontSize: '1.25rem',
-    color: 'var(--primary-dark)',
-    marginBottom: '1.2rem',
-    borderBottom: '2px solid var(--primary-light)',
-    paddingBottom: '0.4rem'
-  },
-  formGrid: {
-    display: 'grid',
-    gridTemplateColumns: '1fr',
-    gap: '1.2rem'
-  },
-  stepBtn: {
-    padding: '0.8rem 2rem',
-    backgroundColor: 'var(--primary)',
-    color: '#ffffff',
-    fontWeight: '600',
-    borderRadius: 'var(--radius-sm)',
-    marginTop: '1.5rem',
-    float: 'right' as const
-  },
-  submitBtn: {
-    padding: '0.8rem 2rem',
-    backgroundColor: 'var(--primary-dark)',
-    color: '#ffffff',
-    fontWeight: '700',
-    borderRadius: 'var(--radius-sm)',
-    boxShadow: 'var(--shadow-md)'
-  },
-  tagWrapper: {
-    display: 'flex',
-    flexWrap: 'wrap' as const,
-    gap: '0.5rem',
-    marginTop: '0.5rem'
-  },
-  tagItem: {
-    padding: '0.4rem 1rem',
-    borderRadius: 'var(--radius-full)',
-    fontSize: '0.85rem',
-    fontWeight: '600',
-    cursor: 'pointer',
-    transition: 'var(--transition-fast)'
+    padding: '1rem 0'
   },
   browseSection: {
     padding: '1rem 0'
@@ -900,23 +649,23 @@ const styles = {
   },
   noMatchesBox: {
     height: '200px',
-    backgroundColor: '#ffffff',
+    backgroundColor: 'var(--bg-card)',
     border: '1px solid var(--border-light)',
     borderRadius: 'var(--radius-md)',
-    color: 'hsl(var(--neutral-500))'
+    color: 'var(--text-muted)'
   },
   profileGrid: {
     width: '100%'
   },
   profileCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: 'var(--bg-card)',
     border: '1px solid var(--border-light)',
     borderRadius: 'var(--radius-md)',
     boxShadow: 'var(--shadow-sm)',
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column' as const,
-    transition: 'var(--transition-normal)'
+    transition: 'all 0.3s ease'
   },
   profileImgContainer: {
     height: '240px',
@@ -926,8 +675,7 @@ const styles = {
   profileImg: {
     width: '100%',
     height: '100%',
-    objectFit: 'cover' as const,
-    transition: 'var(--transition-normal)'
+    objectFit: 'cover' as const
   },
   compatibilityBadge: {
     position: 'absolute' as const,
@@ -961,7 +709,7 @@ const styles = {
   },
   ageGender: {
     fontSize: '0.85rem',
-    color: 'hsl(var(--neutral-500))',
+    color: 'var(--text-muted)',
     fontWeight: '600',
     flexShrink: 0
   },
@@ -972,24 +720,24 @@ const styles = {
   },
   metaBadge: {
     padding: '0.3rem 0.7rem',
-    backgroundColor: 'hsl(var(--neutral-100))',
+    backgroundColor: 'var(--neutral-100)',
     borderRadius: 'var(--radius-sm)',
     fontSize: '0.75rem',
     fontWeight: '600',
-    color: 'hsl(var(--neutral-600))'
+    color: 'var(--text-muted)'
   },
   professionalDetail: {
     fontSize: '0.9rem',
-    color: 'hsl(var(--neutral-600))'
+    color: 'var(--text-main)'
   },
   salaryText: {
     fontSize: '0.9rem',
-    color: 'hsl(var(--neutral-500))'
+    color: 'var(--text-muted)'
   },
   aboutSnippet: {
     fontSize: '0.85rem',
     lineHeight: '1.5',
-    color: 'hsl(var(--neutral-500))',
+    color: 'var(--text-muted)',
     borderTop: '1px solid var(--border-light)',
     paddingTop: '0.8rem',
     marginTop: '0.2rem'
@@ -1025,7 +773,8 @@ const styles = {
     textAlign: 'center' as const,
     padding: '1.5rem',
     fontSize: '0.85rem',
-    borderTop: '1px solid var(--primary)'
+    borderTop: '1px solid var(--primary)',
+    transition: 'all 0.3s ease'
   }
 };
 
