@@ -25,6 +25,10 @@ export interface Biodata {
   interests: string[];     // Array of hobbies/interests
   photoUrl: string;        // Visual image path
   aboutMe: string;         // Personal bio/introduction
+  height?: string;         // Height e.g. "5' 8\""
+  maritalStatus?: string;  // Never Married, Divorced, etc.
+  diet?: string;           // Vegetarian, Non-Vegetarian, etc.
+  complexion?: string;     // Fair, Wheatish, etc.
 }
 
 export interface MatchCriteria {
@@ -39,4 +43,14 @@ export interface MatchCriteria {
 
 export interface MatchingProfile extends Biodata {
   compatibilityScore: number; // Percentage Match rating: 0 to 100
+}
+
+export type InteractionType = 'interest_sent' | 'shortlisted' | 'passed' | 'match_accepted' | 'match_declined';
+
+export interface ProfileInteraction {
+  interactionId: string;
+  fromUserId: string;       // The user performing the action
+  toProfileId: string;      // The profile they acted upon
+  type: InteractionType;
+  timestamp: string;        // ISO timestamp
 }

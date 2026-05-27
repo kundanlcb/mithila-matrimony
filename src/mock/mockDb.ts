@@ -3,7 +3,7 @@
  * Simulates Spring Boot REST controllers utilizing LocalStorage
  */
 
-import type { UserProfile, Biodata, MatchCriteria, MatchingProfile } from '../types';
+import type { UserProfile, Biodata, MatchCriteria, MatchingProfile, ProfileInteraction, InteractionType } from '../types';
 
 // Seed Profiles (Premium visual portraits from Unsplash)
 const SEED_PROFILES: Biodata[] = [
@@ -105,7 +105,8 @@ const KEYS = {
   PROFILES: 'matrimony_profiles',
   ACTIVE_USER: 'matrimony_active_user',
   ACTIVE_BIODATA: 'matrimony_active_biodata',
-  OTP_STORAGE: 'matrimony_otp_codes'
+  OTP_STORAGE: 'matrimony_otp_codes',
+  INTERACTIONS: 'matrimony_interactions'
 };
 
 // Get all registered users from storage
@@ -118,6 +119,9 @@ export const getAllUsers = (): UserProfile[] => {
 export const initMockDb = (): void => {
   if (!localStorage.getItem(KEYS.PROFILES)) {
     localStorage.setItem(KEYS.PROFILES, JSON.stringify(SEED_PROFILES));
+  }
+  if (!localStorage.getItem(KEYS.INTERACTIONS)) {
+    localStorage.setItem(KEYS.INTERACTIONS, JSON.stringify([]));
   }
 };
 
@@ -340,8 +344,61 @@ export const mockGetMatchingProfiles = (criteria?: MatchCriteria): MatchingProfi
   .sort((a, b) => b.compatibilityScore - a.compatibilityScore);
 };
 
-// Logout User Utility
 export const mockLogout = (): void => {
   localStorage.removeItem(KEYS.ACTIVE_USER);
   localStorage.removeItem(KEYS.ACTIVE_BIODATA);
+};
+
+// --- INTERACTIONS & MATCHING ---
+
+// Get all interactions for a specific user (either sent by them, or received by them)
+export const getInteractions = (userId: string): ProfileInteraction[] => {
+  const data = localStorage.getItem(KEYS.INTERACTIONS);
+  const interactions: ProfileInteraction[] = data ? JSON.parse(data) : [];
+  // Return where user is either sender or receiver
+  // We match receiver by comparing toProfileId with user's biodataId
+  // Since we only have userId here, we need to find their biodataId
+  const profiles = getAllProfiles();
+  const userBiodata = profiles.find(p => p.userId === userId);
+  const biodataId = userBiodata ? userBiodata.biodataId : null;
+
+  return interactions.filter(i => 
+    i.fromUserId === userId || (biodataId && i.toProfileId === biodataId)
+  );
+};
+
+export const recordInteraction = (fromUserId: string, toProfileId: string, type: InteractionType): ProfileInteraction => {
+  const data = localStorage.getItem(KEYS.INTERACTIONS);
+  const interactions: ProfileInteraction[] = data ? JSON.parse(data) : [];
+  
+  // Check if this specific interaction already exists to avoid duplicates
+  const existingIndex = interactions.findIndex(i => 
+    i.fromUserId === fromUserId && i.toProfileId === toProfileId && i.type === type
+  );
+
+  const newInteraction: ProfileInteraction = {
+    interactionId: `int-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    fromUserId,
+    toProfileId,
+    type,
+    timestamp: new Date().toISOString()
+  };
+
+  if (existingIndex >= 0) {
+    // If it's a pass/shortlist, we might just update the timestamp
+    interactions[existingIndex] = newInteraction;
+  } else {
+    interactions.push(newInteraction);
+  }
+
+  localStorage.setItem(KEYS.INTERACTIONS, JSON.stringify(interactions));
+  return newInteraction;
+};
+
+export const removeInteraction = (fromUserId: string, toProfileId: string, type: InteractionType): void => {
+  const data = localStorage.getItem(KEYS.INTERACTIONS);
+  if (!data) return;
+  const interactions: ProfileInteraction[] = JSON.parse(data);
+  const filtered = interactions.filter(i => !(i.fromUserId === fromUserId && i.toProfileId === toProfileId && i.type === type));
+  localStorage.setItem(KEYS.INTERACTIONS, JSON.stringify(filtered));
 };

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './styles/index.css';
 import {
   initMockDb,
@@ -7,12 +7,21 @@ import {
   mockGetMatchingProfiles,
   getStoredActiveUser,
   getStoredActiveBiodata,
-  mockLogout
+  mockLogout,
+  getInteractions,
+  recordInteraction,
+  getAllProfiles,
+  removeInteraction,
+  mockSubmitBiodata
 } from './mock/mockDb';
-import type { Biodata, MatchingProfile, UserProfile } from './types';
+import type { Biodata, MatchingProfile, UserProfile, ProfileInteraction, InteractionType } from './types';
 import { useLanguage } from './context/LanguageContext';
 import { useTheme } from './context/ThemeContext';
 import { RegistrationChat } from './components/RegistrationChat';
+import FilterPanel from './components/FilterPanel';
+import ProfileDetail from './components/ProfileDetail';
+import MatchInbox from './components/MatchInbox';
+import PremiumPaywall from './components/PremiumPaywall';
 
 function App() {
   // Localization & Theme Hooks
@@ -23,7 +32,10 @@ function App() {
   const [activeUser, setActiveUser] = useState<UserProfile | null>(null);
   const [activeBiodata, setActiveBiodata] = useState<Biodata | null>(null);
   const [matchingProfiles, setMatchingProfiles] = useState<MatchingProfile[]>([]);
-  const [activeView, setActiveView] = useState<'home' | 'auth' | 'register' | 'browse'>('home');
+  const [activeView, setActiveView] = useState<'home' | 'auth' | 'register' | 'browse' | 'inbox' | 'my-profile'>('home');
+  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const accountMenuRef = useRef<HTMLDivElement | null>(null);
 
   // Interactive Form States
   const [mobileNumber, setMobileNumber] = useState('');
@@ -37,8 +49,23 @@ function App() {
   const [searchLook, setSearchLook] = useState<'Male' | 'Female'>('Female');
   const [searchGotra, setSearchGotra] = useState('Any');
 
-  // Expanded Profile Cards States
-  const [expandedProfileIds, setExpandedProfileIds] = useState<string[]>([]);
+
+
+  // Phase 3 States
+  const [interactions, setInteractions] = useState<ProfileInteraction[]>([]);
+  const [selectedProfile, setSelectedProfile] = useState<Biodata | null>(null);
+  const [showPaywall, setShowPaywall] = useState<boolean>(false);
+  const [profileModalView, setProfileModalView] = useState<'edit' | 'preferences' | 'privacy' | null>(null);
+  
+  // Edit Profile Form State
+  const [editForm, setEditForm] = useState<Partial<Biodata>>({});
+
+  // Reset edit form when opening edit modal
+  useEffect(() => {
+    if (profileModalView === 'edit' && activeBiodata) {
+      setEditForm(activeBiodata);
+    }
+  }, [profileModalView, activeBiodata]);
 
   // Load Initial Sessions
   useEffect(() => {
@@ -54,6 +81,7 @@ function App() {
       } else if (user.registrationStep === 'completed') {
         setActiveView('browse');
         setMatchingProfiles(mockGetMatchingProfiles());
+        setInteractions(getInteractions(user.userId));
       }
     }
   }, []);
@@ -65,11 +93,34 @@ function App() {
     }
   }, [activeUser, activeBiodata]);
 
+  useEffect(() => {
+    if (!isAccountMenuOpen) return;
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (!accountMenuRef.current?.contains(event.target as Node)) {
+        setIsAccountMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [isAccountMenuOpen]);
+
   // Hero Widget: Handle Quick-Match Search
   const handleQuickMatchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     initMockDb();
     
+    if (!activeUser) {
+      setActiveView('auth');
+      return;
+    }
+
+    if (activeUser.registrationStep !== 'completed') {
+      setActiveView('register');
+      return;
+    }
+
     // We are looking for searchLook (gender) of searchGotra
     const allProfs = mockGetMatchingProfiles();
     const filtered = allProfs.filter(p => {
@@ -126,32 +177,152 @@ function App() {
     setMatchingProfiles([]);
     setActiveView('home');
     setMobileNumber('');
+    setIsAccountMenuOpen(false);
   };
+
+  const handleAccountNavigation = () => {
+    if (!activeUser) return;
+    setActiveView(activeUser.registrationStep === 'completed' ? 'my-profile' : 'register');
+    setIsAccountMenuOpen(false);
+  };
+
+  const handleInteraction = (targetProfileId: string, type: InteractionType) => {
+    if (!activeUser) return;
+    recordInteraction(activeUser.userId, targetProfileId, type);
+    setInteractions(getInteractions(activeUser.userId));
+    setSelectedProfile(null);
+    if (type === 'passed') {
+      setMatchingProfiles(prev => prev.filter(p => p.biodataId !== targetProfileId));
+    }
+  };
+
+  const handleRemoveInteraction = (targetProfileId: string, type: InteractionType) => {
+    if (!activeUser) return;
+    removeInteraction(activeUser.userId, targetProfileId, type);
+    setInteractions(getInteractions(activeUser.userId));
+  };
+
+  const handleInboxAction = (interactionId: string, type: 'match_accepted' | 'match_declined') => {
+    const int = interactions.find(i => i.interactionId === interactionId);
+    if (int && activeUser) {
+      recordInteraction(activeUser.userId, int.fromUserId, type); // For mock simplicity, we just record a new one
+      // Actually we should update it, but for mock we can just record the response
+      recordInteraction(activeUser.userId, int.fromUserId === activeUser.userId ? int.toProfileId : int.fromUserId, type);
+      setInteractions(getInteractions(activeUser.userId));
+    }
+  };
+
+  const handleApplyFilters = (filters: any) => {
+    let results = mockGetMatchingProfiles();
+    if (filters.minAge) results = results.filter(p => p.age >= filters.minAge);
+    if (filters.maxAge) results = results.filter(p => p.age <= filters.maxAge);
+    if (filters.gotra) results = results.filter(p => p.gotra === filters.gotra);
+    if (filters.location) results = results.filter(p => p.location === filters.location);
+    setMatchingProfiles(results);
+  };
+
+  const profileInitial = activeBiodata?.fullName?.trim().charAt(0).toUpperCase() || 'M';
 
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
       {/* Visual Navigation Bar (Stretches 100% full screen width) */}
       <header className="header-nav" style={styles.header}>
         <div style={styles.navContainer}>
-          <div 
+          <div
+            className="logo-box"
             style={styles.logoBox} 
             onClick={() => setActiveView(activeUser ? (activeUser.registrationStep === 'completed' ? 'browse' : 'register') : 'home')}
           >
-            <span style={styles.logoSerif}>{t('brand_serif')}</span>
-            <span style={styles.logoSans}>{t('brand_sans')}</span>
+            <span className="logo-serif" style={styles.logoSerif}>{t('brand_serif')}</span>
+            <span className="logo-sans" style={styles.logoSans}>{t('brand_sans')}</span>
           </div>
           
           <nav style={styles.navMenu}>
             {activeUser ? (
-              <div style={styles.loggedInRow}>
-                {activeUser.registrationStep === 'completed' && activeBiodata && (
-                  <span style={styles.welcomeText}>
-                    {t('namaste')}, <strong>{activeBiodata.fullName}</strong>
-                  </span>
+              <div className="account-menu" ref={accountMenuRef} style={styles.accountMenuWrapper}>
+                {activeUser.registrationStep === 'completed' && (
+                  <button 
+                    style={{ 
+                      position: 'relative',
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '0.4rem',
+                      marginRight: '1.2rem', 
+                      padding: '0.35rem 0.8rem',
+                      backgroundColor: 'var(--bg-card)',
+                      border: '1px solid var(--border-light)',
+                      borderRadius: 'var(--radius-full)',
+                      color: 'var(--primary-dark)',
+                      cursor: 'pointer',
+                      fontWeight: '600',
+                      fontSize: '0.9rem',
+                      boxShadow: 'var(--shadow-sm)'
+                    }}
+                    onClick={() => setActiveView('inbox')}
+                    title={locale === 'en' ? 'Inbox' : 'इनबॉक्स'}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    <span className="hide-on-mobile">{locale === 'en' ? 'Inbox' : 'इनबॉक्स'}</span>
+                    
+                    {/* Notification Badge */}
+                    <span style={{
+                      position: 'absolute',
+                      top: '-6px',
+                      right: '-6px',
+                      minWidth: '18px',
+                      height: '18px',
+                      padding: '0 4px',
+                      backgroundColor: 'var(--primary)',
+                      color: '#ffffff',
+                      fontSize: '0.7rem',
+                      fontWeight: '800',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: '10px',
+                      border: '2px solid var(--bg-header)',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                    }}>
+                      {interactions.length > 0 ? interactions.length : 2}
+                    </span>
+                  </button>
                 )}
-                <button className="btn-logout" onClick={handleLogout} style={styles.logoutBtn}>
-                  {t('btn_logout')}
+
+                <button
+                  className="profile-menu-button"
+                  type="button"
+                  onClick={() => setIsAccountMenuOpen((isOpen) => !isOpen)}
+                  style={styles.profileMenuButton}
+                  aria-haspopup="menu"
+                  aria-expanded={isAccountMenuOpen}
+                  aria-label={locale === 'en' ? 'Open account menu' : 'खाता मेनू खोलें'}
+                >
+                  <span style={styles.profileAvatar}>{profileInitial}</span>
+                  <span className="dropdown-chevron" style={styles.dropdownChevron} aria-hidden="true" />
                 </button>
+
+                {isAccountMenuOpen && (
+                  <div className="account-dropdown" style={styles.accountDropdown} role="menu">
+                    <button
+                      className="account-menu-item"
+                      type="button"
+                      onClick={handleAccountNavigation}
+                      style={styles.accountMenuItem}
+                      role="menuitem"
+                    >
+                      {locale === 'en' ? 'Account' : 'खाता'}
+                    </button>
+                    <button
+                      className="account-menu-item account-menu-item-danger"
+                      type="button"
+                      onClick={handleLogout}
+                      style={{ ...styles.accountMenuItem, ...styles.logoutMenuItem }}
+                      role="menuitem"
+                    >
+                      {t('btn_logout')}
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <button className="btn-auth" onClick={() => setActiveView('auth')} style={styles.authLinkBtn}>
@@ -168,10 +339,10 @@ function App() {
         {activeView === 'home' && (
           <div className="animate-fade" style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             
-            {/* HERO HERO SECTION */}
-            <section className="full-bleed-row" style={{ padding: '6rem 0' }}>
-              <div className="section-wrapper hero-grid-layout">
-                <div style={styles.heroTextContent}>
+            {/* HERO SECTION — Full-width centered, no card deck */}
+            <section className="full-bleed-row hero-section-padded">
+              <div className="section-wrapper">
+                <div className="hero-centered-layout">
                   {/* Gotra-Safe Platform Badge */}
                   <div style={{ alignSelf: 'flex-start', padding: '0.4rem 1rem', background: 'var(--primary-light)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-full)', color: 'var(--primary)', fontSize: '0.85rem', fontWeight: '700', marginBottom: '-0.5rem' }}>
                     {t('hero_tag') || '🧬 Gotra-Safe Matrimonial Platform'}
@@ -233,71 +404,114 @@ function App() {
                     </button>
                   </form>
                 </div>
-                
-                <div style={styles.heroVisualBox}>
-                  <div style={{ display: 'flex', justifyContent: 'center', position: 'relative', width: '100%', maxWidth: '400px' }}>
-                    {/* Floating Trust Badge 1 */}
-                    <div 
-                      className="stat-floating-pill animate-scale" 
-                      style={{ top: '-15px', left: '-15px', zIndex: 30 }}
-                    >
-                      ⭐ {locale === 'en' ? '4.9 App Rating' : '4.9 ऐप रेटिंग'}
-                    </div>
+              </div>
+            </section>
 
-                    <div className="floating-card-deck">
-                      {/* Main Portrait Candidate Card */}
-                      <div className="deck-card-primary animate-scale">
-                        <div className="deck-floating-badge-gotra">🧬 {locale === 'en' ? 'Kashyap' : 'कश्यप'}</div>
-                        <img 
-                          src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400&h=400" 
-                          alt="Ananya Jha" 
-                          className="deck-card-candidate-img" 
-                        />
-                        <div className="deck-card-candidate-details">
-                          <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-headers)' }}>Ananya Jha</h3>
-                          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                            {locale === 'en' ? '25 Yrs • Delhi NCR' : '25 वर्ष • दिल्ली एनसीआर'}
-                          </p>
+            {/* SECTION B: WHAT WE OFFER — two-column: premium card left, editorial right */}
+            <section className="full-bleed-row what-dark-canvas">
+              <div className="section-wrapper">
+                <div className="what-dark-layout">
+
+                  {/* LEFT: Premium Match Result Card */}
+                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <div className="premium-match-card animate-scale">
+                      {/* Card top: platform badge */}
+                      <div className="pmc-header">
+                        <span className="pmc-badge">⚡ {locale === 'en' ? 'Smart Match' : 'स्मार्ट मैच'}</span>
+                        <span className="pmc-live-dot"><span className="pmc-dot-pulse" />Live</span>
+                      </div>
+
+                      {/* Profile pair row */}
+                      <div className="pmc-profiles-row">
+                        <div className="pmc-profile">
+                          <div className="pmc-avatar-ring pmc-avatar-ring--primary">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=120&h=120" alt="Ananya" className="pmc-avatar-img" />
+                          </div>
+                          <span className="pmc-name">Ananya Jha</span>
+                          <span className="pmc-meta">{locale === 'en' ? '25 · Delhi' : '25 · दिल्ली'}</span>
+                        </div>
+
+                        {/* Score pill in center */}
+                        <div className="pmc-score-center">
+                          <div className="pmc-score-ring">
+                            <span className="pmc-score-num">99</span>
+                            <span className="pmc-score-pct">%</span>
+                          </div>
+                          <span className="pmc-score-label">{locale === 'en' ? 'Match' : 'मेल'}</span>
+                        </div>
+
+                        <div className="pmc-profile">
+                          <div className="pmc-avatar-ring pmc-avatar-ring--gold">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=120&h=120" alt="Vikas" className="pmc-avatar-img" />
+                          </div>
+                          <span className="pmc-name">Vikas Jha</span>
+                          <span className="pmc-meta">{locale === 'en' ? '28 · Mumbai' : '28 · मुम्बई'}</span>
                         </div>
                       </div>
 
-                      {/* Secondary Overlapping Card - 98% Compatibility Bubble */}
-                      <div className="deck-card-secondary">
-                        <div style={{ backgroundColor: 'var(--primary)', color: '#ffffff', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', fontSize: '0.8rem', flexShrink: 0 }}>
-                          🎯
-                        </div>
-                        <div>
-                          <h4 style={{ fontSize: '0.9rem', color: 'var(--text-headers)', fontWeight: 700 }}>98% {t('card_match')}</h4>
-                          <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{locale === 'en' ? 'Gotra Compatible' : 'गोत्र अनुकूल'}</p>
-                        </div>
+                      {/* Compatibility chips */}
+                      <div className="pmc-chips-row">
+                        <span className="pmc-chip pmc-chip--green">🧬 {locale === 'en' ? 'Gotra Safe' : 'गोत्र सुरक्षित'}</span>
+                        <span className="pmc-chip pmc-chip--blue">🛡️ {locale === 'en' ? 'Verified' : 'सत्यापित'}</span>
+                        <span className="pmc-chip pmc-chip--gold">🌎 {locale === 'en' ? 'Maithil' : 'मैथिल'}</span>
                       </div>
 
-                      {/* Tertiary Overlapping Card - Verified Partner */}
-                      <div className="deck-card-tertiary">
-                        <span>✨ {locale === 'en' ? 'Verified' : 'सत्यापित'}</span>
+                      {/* CTA inside card */}
+                      <div className="pmc-footer">
+                        <span className="pmc-footer-text">
+                          {locale === 'en' ? 'Join to see your matches' : 'अपने मेल देखने के लिए जुड़ें'}
+                        </span>
+                        <div className="pmc-footer-arrow">→</div>
                       </div>
-                    </div>
-
-                    {/* Floating Trust Badge 2 */}
-                    <div 
-                      className="stat-floating-pill animate-scale" 
-                      style={{ bottom: '-15px', right: '-15px', zIndex: 30 }}
-                    >
-                      🛡️ {locale === 'en' ? '12K+ Verified Couples' : '12K+ सत्यापित जोड़े'}
                     </div>
                   </div>
+
+                  {/* RIGHT: Editorial text */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', textAlign: 'left' }}>
+                    <div style={{ alignSelf: 'flex-start', padding: '0.35rem 0.9rem', background: 'var(--primary-light)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-full)', color: 'var(--primary-dark)', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                      {locale === 'en' ? 'Core Platform Services' : 'मुख्य मंच की विशेषताएं'}
+                    </div>
+                    <h2 className="display" style={{ fontSize: '2.5rem', lineHeight: '1.2', color: 'var(--text-headers)' }}>
+                      {t('landing_what_title')}
+                    </h2>
+                    <p style={{ fontSize: '1.05rem', color: 'var(--text-muted)', lineHeight: '1.7' }}>
+                      {t('landing_what_desc')}
+                    </p>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.2rem', marginTop: '0.3rem' }}>
+                      <div>
+                        <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-headers)', marginBottom: '0.2rem' }}>{t('landing_what_item1_title')}</h4>
+                        <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>{t('landing_what_item1_desc')}</p>
+                      </div>
+                      <div>
+                        <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-headers)', marginBottom: '0.2rem' }}>{t('landing_what_item2_title')}</h4>
+                        <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>{t('landing_what_item2_desc')}</p>
+                      </div>
+                      <div>
+                        <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-headers)', marginBottom: '0.2rem' }}>{t('landing_what_item3_title')}</h4>
+                        <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>{t('landing_what_item3_desc')}</p>
+                      </div>
+                    </div>
+
+                    <div style={{ marginTop: '1rem' }}>
+                      <button onClick={() => setActiveView('auth')} className="cta-button-landing">
+                        {locale === 'en' ? 'Get Started Now' : 'अभी शुरुआत करें'}
+                      </button>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </section>
 
-            {/* SECTION A: WHY CHOOSE US (SPLIT EDITORIAL VIEW) */}
+            {/* SECTION A: WHY & WHO WE ARE (CONSOLIDATED EDITORIAL & STATS DASHBOARD) */}
             <section className="full-bleed-row">
               <div className="section-wrapper">
                 <div className="why-split-layout">
-                  {/* Left Column: Bold Copy & Subtitles */}
+                  {/* Left Column: Bold Copy & Consolidated Badge Lists */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', textAlign: 'left' }}>
-                    <div style={{ alignSelf: 'flex-start', padding: '0.35rem 0.9rem', background: 'var(--primary-light)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-full)', color: 'var(--primary)', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                      {locale === 'en' ? 'Cultural Heritage Safeties' : 'सांस्कृतिक विरासत और गोत्र सुरक्षा'}
+                    <div style={{ alignSelf: 'flex-start', padding: '0.35rem 0.9rem', background: 'var(--primary-light)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-full)', color: 'var(--primary)', fontSize: '0.85rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                      {locale === 'en' ? 'Cultural Heritage & Stats' : 'सांस्कृतिक धरोहर और आँकड़े'}
                     </div>
                     <h2 className="display" style={{ fontSize: '2.5rem', lineHeight: '1.2', color: 'var(--text-headers)' }}>
                       {t('landing_why_title')}
@@ -305,153 +519,56 @@ function App() {
                     <p style={{ fontSize: '1.05rem', color: 'var(--text-muted)', lineHeight: '1.7' }}>
                       {t('landing_why_desc')}
                     </p>
-                    <div style={{ marginTop: '0.5rem' }}>
-                      <button onClick={() => setActiveView('auth')} className="widget-submit-btn" style={{ width: 'auto', padding: '0.75rem 2rem', borderRadius: 'var(--radius-md)' }}>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', marginTop: '0.5rem' }}>
+                      {/* Item 1: Gotra Compatibility */}
+                      <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'flex-start' }}>
+                        <span style={{ fontSize: '1.2rem', marginTop: '0.1rem' }}>🧬</span>
+                        <div>
+                          <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-headers)', marginBottom: '0.2rem' }}>
+                            {t('landing_why_item1_title')}
+                          </h4>
+                          <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
+                            {t('landing_why_item1_desc')}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Item 2: Secure Contact Verification */}
+                      <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'flex-start' }}>
+                        <span style={{ fontSize: '1.2rem', marginTop: '0.1rem' }}>🔒</span>
+                        <div>
+                          <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-headers)', marginBottom: '0.2rem' }}>
+                            {t('landing_why_item2_title')}
+                          </h4>
+                          <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
+                            {t('landing_why_item2_desc')}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Item 3: Global Maithil Community */}
+                      <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'flex-start' }}>
+                        <span style={{ fontSize: '1.2rem', marginTop: '0.1rem' }}>🌎</span>
+                        <div>
+                          <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-headers)', marginBottom: '0.2rem' }}>
+                            {t('landing_who_item1_title')}
+                          </h4>
+                          <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
+                            {t('landing_who_item1_desc')}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style={{ marginTop: '1rem' }}>
+                      <button onClick={() => setActiveView('auth')} className="cta-button-landing">
                         {t('btn_begin_search')}
                       </button>
                     </div>
                   </div>
 
-                  {/* Right Column: Visual Feature Badges */}
-                  <div className="why-feature-badge-list">
-                    <div className="why-feature-badge-card">
-                      <div className="why-icon-container">🧬</div>
-                      <div>
-                        <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-headers)', marginBottom: '0.3rem' }}>
-                          {t('landing_why_item1_title')}
-                        </h4>
-                        <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
-                          {t('landing_why_item1_desc')}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="why-feature-badge-card">
-                      <div className="why-icon-container">🔒</div>
-                      <div>
-                        <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-headers)', marginBottom: '0.3rem' }}>
-                          {t('landing_why_item2_title')}
-                        </h4>
-                        <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
-                          {t('landing_why_item2_desc')}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* SECTION B: WHAT WE OFFER (DARK CANVAS & CONVERSATIONAL PREVIEW WIDGET) */}
-            <section className="full-bleed-row what-dark-canvas">
-              <div className="section-wrapper">
-                <div className="what-dark-layout">
-                  {/* Left Column: Conversational Chat Mock Widget */}
-                  <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <div className="mock-chat-widget-landing animate-scale">
-                      <div style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '0.6rem', marginBottom: '0.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#4caf50' }}></div>
-                        <span style={{ fontSize: '0.75rem', color: 'hsl(var(--magenta-200))', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          {locale === 'en' ? 'Live Chat Preview' : 'लाइव चैट पूर्वावलोकन'}
-                        </span>
-                      </div>
-                      
-                      {/* Bubble 1: Bot welcome */}
-                      <div className="mock-chat-bubble-bot">
-                        💬 {locale === 'en' ? "Welcome to Mithila Matrimony! First, what is your full name?" : "मिथिला मैट्रिमोनी में आपका स्वागत है! सबसे पहले, आपका पूरा नाम क्या है?"}
-                      </div>
-
-                      {/* Bubble 2: User reply */}
-                      <div className="mock-chat-bubble-user">
-                        {locale === 'en' ? "Ananya Jha" : "अनन्या झा"}
-                      </div>
-
-                      {/* Bubble 3: Bot gotra */}
-                      <div className="mock-chat-bubble-bot">
-                        🧬 {locale === 'en' ? "Important! What is your cultural Gotra?" : "महत्वपूर्ण! आपका सांस्कृतिक गोत्र क्या है?"}
-                      </div>
-
-                      {/* Bubble 4: User gotra */}
-                      <div className="mock-chat-bubble-user">
-                        {locale === 'en' ? "Kashyap" : "कश्यप"}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right Column: Editorial Text Copy */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', textAlign: 'left' }}>
-                    <div style={{ alignSelf: 'flex-start', padding: '0.35rem 0.9rem', background: 'rgba(216, 27, 96, 0.15)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: 'var(--radius-full)', color: 'var(--primary-dark)', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                      {locale === 'en' ? 'Interactive Onboarding' : 'संवादात्मक ऑनबोर्डिंग ऑन-द-फ्लाई'}
-                    </div>
-                    <h2 className="display" style={{ fontSize: '2.5rem', lineHeight: '1.2', color: '#ffffff' }}>
-                      {t('landing_what_title')}
-                    </h2>
-                    <p style={{ fontSize: '1.05rem', color: 'hsl(var(--magenta-200))', lineHeight: '1.7' }}>
-                      {t('landing_what_desc')}
-                    </p>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem', marginTop: '0.5rem' }}>
-                      <div>
-                        <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#ffffff', marginBottom: '0.3rem' }}>
-                          {t('landing_what_item1_title')}
-                        </h4>
-                        <p style={{ fontSize: '0.88rem', color: 'hsl(var(--magenta-200))', lineHeight: '1.5' }}>
-                          {t('landing_what_item1_desc')}
-                        </p>
-                      </div>
-
-                      <div>
-                        <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#ffffff', marginBottom: '0.3rem' }}>
-                          {t('landing_what_item2_title')}
-                        </h4>
-                        <p style={{ fontSize: '0.88rem', color: 'hsl(var(--magenta-200))', lineHeight: '1.5' }}>
-                          {t('landing_what_item2_desc')}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* SECTION C: WHO WE ARE (TRUSTED STATS DASHBOARD & LINEAGE GEOGRAPHY) */}
-            <section className="full-bleed-row">
-              <div className="section-wrapper">
-                <div className="who-stats-layout">
-                  {/* Left Column: Brand Story & Trust Description */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', textAlign: 'left' }}>
-                    <div style={{ alignSelf: 'flex-start', padding: '0.35rem 0.9rem', background: 'var(--primary-light)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-full)', color: 'var(--primary)', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                      {locale === 'en' ? 'Global Maithil Alliance' : 'वैश्विक मैथिल गठबंधन'}
-                    </div>
-                    <h2 className="display" style={{ fontSize: '2.5rem', lineHeight: '1.2', color: 'var(--text-headers)' }}>
-                      {t('landing_who_title')}
-                    </h2>
-                    <p style={{ fontSize: '1.05rem', color: 'var(--text-muted)', lineHeight: '1.7' }}>
-                      {t('landing_who_desc')}
-                    </p>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.2rem', marginTop: '0.3rem' }}>
-                      <div>
-                        <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-headers)', marginBottom: '0.2rem' }}>
-                          📍 {t('landing_who_item1_title')}
-                        </h4>
-                        <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
-                          {t('landing_who_item1_desc')}
-                        </p>
-                      </div>
-
-                      <div>
-                        <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-headers)', marginBottom: '0.2rem' }}>
-                          🤝 {t('landing_who_item2_title')}
-                        </h4>
-                        <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
-                          {t('landing_who_item2_desc')}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right Column: Dynamic Statistics Dashboard */}
+                  {/* Right Column: Dynamic Statistics Dashboard Grid */}
                   <div className="stats-grid-landing">
                     <div className="stat-dashboard-card animate-scale" style={{ borderLeft: '3px solid var(--gold-primary)' }}>
                       <span className="stat-number-large">12K+</span>
@@ -551,141 +668,349 @@ function App() {
           </div>
         )}
 
-        {/* VIEW 4: MATRIMONIAL BROWSE GRID (HIGH QUALITY PROFILE CARDS) */}
-        {activeView === 'browse' && (
-          <div className="animate-fade" style={{ width: '100%', padding: '3rem 2rem' }}>
-            <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-              <div style={styles.browseHeader}>
-                <div style={styles.browseHeadline}>
-                  <h1 className="display">{t('browse_title')}</h1>
-                  <p>{t('browse_subtitle')}</p>
-                </div>
-                {/* Optional filters preview */}
-                <div style={styles.quickFiltersContainer}>
-                  <span>{t('browse_alert')}</span>
-                </div>
-              </div>
+        {/* --- PHASE 3 LOGGED IN VIEWS --- */}
+        {activeUser && activeUser.registrationStep === 'completed' && ['browse', 'inbox', 'my-profile'].includes(activeView) && (
+          <div style={{ width: '100%', background: 'var(--bg-app)', flex: 1 }}>
+            
 
-              {matchingProfiles.length === 0 ? (
-                <div style={styles.noMatchesBox} className="flex-center">
-                  <p>{t('no_matches')}</p>
-                </div>
-              ) : (
-                <div style={styles.profileGrid} className="grid-responsive">
-                  {matchingProfiles.map((profile) => {
-                    const isExpanded = expandedProfileIds.includes(profile.biodataId);
-                    return (
-                      <div key={profile.biodataId} className="animate-scale" style={styles.profileCard}>
-                        <div style={styles.profileImgContainer}>
-                          <img src={profile.photoUrl} alt={profile.fullName} style={styles.profileImg} />
-                          <div style={styles.compatibilityBadge}>
-                            🎯 {profile.compatibilityScore}% {t('card_match')}
-                          </div>
+            {/* BROWSE VIEW */}
+            {activeView === 'browse' && (
+              <div className="animate-fade" style={{ width: '100%', padding: '2rem 1rem' }}>
+                <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+                  
+                  {/* Left Sidebar: Filter Panel */}
+                  <div className={`filter-sidebar ${isMobileFilterOpen ? 'bottom-sheet-open' : ''}`} style={{ flex: '1 1 300px', maxWidth: '350px' }}>
+                    <FilterPanel 
+                      onApplyFilters={handleApplyFilters} 
+                      onClose={() => setIsMobileFilterOpen(false)} 
+                      isMobile={isMobileFilterOpen} 
+                    />
+                  </div>
+
+                  {/* Right Side: Profile Grid */}
+                  <div style={{ flex: '2 1 600px' }}>
+                    <div style={{ ...styles.browseHeader, marginBottom: '1.5rem' }}>
+                      <div style={styles.browseHeadline}>
+                        <h1 className="display" style={{fontSize: '2rem'}}>{t('browse_title')}</h1>
+                        <p>{t('browse_subtitle')}</p>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
+                        <div className="browse-alert-badge" style={styles.quickFiltersContainer}>
+                          <span className="browse-alert-icon" style={styles.quickFiltersIcon}>✦</span>
+                          <span>{matchingProfiles.length} {locale === 'en' ? 'Matches Found' : 'मिलान मिले'}</span>
                         </div>
-                        
-                        <div style={styles.profileDetails}>
-                          <div style={styles.detailsRow}>
-                            <h3 style={styles.profileName}>{profile.fullName}</h3>
-                            <span style={styles.ageGender}>
-                              {profile.age} {locale === 'en' ? 'Yrs' : 'वर्ष'}
-                            </span>
-                          </div>
-                          
-                          <div style={styles.metaBadgeRow}>
-                            <span style={styles.metaBadge}>🧬 {t('summary_gotra')}: {profile.gotra}</span>
-                          </div>
-                          
-                          <div style={styles.salaryText}>
-                            💰 {t('summary_income')}: <strong>₹{(profile.annualIncome / 100000).toFixed(1)} {t('summary_lakh')}</strong>
-                          </div>
-                          
-                          <p style={styles.aboutSnippet}>{profile.aboutMe}</p>
-                          
-                          {/* COLLAPSIBLE REGION: Shown only when expanded */}
-                          {isExpanded && (
-                            <div className="animate-fade" style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', borderTop: '1px solid var(--border-light)', paddingTop: '0.8rem', marginTop: '0.4rem', textAlign: 'left' }}>
-                              <div style={styles.metaBadgeRow}>
-                                <span style={styles.metaBadge}>📍 {profile.location}</span>
-                                <span style={styles.metaBadge}>🧬 {locale === 'en' ? 'Gender: ' : 'लिंग: '}{profile.gender === 'Female' ? (locale === 'en' ? 'Female' : 'महिला') : (locale === 'en' ? 'Male' : 'पुरुष')}</span>
+                        <button 
+                          className="mobile-filter-toggle" 
+                          onClick={() => setIsMobileFilterOpen(true)}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                          {locale === 'en' ? 'Filters' : 'फ़िल्टर'}
+                        </button>
+                      </div>
+                    </div>
+
+                    {matchingProfiles.length === 0 ? (
+                      <div style={styles.noMatchesBox} className="flex-center">
+                        <p>{t('no_matches')}</p>
+                      </div>
+                    ) : (
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
+                        {matchingProfiles.map((profile) => (
+                          <div key={profile.biodataId} className="animate-scale" style={styles.profileCard}>
+                            <div style={{ position: 'relative', height: '300px', width: '100%', cursor: 'pointer' }} onClick={() => setSelectedProfile(profile)}>
+                              <img src={profile.photoUrl} alt={profile.fullName} style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '16px 16px 0 0'}} />
+                              <div style={styles.compatibilityBadge}>
+                                <svg style={{ marginRight: '4px', display: 'inline-block', verticalAlign: 'middle' }} xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                                {profile.compatibilityScore}% {t('card_match')}
                               </div>
-                              
-                              <div style={styles.professionalDetail}>
-                                💼 <strong>{profile.profession}</strong> ({profile.education})
-                              </div>
-                              
-                              <div style={styles.interestsRow}>
-                                {profile.interests.map((interest, i) => (
-                                  <span key={i} style={styles.interestMiniBadge}>{interest}</span>
-                                ))}
+                              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '1rem', background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)', color: '#fff' }}>
+                                <h3 style={{ margin: 0, fontSize: '1.2rem', fontFamily: 'var(--font-serif)', color: '#ffffff' }}>{profile.fullName}</h3>
+                                <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem', opacity: 0.9, color: '#f0f0f0' }}>{profile.age} Yrs • {profile.location}</p>
                               </div>
                             </div>
-                          )}
-                          
-                          {/* Expansion Toggle Button */}
-                          <button 
-                            onClick={() => {
-                              if (!activeUser) {
-                                alert(locale === 'en' 
-                                  ? "Authentication Required: Please register or sign in to view full candidate details!" 
-                                  : "साइन इन आवश्यक: कृपया पूरा उम्मीदवार विवरण देखने के लिए रजिस्टर या साइन इन करें!"
+                            
+                            <div style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', gap: '0.8rem' }}>
+                              {(() => {
+                                const isShortlisted = interactions.some(i => i.toProfileId === profile.biodataId && i.type === 'shortlisted');
+                                const isInterestSent = interactions.some(i => i.toProfileId === profile.biodataId && i.type === 'interest_sent');
+                                return (
+                                  <>
+                                    <button 
+                                      onClick={() => isShortlisted ? handleRemoveInteraction(profile.biodataId, 'shortlisted') : handleInteraction(profile.biodataId, 'shortlisted')}
+                                      style={{ 
+                                        ...styles.actionBtnIcon, 
+                                        background: isShortlisted ? 'var(--gold-primary)' : 'var(--bg-app)', 
+                                        color: isShortlisted ? '#fff' : 'var(--gold-primary)', 
+                                        border: isShortlisted ? '1px solid var(--gold-primary)' : '1px solid var(--border-light)',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s ease'
+                                      }}
+                                      title={isShortlisted ? (locale === 'en' ? 'Shortlisted' : 'शॉर्टलिस्ट किया गया') : (locale === 'en' ? 'Shortlist' : 'शॉर्टलिस्ट करें')}
+                                    >
+                                      {isShortlisted ? (
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                      ) : (
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                      )}
+                                    </button>
+                                    <button 
+                                      onClick={() => isInterestSent ? handleRemoveInteraction(profile.biodataId, 'interest_sent') : handleInteraction(profile.biodataId, 'interest_sent')}
+                                      style={{ 
+                                        ...styles.actionBtnIcon, flex: 2, 
+                                        background: isInterestSent ? 'var(--neutral-100)' : 'var(--primary)', 
+                                        color: isInterestSent ? 'var(--text-muted)' : '#fff', 
+                                        border: isInterestSent ? '1px solid var(--border-light)' : 'none',
+                                        cursor: 'pointer',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                                        transition: 'all 0.2s ease'
+                                      }}
+                                    >
+                                      {isInterestSent ? (
+                                        <>
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                          {locale === 'en' ? 'Sent' : 'भेजा गया'}
+                                        </>
+                                      ) : (
+                                        <>
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                                          {t('action_interest')}
+                                        </>
+                                      )}
+                                    </button>
+                                  </>
                                 );
-                                setActiveView('auth');
-                                return;
-                              }
-                              setExpandedProfileIds(prev => 
-                                prev.includes(profile.biodataId) 
-                                  ? prev.filter(id => id !== profile.biodataId) 
-                                  : [...prev, profile.biodataId]
-                              );
-                            }}
-                            style={{ 
-                              background: 'transparent', 
-                              border: 'none', 
-                              color: 'var(--primary)', 
-                              fontWeight: '700', 
-                              fontSize: '0.85rem', 
-                              cursor: 'pointer', 
-                              padding: '0.4rem 0',
-                              textAlign: 'left',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '0.2rem',
-                              marginTop: '0.4rem',
-                              width: 'fit-content'
-                            }}
-                          >
-                            {isExpanded 
-                              ? (locale === 'en' ? '▲ Show Less Details' : '▲ कम विवरण दिखाएं') 
-                              : (locale === 'en' ? '▼ Show Full Profile' : '▼ पूरा विवरण देखें')}
-                          </button>
+                              })()}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
 
-                          <button 
-                            onClick={() => {
-                              if (!activeUser) {
-                                alert(locale === 'en' 
-                                  ? "Registration Required: Please register or sign in to send connect requests to matches!" 
-                                  : "पंजीकरण आवश्यक: कृपया कनेक्ट अनुरोध भेजने के लिए रजिस्टर या साइन इन करें!"
-                                );
-                                setActiveView('auth');
-                                return;
-                              }
-                              alert(locale === 'en' 
-                                ? `Connect request simulated successfully to ${profile.fullName}!` 
-                                : `${profile.fullName} को कनेक्ट अनुरोध सफलतापूर्वक भेजा गया!`
-                              );
-                            }}
-                            style={styles.connectBtn}
-                          >
-                            {t('btn_request_connect')}
-                          </button>
+            {/* INBOX VIEW */}
+            {activeView === 'inbox' && (
+              <div className="animate-fade" style={{ width: '100%', padding: '2rem 1rem' }}>
+                <MatchInbox 
+                  interactions={interactions} 
+                  profiles={getAllProfiles()} 
+                  activeUserId={activeUser.userId}
+                  onAccept={(id) => handleInboxAction(id, 'match_accepted')}
+                  onDecline={(id) => handleInboxAction(id, 'match_declined')}
+                  onViewContact={() => {
+                    setShowPaywall(true);
+                  }}
+                />
+              </div>
+            )}
+
+            {/* MY PROFILE VIEW */}
+            {activeView === 'my-profile' && activeBiodata && (
+              <div className="animate-fade" style={{ width: '100%', padding: '2rem 1rem' }}>
+                <div style={{ maxWidth: '600px', margin: '0 auto', background: 'var(--bg-card)', borderRadius: '16px', border: '1px solid var(--border-light)', overflow: 'hidden', boxShadow: 'var(--shadow-md)' }}>
+                  <div style={{ position: 'relative', width: '100%', height: '320px' }}>
+                    <img src={activeBiodata.photoUrl} alt="My Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '2rem 1.5rem 1.5rem', background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%)', color: '#fff' }}>
+                      <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.2rem', margin: '0 0 0.2rem 0', color: '#fff' }}>{activeBiodata.fullName}</h2>
+                      <p style={{ margin: 0, fontSize: '1rem', color: '#f0f0f0', opacity: 0.9 }}>{activeBiodata.age} {locale === 'en' ? 'Yrs' : 'वर्ष'} • {activeBiodata.location}</p>
+                    </div>
+                  </div>
+                  
+                  <div style={{ padding: '2rem' }}>
+                    {/* Bio & Details Grid */}
+                    <div style={{ marginBottom: '2rem' }}>
+                      <h3 style={{ fontSize: '1.1rem', color: 'var(--primary-dark)', marginBottom: '1rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.5rem' }}>
+                        {locale === 'en' ? 'About Me' : 'मेरे बारे में'}
+                      </h3>
+                      <p style={{ color: 'var(--text-main)', lineHeight: '1.6', fontSize: '0.95rem', marginBottom: '1.5rem' }}>
+                        {activeBiodata.aboutMe || (locale === 'en' ? 'No bio provided yet.' : 'अभी तक कोई बायो नहीं दिया गया है।')}
+                      </p>
+
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.2rem' }}>
+                        <div>
+                          <p style={{ margin: '0 0 0.3rem 0', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>{locale === 'en' ? 'Gotra' : 'गोत्र'}</p>
+                          <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-headers)', fontWeight: 500 }}>{activeBiodata.gotra}</p>
+                        </div>
+                        <div>
+                          <p style={{ margin: '0 0 0.3rem 0', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>{locale === 'en' ? 'Education' : 'शिक्षा'}</p>
+                          <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-headers)', fontWeight: 500 }}>{activeBiodata.education || 'N/A'}</p>
+                        </div>
+                        <div>
+                          <p style={{ margin: '0 0 0.3rem 0', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>{locale === 'en' ? 'Profession' : 'पेशा'}</p>
+                          <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-headers)', fontWeight: 500 }}>{activeBiodata.profession}</p>
+                        </div>
+                        <div>
+                          <p style={{ margin: '0 0 0.3rem 0', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>{locale === 'en' ? 'Income' : 'आय'}</p>
+                          <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-headers)', fontWeight: 500 }}>
+                            {activeBiodata.annualIncome ? `₹${(activeBiodata.annualIncome / 100000).toFixed(1)}L / ${locale === 'en' ? 'yr' : 'वर्ष'}` : 'N/A'}
+                          </p>
                         </div>
                       </div>
-                    );
-                  })}
+
+                      {activeBiodata.interests && activeBiodata.interests.length > 0 && (
+                        <div style={{ marginTop: '1.5rem' }}>
+                          <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>{locale === 'en' ? 'Interests' : 'रुचियां'}</p>
+                          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                            {activeBiodata.interests.map(interest => (
+                              <span key={interest} style={{ padding: '0.3rem 0.8rem', backgroundColor: 'var(--primary-light)', color: 'var(--primary-dark)', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 500 }}>
+                                {interest}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                      <button 
+                        onClick={() => setProfileModalView('edit')} 
+                        style={{ width: '100%', padding: '0.9rem', background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                        {locale === 'en' ? 'Edit Profile' : 'प्रोफ़ाइल संपादित करें'}
+                      </button>
+                      
+                      <div style={{ display: 'flex', gap: '0.8rem' }}>
+                        <button 
+                          onClick={() => setProfileModalView('preferences')} 
+                          style={{ flex: 1, padding: '0.9rem', background: 'var(--bg-app)', color: 'var(--text-main)', border: '1px solid var(--border-light)', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}
+                        >
+                          {locale === 'en' ? 'Preferences' : 'प्राथमिकताएं'}
+                        </button>
+                        <button 
+                          onClick={() => setProfileModalView('privacy')} 
+                          style={{ flex: 1, padding: '0.9rem', background: 'var(--bg-app)', color: 'var(--text-main)', border: '1px solid var(--border-light)', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}
+                        >
+                          {locale === 'en' ? 'Privacy' : 'गोपनीयता'}
+                        </button>
+                      </div>
+
+                      <button 
+                        onClick={handleLogout} 
+                        style={{ width: '100%', padding: '0.9rem', background: '#ffebee', color: '#c62828', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', marginTop: '1rem', transition: 'background 0.2s' }}
+                      >
+                        {t('btn_logout')}
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
+
+            {/* PROFILE MODALS */}
+            {profileModalView && (
+              <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backdropFilter: 'blur(4px)' }}>
+                <div className="animate-scale" style={{ width: '100%', maxWidth: '500px', maxHeight: '90vh', overflowY: 'auto', background: 'var(--bg-card)', borderRadius: '16px', padding: '2rem', position: 'relative' }}>
+                  <button onClick={() => setProfileModalView(null)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                  </button>
+                  
+                  {profileModalView === 'edit' && (
+                    <form onSubmit={(e) => {
+                      e.preventDefault();
+                      mockSubmitBiodata(editForm as any);
+                      setActiveBiodata(getStoredActiveBiodata());
+                      setProfileModalView(null);
+                    }}>
+                      <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--text-headers)' }}>{locale === 'en' ? 'Edit Profile' : 'प्रोफ़ाइल संपादित करें'}</h2>
+                      
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>{locale === 'en' ? 'Full Name' : 'पूरा नाम'}</label>
+                          <input type="text" value={editForm.fullName || ''} onChange={(e) => setEditForm({...editForm, fullName: e.target.value})} style={styles.input} required />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>{locale === 'en' ? 'Profession' : 'पेशा'}</label>
+                          <input type="text" value={editForm.profession || ''} onChange={(e) => setEditForm({...editForm, profession: e.target.value})} style={styles.input} required />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>{locale === 'en' ? 'Location' : 'स्थान'}</label>
+                          <input type="text" value={editForm.location || ''} onChange={(e) => setEditForm({...editForm, location: e.target.value})} style={styles.input} required />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>{locale === 'en' ? 'Annual Income (₹)' : 'वार्षिक आय (₹)'}</label>
+                          <input type="number" value={editForm.annualIncome || ''} onChange={(e) => setEditForm({...editForm, annualIncome: parseInt(e.target.value)})} style={styles.input} />
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>{locale === 'en' ? 'About Me' : 'मेरे बारे में'}</label>
+                          <textarea rows={4} value={editForm.aboutMe || ''} onChange={(e) => setEditForm({...editForm, aboutMe: e.target.value})} style={{...styles.input, resize: 'vertical'}}></textarea>
+                        </div>
+                        <button type="submit" style={{ ...styles.primaryBtnWidth, marginTop: '1rem' }}>{locale === 'en' ? 'Save Changes' : 'परिवर्तन सहेजें'}</button>
+                      </div>
+                    </form>
+                  )}
+
+                  {profileModalView === 'preferences' && (
+                    <div>
+                      <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--text-headers)' }}>{locale === 'en' ? 'Match Preferences' : 'मिलान प्राथमिकताएं'}</h2>
+                      <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Update your desired match criteria here.</p>
+                      
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>Age Range</label>
+                          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                            <input type="number" defaultValue="21" style={styles.input} />
+                            <span>to</span>
+                            <input type="number" defaultValue="35" style={styles.input} />
+                          </div>
+                        </div>
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>Preferred Location</label>
+                          <input type="text" defaultValue="Any" style={styles.input} />
+                        </div>
+                        <button onClick={() => setProfileModalView(null)} style={{ ...styles.primaryBtnWidth, marginTop: '1rem' }}>{locale === 'en' ? 'Save Preferences' : 'प्राथमिकताएं सहेजें'}</button>
+                      </div>
+                    </div>
+                  )}
+
+                  {profileModalView === 'privacy' && (
+                    <div>
+                      <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--text-headers)' }}>{locale === 'en' ? 'Privacy Settings' : 'गोपनीयता सेटिंग्स'}</h2>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div>
+                            <h4 style={{ margin: '0 0 0.3rem 0' }}>Profile Visibility</h4>
+                            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)' }}>Allow others to see your profile.</p>
+                          </div>
+                          <input type="checkbox" defaultChecked style={{ width: '20px', height: '20px' }} />
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div>
+                            <h4 style={{ margin: '0 0 0.3rem 0' }}>Show Contact Info</h4>
+                            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)' }}>Display mobile number to accepted matches.</p>
+                          </div>
+                          <input type="checkbox" defaultChecked style={{ width: '20px', height: '20px' }} />
+                        </div>
+                        <button onClick={() => setProfileModalView(null)} style={{ ...styles.primaryBtnWidth, marginTop: '1rem' }}>{locale === 'en' ? 'Save Settings' : 'सेटिंग्स सहेजें'}</button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
+        )}
+
+        {/* MODALS */}
+        {selectedProfile && (
+          <ProfileDetail 
+            profile={selectedProfile} 
+            onClose={() => setSelectedProfile(null)} 
+            onAction={(type) => handleInteraction(selectedProfile.biodataId, type)} 
+          />
+        )}
+        
+        {showPaywall && (
+          <PremiumPaywall 
+            onClose={() => setShowPaywall(false)}
+            onUpgrade={() => {
+              alert('Premium Gateway Mock: This would redirect to a payment processor.');
+              setShowPaywall(false);
+            }}
+          />
         )}
       </main>
 
@@ -732,12 +1057,12 @@ function App() {
             <div className="footer-col">
               <h4 className="footer-col-title">{locale === 'en' ? 'Lineages' : 'प्रमुख गोत्र'}</h4>
               <ul className="footer-links" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem' }}>
-                <li className="footer-link-item" style={{ cursor: 'default' }}>Kashyap</li>
-                <li className="footer-link-item" style={{ cursor: 'default' }}>Shandilya</li>
-                <li className="footer-link-item" style={{ cursor: 'default' }}>Vatsa</li>
-                <li className="footer-link-item" style={{ cursor: 'default' }}>Katyayan</li>
-                <li className="footer-link-item" style={{ cursor: 'default' }}>Parashar</li>
-                <li className="footer-link-item" style={{ cursor: 'default' }}>Bhardwaj</li>
+                <li className="footer-link-item" style={{ cursor: 'default' }}>{locale === 'en' ? 'Kashyap' : 'कश्यप'}</li>
+                <li className="footer-link-item" style={{ cursor: 'default' }}>{locale === 'en' ? 'Shandilya' : 'शांडिल्य'}</li>
+                <li className="footer-link-item" style={{ cursor: 'default' }}>{locale === 'en' ? 'Vatsa' : 'वत्स'}</li>
+                <li className="footer-link-item" style={{ cursor: 'default' }}>{locale === 'en' ? 'Katyayan' : 'कात्यायन'}</li>
+                <li className="footer-link-item" style={{ cursor: 'default' }}>{locale === 'en' ? 'Parashar' : 'पराशर'}</li>
+                <li className="footer-link-item" style={{ cursor: 'default' }}>{locale === 'en' ? 'Bhardwaj' : 'भारद्वाज'}</li>
               </ul>
             </div>
 
@@ -785,13 +1110,15 @@ function App() {
 // Visual style definitions
 const styles = {
   header: {
-    backgroundColor: 'var(--bg-card)',
+    backgroundColor: 'var(--bg-header)',
+    backdropFilter: 'var(--blur-glass)',
+    WebkitBackdropFilter: 'var(--blur-glass)',
     borderBottom: '1px solid var(--border-light)',
-    padding: '1rem 2rem',
+    padding: '0.75rem 2rem',
     position: 'sticky' as const,
     top: 0,
     zIndex: 100,
-    boxShadow: 'var(--shadow-sm)',
+    boxShadow: '0 10px 30px rgba(136, 14, 79, 0.06)',
     transition: 'all 0.3s ease',
     width: '100%'
   },
@@ -807,19 +1134,20 @@ const styles = {
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
-    gap: '0.4rem'
+    gap: '0.6rem',
+    minHeight: '2.5rem',
+    whiteSpace: 'nowrap' as const
   },
   logoSerif: {
     fontFamily: 'var(--font-serif)',
-    fontSize: '1.6rem',
+    fontSize: '1.7rem',
     fontWeight: '700',
     color: 'var(--primary)',
-    fontStyle: 'italic' as const
   },
   logoSans: {
-    fontFamily: 'var(--font-sans)',
+    fontFamily: 'var(--font-logo-sans)',
     fontSize: '1.5rem',
-    fontWeight: '800',
+    fontWeight: '700',
     color: 'var(--primary-dark)',
     textTransform: 'uppercase' as const,
     letterSpacing: '1px'
@@ -835,6 +1163,67 @@ const styles = {
     fontWeight: '600',
     borderRadius: 'var(--radius-full)',
     transition: 'var(--transition-fast)'
+  },
+  accountMenuWrapper: {
+    position: 'relative' as const,
+    display: 'flex',
+    alignItems: 'center'
+  },
+  profileMenuButton: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.45rem',
+    padding: '0.3rem 0.45rem 0.3rem 0.3rem',
+    backgroundColor: 'var(--primary-light)',
+    border: '1px solid var(--border-light)',
+    borderRadius: 'var(--radius-full)',
+    boxShadow: 'var(--shadow-sm)',
+    color: 'var(--primary-dark)'
+  },
+  profileAvatar: {
+    width: '2rem',
+    height: '2rem',
+    borderRadius: '50%',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'var(--primary)',
+    color: '#ffffff',
+    fontSize: '0.9rem',
+    fontWeight: '800',
+    lineHeight: 1
+  },
+  dropdownChevron: {
+    width: 0,
+    height: 0,
+    borderLeft: '4px solid transparent',
+    borderRight: '4px solid transparent',
+    borderTop: '5px solid currentColor'
+  },
+  accountDropdown: {
+    position: 'absolute' as const,
+    top: 'calc(100% + 0.6rem)',
+    right: 0,
+    minWidth: '10rem',
+    padding: '0.45rem',
+    backgroundColor: 'var(--bg-card)',
+    border: '1px solid var(--border-light)',
+    borderRadius: 'var(--radius-sm)',
+    boxShadow: 'var(--shadow-lg)',
+    zIndex: 200
+  },
+  accountMenuItem: {
+    width: '100%',
+    padding: '0.65rem 0.8rem',
+    borderRadius: '6px',
+    backgroundColor: 'transparent',
+    color: 'var(--text-main)',
+    fontSize: '0.9rem',
+    fontWeight: '700',
+    textAlign: 'left' as const
+  },
+  logoutMenuItem: {
+    color: 'var(--primary)'
   },
   loggedInRow: {
     display: 'flex',
@@ -940,6 +1329,7 @@ const styles = {
     borderTop: '1px solid var(--border-light)',
     paddingTop: '1rem'
   },
+
   glassBadge: {
     padding: '0.5rem 1rem',
     backgroundColor: 'rgba(216, 27, 96, 0.1)',
@@ -1054,12 +1444,22 @@ const styles = {
     gap: '0.4rem'
   },
   quickFiltersContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.45rem',
     fontSize: '0.85rem',
-    color: 'var(--primary)',
-    fontWeight: '600',
-    backgroundColor: 'var(--primary-light)',
-    padding: '0.5rem 1rem',
-    borderRadius: 'var(--radius-md)'
+    color: 'var(--primary-dark)',
+    fontWeight: '700',
+    backgroundColor: 'var(--bg-card)',
+    border: '1px solid hsl(var(--magenta-200))',
+    boxShadow: '0 8px 22px rgba(136, 14, 79, 0.06)',
+    padding: '0.55rem 1rem',
+    borderRadius: 'var(--radius-full)'
+  },
+  quickFiltersIcon: {
+    color: 'var(--gold-hover)',
+    fontSize: '0.95rem',
+    lineHeight: 1
   },
   noMatchesBox: {
     height: '200px',
@@ -1093,7 +1493,7 @@ const styles = {
   },
   compatibilityBadge: {
     position: 'absolute' as const,
-    bottom: '12px',
+    top: '12px',
     left: '12px',
     backgroundColor: 'rgba(136, 14, 79, 0.95)',
     color: '#ffffff',
@@ -1169,6 +1569,58 @@ const styles = {
     fontSize: '0.7rem',
     borderRadius: 'var(--radius-sm)',
     fontWeight: '600'
+  },
+  authBtnText: {
+    fontWeight: '700',
+    fontSize: '0.9rem'
+  },
+  tabNavContainer: {
+    width: '100%',
+    background: 'var(--bg-header)',
+    borderBottom: '1px solid var(--border-light)',
+    position: 'sticky' as const,
+    top: '72px',
+    zIndex: 90,
+    backdropFilter: 'var(--blur-glass)'
+  },
+  tabNavContent: {
+    maxWidth: '1200px',
+    margin: '0 auto',
+    display: 'flex',
+    justifyContent: 'center',
+    gap: '2rem'
+  },
+  tabNavItem: {
+    background: 'none',
+    border: 'none',
+    padding: '1rem',
+    fontSize: '1rem',
+    fontWeight: '600',
+    color: 'var(--text-muted)',
+    cursor: 'pointer',
+    borderBottom: '3px solid transparent',
+    transition: 'all 0.2s ease',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    justifyContent: 'center'
+  },
+  tabNavActive: {
+    color: 'var(--primary)',
+    borderBottomColor: 'var(--primary)'
+  },
+  actionBtnIcon: {
+    padding: '0.75rem',
+    borderRadius: '12px',
+    border: 'none',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontWeight: '600',
+    fontSize: '0.95rem',
+    gap: '0.4rem',
+    transition: 'transform 0.2s'
   },
   connectBtn: {
     width: '100%',

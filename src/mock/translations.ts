@@ -11,7 +11,7 @@ export interface TranslationItem {
 export const TRANSLATIONS: Record<string, TranslationItem> = {
   // General Navigation & Brand
   brand_serif: { en: "Mithila", hi: "मिथिला" },
-  brand_sans: { en: "Matrimony", hi: "पंजीकरण" },
+  brand_sans: { en: "Matrimony", hi: "विवाह" },
   btn_logout: { en: "Log Out", hi: "लॉग आउट" },
   btn_auth: { en: "Register / Sign In", hi: "रजिस्टर / साइन इन" },
   namaste: { en: "Namaste", hi: "नमस्ते" },
@@ -50,10 +50,12 @@ export const TRANSLATIONS: Record<string, TranslationItem> = {
   // Landing "What We Offer" Localizations
   landing_what_title: { en: "What We Offer", hi: "क्या है हमारी सेवा?" },
   landing_what_desc: { en: "A modern visual experience designed to make matrimonial search delightful, interactive, and fast.", hi: "आपके जीवनसाथी की खोज को बेहद सरल, सुंदर, मनोरंजक और आधुनिक बनाने के लिए नवीन सुविधाएं।" },
-  landing_what_item1_title: { en: "💬 Conversational Chat Onboarding", hi: "💬 संवादात्मक चैट पंजीकरण" },
-  landing_what_item1_desc: { en: "Assemble your biodata through a friendly, engaging chatbot instead of tiring standard forms.", hi: "उबाऊ फॉर्म्स के बजाय एक प्यारे चैटबॉट से बात करते हुए खेल-खेल में अपना बायोडाटा बनाएं।" },
-  landing_what_item2_title: { en: "🌓 Responsive Theme & i18n Toggles", hi: "🌓 डार्क थीम और द्विभाषी अनुभव" },
-  landing_what_item2_desc: { en: "Switch seamlessly between English/Hindi translations and comfortable dark mode visual canvases.", hi: "अंग्रेजी और हिंदी भाषा के साथ-साथ रात में आरामदायक देखने के लिए लाइट एवं डार्क मोड का सहज अनुभव।" },
+  landing_what_item1_title: { en: "🛡️ Genuine & Verified Profiles", hi: "🛡️ प्रामाणिक एवं सत्यापित प्रोफाइल" },
+  landing_what_item1_desc: { en: "Every candidate is vetted with simulated contact authentication to eliminate spam and ensure authentic credentials.", hi: "स्पैम को रोकने और वास्तविक पहचान सुनिश्चित करने के लिए हर उम्मीदवार को सत्यापित किया जाता है।" },
+  landing_what_item2_title: { en: "⚡ Modern Matching Algorithms", hi: "⚡ आधुनिक गोत्र और फिल्टर मिलान" },
+  landing_what_item2_desc: { en: "Intelligent Gotra-compatibility rules matched with age, income, and lifestyle filters to guide you to the right partner.", hi: "पारंपरिक गोत्र नियमों के साथ उम्र, आय और जीवनशैली प्राथमिकताओं पर आधारित तीव्र एवं सटीक मिलान तकनीक।" },
+  landing_what_item3_title: { en: "🌎 Large Global Maithil Community", hi: "🌎 विशाल वैश्विक मैथिल समुदाय" },
+  landing_what_item3_desc: { en: "Connecting Maithil families across Bangalore, Delhi NCR, Patna, Darbhanga, Mumbai, and worldwide.", hi: "बेंगलुरु, दिल्ली एनसीआर, मुंबई, पटना, दरभंगा सहित देश-विदेश में रहने वाले मैथिल वर-वधू का विशाल मंच।" },
 
   // Landing "Who We Are" Localizations
   landing_who_title: { en: "Who We Are", hi: "कौन हैं हम?" },
@@ -88,10 +90,14 @@ export const TRANSLATIONS: Record<string, TranslationItem> = {
     en: "Great. Now, how old are you? (Must be 18 to 70 years)", 
     hi: "बहुत बढ़िया। अब, आपकी उम्र क्या है? (उम्र 18 से 70 वर्ष के बीच होनी चाहिए)" 
   },
+  bot_height: { en: "What is your height? (e.g. 5'8\")", hi: "आपकी लंबाई क्या है? (जैसे 5'8\")" },
+  bot_marital: { en: "What is your marital status?", hi: "आपकी वैवाहिक स्थिति क्या है?" },
+  bot_complexion: { en: "What is your complexion?", hi: "आपका रंग-रूप (complexion) क्या है?" },
   bot_gotra: { 
     en: "Important question! What is your cultural Gotra?", 
     hi: "महत्वपूर्ण प्रश्न! आपका सांस्कृतिक गोत्र क्या है?" 
   },
+  bot_diet: { en: "What are your dietary preferences?", hi: "आपका खान-पान (Diet) कैसा है?" },
   bot_city: { 
     en: "Got it. In which city do you currently reside?", 
     hi: "समझ गए। आप वर्तमान में किस शहर में रह रहे हैं?" 
@@ -144,8 +150,37 @@ export const TRANSLATIONS: Record<string, TranslationItem> = {
   // Browse Dashboard
   browse_title: { en: "Discover Compatible Matches", hi: "अनुकूल जीवनसाथी खोजें" },
   browse_subtitle: { en: "Profiles are evaluated based on gotra compatibility, location filters, and age preferences.", hi: "गोत्र मिलान, स्थान और आयु प्राथमिकताओं के आधार पर प्रोफाइल का मूल्यांकन किया जाता है।" },
-  browse_alert: { en: "✨ Automatically calculated opposite gender matches with compatible Gotras", hi: "✨ गोत्र मिलान के अनुसार अनुकूल विपरीत लिंग प्रोफाइल स्वतः प्रदर्शित हैं" },
+  browse_alert: { en: "Automatically calculated opposite gender matches with compatible Gotras", hi: "गोत्र मिलान के अनुसार अनुकूल विपरीत लिंग प्रोफाइल स्वतः प्रदर्शित हैं" },
   card_match: { en: "Match", hi: "मैच" },
   btn_request_connect: { en: "Request Match Connect", hi: "कनेक्ट अनुरोध भेजें" },
-  no_matches: { en: "No compatible profiles found matching your compatibility criteria. Try modifying your preferences!", hi: "आपकी प्राथमिकताओं से मेल खाती हुई कोई प्रोफाइल नहीं मिली। कृपया अपनी प्राथमिकताओं को बदलें!" }
+  no_matches: { en: "No compatible profiles found matching your compatibility criteria. Try modifying your preferences!", hi: "आपकी प्राथमिकताओं से मेल खाती हुई कोई प्रोफाइल नहीं मिली। कृपया अपनी प्राथमिकताओं को बदलें!" },
+
+  // Phase 3: Profile Discovery & Freemium
+  nav_browse: { en: "Browse", hi: "खोजें" },
+  nav_inbox: { en: "Inbox", hi: "इनबॉक्स" },
+  nav_profile: { en: "Profile", hi: "प्रोफ़ाइल" },
+  
+  filter_title: { en: "Filters", hi: "फ़िल्टर" },
+  filter_age_range: { en: "Age Range", hi: "आयु सीमा" },
+  filter_location: { en: "Location", hi: "स्थान" },
+  filter_all: { en: "All", hi: "सभी" },
+  filter_apply: { en: "Apply Filters", hi: "फ़िल्टर लागू करें" },
+  
+  action_interest: { en: "Send Interest", hi: "रुचि भेजें" },
+  action_shortlist: { en: "Shortlist", hi: "शॉर्टलिस्ट" },
+  action_pass: { en: "Pass", hi: "छोड़ें" },
+  action_chat: { en: "Chat", hi: "चैट करें" },
+  
+  premium_title: { en: "Premium Feature", hi: "प्रीमियम फ़ीचर" },
+  premium_desc: { en: "Upgrade your plan to view contact details.", hi: "संपर्क विवरण देखने के लिए अपना प्लान अपग्रेड करें।" },
+  premium_btn: { en: "Upgrade Now", hi: "अभी अपग्रेड करें" },
+  
+  inbox_title: { en: "Your Interactions", hi: "आपकी बातचीत" },
+  inbox_empty: { en: "No interactions yet.", hi: "अभी तक कोई बातचीत नहीं हुई।" },
+  inbox_received: { en: "Received Requests", hi: "प्राप्त अनुरोध" },
+  inbox_matches: { en: "Mutual Matches", hi: "पारस्परिक मिलान" },
+  inbox_sent: { en: "Sent Interests", hi: "भेजी गई रुचियाँ" },
+  
+  chat_summary_title: { en: "Profile Summary", hi: "प्रोफ़ाइल सारांश" },
+  chat_summary_btn: { en: "Looks Good! View Matches", hi: "ठीक है! मिलान देखें" }
 };

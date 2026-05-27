@@ -33,7 +33,11 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
     fullName: '',
     gender: 'Female',
     age: 24,
+    height: '5\' 6"',
+    maritalStatus: 'Never Married',
+    complexion: 'Fair',
     gotra: 'Kashyap',
+    diet: 'Vegetarian',
     profession: 'Software Engineer',
     annualIncome: 1200000,
     location: 'Darbhanga',
@@ -146,7 +150,6 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
     switch (currentStep) {
       case 0: // Name entered -> Ask Gender
         setBiodataForm(prev => ({ ...prev, fullName: valueToProcess }));
-        // Photo changes dynamically based on gender
         const defaultPhoto = valueToProcess.toLowerCase() === 'female' 
           ? 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400&h=400'
           : 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=400&h=400';
@@ -166,44 +169,63 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
         triggerBotResponse(t('bot_age'), 'text');
         break;
 
-      case 2: // Age entered -> Validation check -> Ask Gotra
+      case 2: // Age entered -> Ask Height
         const ageNum = parseInt(valueToProcess);
         if (isNaN(ageNum) || ageNum < 18 || ageNum > 70) {
           setErrorMsg(t('chat_error_age'));
-          // Rollback step
           setCurrentStep(2);
-          setMessages(prev => prev.slice(0, -1)); // Remove the incorrect message from log
+          setMessages(prev => prev.slice(0, -1));
           return;
         }
         setBiodataForm(prev => ({ ...prev, age: ageNum }));
+        triggerBotResponse(t('bot_height'), 'select', ["5' 0\"", "5' 2\"", "5' 4\"", "5' 6\"", "5' 8\"", "5' 10\"", "6' 0\"+"]);
+        break;
+
+      case 3: // Height entered -> Ask Marital Status
+        setBiodataForm(prev => ({ ...prev, height: valueToProcess }));
+        triggerBotResponse(t('bot_marital'), 'select', ['Never Married', 'Divorced', 'Widowed', 'Awaiting Divorce']);
+        break;
+
+      case 4: // Marital Status entered -> Ask Complexion
+        setBiodataForm(prev => ({ ...prev, maritalStatus: valueToProcess }));
+        triggerBotResponse(t('bot_complexion'), 'select', ['Very Fair', 'Fair', 'Wheatish', 'Dark']);
+        break;
+
+      case 5: // Complexion entered -> Ask Gotra
+        setBiodataForm(prev => ({ ...prev, complexion: valueToProcess }));
         triggerBotResponse(t('bot_gotra'), 'select', ['Kashyap', 'Shandilya', 'Vatsa', 'Bhardwaj', 'Parashar', 'Katyayan']);
         break;
 
-      case 3: // Gotra selected -> Ask City
+      case 6: // Gotra selected -> Ask Diet
         setBiodataForm(prev => ({ ...prev, gotra: valueToProcess }));
+        triggerBotResponse(t('bot_diet'), 'select', ['Vegetarian', 'Non-Vegetarian', 'Eggetarian', 'Vegan']);
+        break;
+
+      case 7: // Diet entered -> Ask City
+        setBiodataForm(prev => ({ ...prev, diet: valueToProcess }));
         triggerBotResponse(t('bot_city'), 'text');
         break;
 
-      case 4: // City entered -> Ask Education
+      case 8: // City entered -> Ask Education
         setBiodataForm(prev => ({ ...prev, location: valueToProcess }));
         triggerBotResponse(t('bot_education'), 'text');
         break;
 
-      case 5: // Education entered -> Ask Profession
+      case 9: // Education entered -> Ask Profession
         setBiodataForm(prev => ({ ...prev, education: valueToProcess }));
         triggerBotResponse(t('bot_profession'), 'text');
         break;
 
-      case 6: // Profession entered -> Ask Income
+      case 10: // Profession entered -> Ask Income
         setBiodataForm(prev => ({ ...prev, profession: valueToProcess }));
         triggerBotResponse(t('bot_income'), 'text');
         break;
 
-      case 7: // Income entered -> Validation check -> Ask Hobbies
+      case 11: // Income entered -> Ask Hobbies
         const incomeNum = parseInt(valueToProcess);
         if (isNaN(incomeNum) || incomeNum <= 0) {
           setErrorMsg(t('chat_error_income'));
-          setCurrentStep(7);
+          setCurrentStep(11);
           setMessages(prev => prev.slice(0, -1));
           return;
         }
@@ -211,17 +233,17 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
         triggerBotResponse(t('bot_interests'), 'tags', ['Madhubani Painting', 'Classical Music', 'Cooking', 'Reading', 'Travel', 'Gardening', 'Yoga']);
         break;
 
-      case 8: // Hobbies selected -> Ask Bio
+      case 12: // Hobbies selected -> Ask Bio
         setBiodataForm(prev => ({ ...prev, interests: tempInterests }));
         triggerBotResponse(t('bot_bio'), 'text');
         break;
 
-      case 9: // Bio entered -> Ask Photo Upload
+      case 13: // Bio entered -> Ask Photo Upload
         setBiodataForm(prev => ({ ...prev, aboutMe: valueToProcess }));
         triggerBotResponse(t('bot_photo'), 'file');
         break;
 
-      case 10: // Photo Uploaded (or skipped) -> Generate Final Summary Review Card!
+      case 14: // Photo Uploaded -> Summary Review
         if (valueToProcess && valueToProcess !== 'skip') {
           setBiodataForm(prev => ({ ...prev, photoUrl: valueToProcess }));
         }
@@ -311,14 +333,20 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
                   </div>
                   
                   <div style={styles.detailsGrid}>
-                    <div style={styles.detailBox}>
-                      <span style={styles.detailLabel}>{t('summary_gotra')}</span>
-                      <strong style={styles.detailVal}>{biodataForm.gotra}</strong>
-                    </div>
-                    <div style={styles.detailBox}>
-                      <span style={styles.detailLabel}>{t('summary_location')}</span>
-                      <strong style={styles.detailVal}>{biodataForm.location}</strong>
-                    </div>
+                          <div style={styles.detailBox}>
+                            <span style={styles.detailLabel}>{locale === 'en' ? 'Age & Height' : 'उम्र और लंबाई'}</span>
+                            <span style={styles.detailVal}>{biodataForm.age} {locale === 'en' ? 'Yrs' : 'वर्ष'} • {biodataForm.height}</span>
+                          </div>
+                          
+                          <div style={styles.detailBox}>
+                            <span style={styles.detailLabel}>{locale === 'en' ? 'Marital & Diet' : 'वैवाहिक स्थिति और आहार'}</span>
+                            <span style={styles.detailVal}>{biodataForm.maritalStatus} • {biodataForm.diet}</span>
+                          </div>
+                          
+                          <div style={styles.detailBox}>
+                            <span style={styles.detailLabel}>{t('summary_gotra')}</span>
+                            <span style={styles.detailVal}>{biodataForm.gotra}</span>
+                          </div>
                     <div style={{ ...styles.detailBox, gridColumn: 'span 2' }}>
                       <span style={styles.detailLabel}>{t('summary_income')}</span>
                       <strong style={styles.detailVal}>₹{(biodataForm.annualIncome / 100000).toFixed(1)} {t('summary_lakh')}</strong>
