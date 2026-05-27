@@ -19,6 +19,7 @@ interface RegistrationChatProps {
 export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
   const { t, locale } = useLanguage();
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const welcomeTriggered = useRef(false);
 
   // Core Chat States
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -52,6 +53,8 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
 
   // Initial welcome message from bot
   useEffect(() => {
+    if (welcomeTriggered.current) return;
+    welcomeTriggered.current = true;
     triggerBotResponse(t('bot_welcome'), 'text');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
