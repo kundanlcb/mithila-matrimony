@@ -27,6 +27,18 @@ export const TRANSLATIONS: Record<string, TranslationItem> = {
   visual_card_serif: { en: "Playfair Serif Header", hi: "प्लेफेयर सेरिफ़ हेडर" },
   visual_card_glass: { en: "✨ Modern Glassmorphism Blur", hi: "✨ आधुनिक ग्लासमोर्फिज्म ब्लर" },
 
+  // Dribbble-Tier Hero Widget Translations
+  hero_tag: { en: "🧬 Gotra-Safe Matrimonial Platform", hi: "🧬 गोत्र-सुरक्षित मैथिल विवाह मंच" },
+  widget_gender: { en: "I am a", hi: "मैं हूँ" },
+  widget_look: { en: "Looking for a", hi: "वर/वधू खोज" },
+  widget_gotra: { en: "Of Gotra", hi: "गोत्र" },
+  widget_submit: { en: "Let's Match", hi: "अनुकूल मिलान खोजें" },
+  widget_male: { en: "Man", hi: "पुरुष" },
+  widget_female: { en: "Woman", hi: "महिला" },
+  widget_any: { en: "Any Gotra", hi: "सभी गोत्र" },
+  trust_stat1_title: { en: "12K+ Verified Profiles", hi: "12K+ सत्यापित प्रोफाइल" },
+  trust_stat2_title: { en: "Gotra Compatibility Engine", hi: "गोत्र-मिलान तकनीक" },
+
   // Landing "Why Choose Us" Localizations
   landing_why_title: { en: "Why Mithila Matrimony?", hi: "क्यूं Mithila Matrimony?" },
   landing_why_desc: { en: "Preserving legacy through verified cultural lineage, secure gotra rules, and trusted connections.", hi: "विश्वसनीय गोत्र मिलान और समृद्ध सांस्कृतिक परंपराओं के माध्यम से परिवारों को जोड़ना।" },

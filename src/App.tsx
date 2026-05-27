@@ -32,6 +32,11 @@ function App() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [otpSent, setOtpSent] = useState(false);
 
+  // Quick-Match Form States
+  const [searchGender, setSearchGender] = useState<'Male' | 'Female'>('Male');
+  const [searchLook, setSearchLook] = useState<'Male' | 'Female'>('Female');
+  const [searchGotra, setSearchGotra] = useState('Any');
+
   // Load Initial Sessions
   useEffect(() => {
     initMockDb();
@@ -56,6 +61,23 @@ function App() {
       setMatchingProfiles(mockGetMatchingProfiles());
     }
   }, [activeUser, activeBiodata]);
+
+  // Hero Widget: Handle Quick-Match Search
+  const handleQuickMatchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    initMockDb();
+    
+    // We are looking for searchLook (gender) of searchGotra
+    const allProfs = mockGetMatchingProfiles();
+    const filtered = allProfs.filter(p => {
+      const matchGender = p.gender === searchLook;
+      const matchGotra = searchGotra === 'Any' || p.gotra.toLowerCase() === searchGotra.toLowerCase();
+      return matchGender && matchGotra;
+    });
+    
+    setMatchingProfiles(filtered);
+    setActiveView('browse');
+  };
 
   // Auth: Trigger Send OTP
   const handleSendOtp = (e: React.FormEvent) => {
@@ -164,8 +186,13 @@ function App() {
             
             {/* HERO HERO SECTION */}
             <section className="full-bleed-row" style={{ padding: '6rem 0' }}>
-              <div className="section-wrapper" style={styles.heroLayout}>
+              <div className="section-wrapper hero-grid-layout">
                 <div style={styles.heroTextContent}>
+                  {/* Gotra-Safe Platform Badge */}
+                  <div style={{ alignSelf: 'flex-start', padding: '0.4rem 1rem', background: 'var(--primary-light)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-full)', color: 'var(--primary)', fontSize: '0.85rem', fontWeight: '700', marginBottom: '-0.5rem' }}>
+                    {t('hero_tag') || '🧬 Gotra-Safe Matrimonial Platform'}
+                  </div>
+
                   <h1 className="display" style={styles.heroTitle}>
                     {t('hero_title_prefix')}
                     <span style={{ color: 'var(--primary)' }}>{t('hero_title_accent')}</span>
@@ -173,39 +200,106 @@ function App() {
                   <p style={styles.heroSub}>
                     {t('hero_subtitle')}
                   </p>
-                  <div style={styles.heroBtnRow}>
-                    <button onClick={() => setActiveView('auth')} style={styles.primaryBtn}>
-                      {t('btn_begin_search')}
+
+                  {/* QUICK MATCH WIDGET */}
+                  <form onSubmit={handleQuickMatchSubmit} className="quick-match-widget animate-fade">
+                    <div className="widget-input-group">
+                      <label className="widget-label">{t('widget_gender')}</label>
+                      <select 
+                        className="widget-select"
+                        value={searchGender}
+                        onChange={(e) => setSearchGender(e.target.value as 'Male' | 'Female')}
+                      >
+                        <option value="Male">{t('widget_male')}</option>
+                        <option value="Female">{t('widget_female')}</option>
+                      </select>
+                    </div>
+
+                    <div className="widget-input-group">
+                      <label className="widget-label">{t('widget_look')}</label>
+                      <select 
+                        className="widget-select"
+                        value={searchLook}
+                        onChange={(e) => setSearchLook(e.target.value as 'Male' | 'Female')}
+                      >
+                        <option value="Female">{t('widget_female')}</option>
+                        <option value="Male">{t('widget_male')}</option>
+                      </select>
+                    </div>
+
+                    <div className="widget-input-group">
+                      <label className="widget-label">{t('widget_gotra')}</label>
+                      <select 
+                        className="widget-select"
+                        value={searchGotra}
+                        onChange={(e) => setSearchGotra(e.target.value)}
+                      >
+                        <option value="Any">{t('widget_any')}</option>
+                        <option value="Kashyap">Kashyap</option>
+                        <option value="Shandilya">Shandilya</option>
+                        <option value="Vatsa">Vatsa</option>
+                        <option value="Katyayan">Katyayan</option>
+                        <option value="Parashar">Parashar</option>
+                        <option value="Bhardwaj">Bhardwaj</option>
+                      </select>
+                    </div>
+
+                    <button type="submit" className="widget-submit-btn">
+                      {t('widget_submit')}
                     </button>
-                    <button 
-                      onClick={() => {
-                        initMockDb();
-                        setActiveView('browse');
-                        setMatchingProfiles(mockGetMatchingProfiles());
-                      }} 
-                      style={styles.secondaryBtn}
-                    >
-                      {t('btn_explore_mocks')}
-                    </button>
-                  </div>
+                  </form>
                 </div>
                 
                 <div style={styles.heroVisualBox}>
-                  {/* Visual Identity Palette card demo */}
-                  <div style={styles.visualAestheticCard} className="animate-scale">
-                    <h3 style={styles.visualCardTitle}>{t('visual_card_title')}</h3>
-                    <div style={styles.paletteGrid}>
-                      <div style={{ ...styles.paletteBox, backgroundColor: 'hsl(var(--magenta-800))' }}>#880E4F</div>
-                      <div style={{ ...styles.paletteBox, backgroundColor: 'hsl(var(--magenta-600))' }}>#B71C1C</div>
-                      <div style={{ ...styles.paletteBox, backgroundColor: 'hsl(var(--magenta-500))' }}>#D81B60</div>
-                      <div style={{ ...styles.paletteBox, backgroundColor: 'hsl(var(--magenta-300))' }}>#F48FB1</div>
+                  <div style={{ display: 'flex', justifyContent: 'center', position: 'relative', width: '100%', maxWidth: '400px' }}>
+                    {/* Floating Trust Badge 1 */}
+                    <div 
+                      className="stat-floating-pill animate-scale" 
+                      style={{ top: '-15px', left: '-15px', zIndex: 30 }}
+                    >
+                      ⭐ {locale === 'en' ? '4.9 App Rating' : '4.9 ऐप रेटिंग'}
                     </div>
-                    <div style={styles.typographySample}>
-                      <h2 className="display" style={{ fontSize: '1.4rem', color: 'var(--text-headers)' }}>{t('visual_card_serif')}</h2>
-                      <p style={{ fontFamily: 'var(--font-sans)', fontSize: '0.85rem' }}>{t('visual_card_sub')}</p>
+
+                    <div className="floating-card-deck">
+                      {/* Main Portrait Candidate Card */}
+                      <div className="deck-card-primary animate-scale">
+                        <div className="deck-floating-badge-gotra">🧬 {locale === 'en' ? 'Kashyap' : 'कश्यप'}</div>
+                        <img 
+                          src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400&h=400" 
+                          alt="Ananya Jha" 
+                          className="deck-card-candidate-img" 
+                        />
+                        <div className="deck-card-candidate-details">
+                          <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-headers)' }}>Ananya Jha</h3>
+                          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                            {locale === 'en' ? '25 Yrs • Delhi NCR' : '25 वर्ष • दिल्ली एनसीआर'}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Secondary Overlapping Card - 98% Compatibility Bubble */}
+                      <div className="deck-card-secondary">
+                        <div style={{ backgroundColor: 'var(--primary)', color: '#ffffff', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', fontSize: '0.8rem', flexShrink: 0 }}>
+                          🎯
+                        </div>
+                        <div>
+                          <h4 style={{ fontSize: '0.9rem', color: 'var(--text-headers)', fontWeight: 700 }}>98% {t('card_match')}</h4>
+                          <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{locale === 'en' ? 'Gotra Compatible' : 'गोत्र अनुकूल'}</p>
+                        </div>
+                      </div>
+
+                      {/* Tertiary Overlapping Card - Verified Partner */}
+                      <div className="deck-card-tertiary">
+                        <span>✨ {locale === 'en' ? 'Verified' : 'सत्यापित'}</span>
+                      </div>
                     </div>
-                    <div style={styles.glassBadge} className="flex-center">
-                      <span>{t('visual_card_glass')}</span>
+
+                    {/* Floating Trust Badge 2 */}
+                    <div 
+                      className="stat-floating-pill animate-scale" 
+                      style={{ bottom: '-15px', right: '-15px', zIndex: 30 }}
+                    >
+                      🛡️ {locale === 'en' ? '12K+ Verified Couples' : '12K+ सत्यापित जोड़े'}
                     </div>
                   </div>
                 </div>
