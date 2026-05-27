@@ -101,10 +101,17 @@ const SEED_PROFILES: Biodata[] = [
 
 // LocalStorage Keys
 const KEYS = {
+  USERS: 'matrimony_users',
   PROFILES: 'matrimony_profiles',
   ACTIVE_USER: 'matrimony_active_user',
   ACTIVE_BIODATA: 'matrimony_active_biodata',
   OTP_STORAGE: 'matrimony_otp_codes'
+};
+
+// Get all registered users from storage
+export const getAllUsers = (): UserProfile[] => {
+  const data = localStorage.getItem(KEYS.USERS);
+  return data ? JSON.parse(data) : [];
 };
 
 // Initialize Mock database
@@ -150,13 +157,25 @@ export const mockVerifyOtp = (mobileNumber: string, submittedCode: string): { su
     delete otps[mobileNumber];
     localStorage.setItem(KEYS.OTP_STORAGE, JSON.stringify(otps));
     
-    // Check if user already exists, or create a new user profile
-    const existingUser = getStoredActiveUser();
-    let user: UserProfile;
+    // Check in persistent users list
+    const allUsers = getAllUsers();
+    let user = allUsers.find(u => u.mobileNumber === mobileNumber);
     
-    if (existingUser && existingUser.mobileNumber === mobileNumber) {
-      user = existingUser;
+    if (user) {
+      const activeU = user;
+      // User already exists! Set active session
+      localStorage.setItem(KEYS.ACTIVE_USER, JSON.stringify(activeU));
+      
+      // If completed registration, restore their biodata profile
+      if (activeU.registrationStep === 'completed') {
+        const allProfiles = getAllProfiles();
+        const bio = allProfiles.find(p => p.userId === activeU.userId);
+        if (bio) {
+          localStorage.setItem(KEYS.ACTIVE_BIODATA, JSON.stringify(bio));
+        }
+      }
     } else {
+      // Create new user profile
       user = {
         userId: 'user-' + Math.random().toString(36).substr(2, 9),
         mobileNumber,
@@ -164,13 +183,16 @@ export const mockVerifyOtp = (mobileNumber: string, submittedCode: string): { su
         registrationStep: 'biodata',
         registeredAt: new Date().toISOString()
       };
+      
       localStorage.setItem(KEYS.ACTIVE_USER, JSON.stringify(user));
+      allUsers.push(user);
+      localStorage.setItem(KEYS.USERS, JSON.stringify(allUsers));
     }
     
     return {
       success: true,
       token: mockToken,
-      registrationStep: user.registrationStep
+      registrationStep: user!.registrationStep
     };
   }
   
@@ -216,6 +238,16 @@ export const mockSubmitBiodata = (biodataInput: Omit<Biodata, 'biodataId' | 'use
     registrationStep: 'completed'
   };
   localStorage.setItem(KEYS.ACTIVE_USER, JSON.stringify(updatedUser));
+
+  // Update in persistent registry
+  const allUsers = getAllUsers();
+  const indexUser = allUsers.findIndex(u => u.userId === activeUser.userId);
+  if (indexUser !== -1) {
+    allUsers[indexUser] = updatedUser;
+  } else {
+    allUsers.push(updatedUser);
+  }
+  localStorage.setItem(KEYS.USERS, JSON.stringify(allUsers));
 
   // Add the newly created biodata to the list of profiles if not already there
   const allProfiles = getAllProfiles();

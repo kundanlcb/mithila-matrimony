@@ -8,7 +8,7 @@ interface ChatMessage {
   sender: 'bot' | 'user';
   text: string;
   timestamp: string;
-  inputType?: 'text' | 'select' | 'tags' | 'summary';
+  inputType?: 'text' | 'select' | 'tags' | 'file' | 'summary';
   options?: string[];
 }
 
@@ -88,6 +88,8 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
         text = t('bot_interests');
       } else if (msg.text.includes(t('bot_bio').substring(0, 10))) {
         text = t('bot_bio');
+      } else if (msg.text.includes(t('bot_photo').substring(0, 10)) || msg.inputType === 'file') {
+        text = t('bot_photo');
       } else if (msg.text.includes(t('bot_summary').substring(0, 10)) || msg.inputType === 'summary') {
         text = t('bot_summary');
       }
@@ -214,8 +216,15 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
         triggerBotResponse(t('bot_bio'), 'text');
         break;
 
-      case 9: // Bio entered -> Generate Final Summary Review Card!
+      case 9: // Bio entered -> Ask Photo Upload
         setBiodataForm(prev => ({ ...prev, aboutMe: valueToProcess }));
+        triggerBotResponse(t('bot_photo'), 'file');
+        break;
+
+      case 10: // Photo Uploaded (or skipped) -> Generate Final Summary Review Card!
+        if (valueToProcess && valueToProcess !== 'skip') {
+          setBiodataForm(prev => ({ ...prev, photoUrl: valueToProcess }));
+        }
         triggerBotResponse(t('bot_summary'), 'summary');
         break;
 
@@ -236,6 +245,24 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
     });
   };
 
+  // Photo Upload Handler for Base64 conversion
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        setErrorMsg(locale === 'en' ? 'File size exceeds 2MB limit.' : 'फ़ाइल का आकार 2MB सीमा से अधिक है।');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64Url = event.target?.result as string;
+        handleUserSubmit(undefined, base64Url);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   // Save profile and trigger complete redirection callback
   const handleFinalRegister = () => {
     const res = mockSubmitBiodata(biodataForm);
@@ -246,6 +273,20 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
 
   return (
     <div className="chat-container">
+      {/* Bot Chat Premium Header */}
+      <div style={styles.chatHeader}>
+        <div style={{ position: 'relative' }}>
+          <div style={styles.botAvatarIcon}>🤵</div>
+          <div style={styles.activePulseIndicator}></div>
+        </div>
+        <div>
+          <h4 style={styles.chatHeaderTitle}>{locale === 'en' ? 'Mithila Assistant' : 'मैथिल सहायक'}</h4>
+          <span style={styles.chatHeaderSubtitle}>
+            {locale === 'en' ? 'Gotra-Safe Match Onboarding' : 'गोत्र-सुरक्षित ऑनबोर्डिंग सहायक'}
+          </span>
+        </div>
+      </div>
+
       {/* Bot Chat stream scroller */}
       <div className="chat-scroller">
         {messages.map((msg) => (
@@ -304,6 +345,17 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
                   </button>
                 </div>
               </div>
+            ) : msg.text.startsWith('data:image/') ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                <span style={{ fontSize: '0.8rem', opacity: 0.9 }}>📷 {locale === 'en' ? 'Uploaded Profile Photo:' : 'प्रोफ़ाइल फ़ोटो अपलोड की गई:'}</span>
+                <img 
+                  src={msg.text} 
+                  alt="Uploaded Portrait" 
+                  style={{ width: '80px', height: '80px', borderRadius: 'var(--radius-sm)', objectFit: 'cover', border: '2px solid #ffffff', boxShadow: 'var(--shadow-md)' }} 
+                />
+              </div>
+            ) : msg.text === 'skip' ? (
+              <span>⏩ {locale === 'en' ? 'Skipped Photo Upload' : 'फ़ोटो अपलोड छोड़ दिया गया'}</span>
             ) : (
               <span>{msg.text}</span>
             )}
@@ -395,11 +447,42 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
               </button>
             </div>
           )}
+
+          {/* File Upload / Image drag-and-drop panel */}
+          {messages[messages.length - 1].inputType === 'file' && (
+            <div className="chat-choices-panel animate-fade" style={{ flexDirection: 'column', gap: '0.8rem', alignItems: 'stretch', padding: '1.2rem 1.5rem' }}>
+              <div style={styles.uploadArea}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  id="chat-portrait-upload"
+                  onChange={handlePhotoUpload}
+                  style={{ display: 'none' }}
+                />
+                <label htmlFor="chat-portrait-upload" style={styles.uploadLabel}>
+                  <div style={{ fontSize: '2.2rem', marginBottom: '0.4rem' }}>📷</div>
+                  <span style={{ fontWeight: '700', fontSize: '0.9rem', color: 'var(--text-headers)' }}>
+                    {locale === 'en' ? 'Click to Upload Photo' : 'फ़ोटो अपलोड करने के लिए क्लिक करें'}
+                  </span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                    PNG, JPG or WEBP (Max 2MB)
+                  </span>
+                </label>
+              </div>
+              
+              <button
+                onClick={() => handleUserSubmit(undefined, 'skip')}
+                style={styles.skipUploadBtn}
+              >
+                ⏩ {locale === 'en' ? 'Skip & Keep Default Avatar' : 'छोड़ें और डिफ़ॉल्ट अवतार रखें'}
+              </button>
+            </div>
+          )}
         </>
       )}
 
       {/* Chat bottom input text prompt panel */}
-      {currentStep !== 10 && currentStep !== 8 && currentStep !== 1 && currentStep !== 3 && (
+      {currentStep !== 11 && currentStep !== 10 && currentStep !== 8 && currentStep !== 1 && currentStep !== 3 && (
         <form onSubmit={handleUserSubmit} className="chat-input-bar">
           <input
             type={currentStep === 2 || currentStep === 7 ? 'number' : 'text'}
@@ -563,5 +646,83 @@ const styles = {
     width: '100%',
     marginTop: '0.5rem',
     boxShadow: 'var(--shadow-md)'
+  },
+  chatHeader: {
+    padding: '1.2rem 1.6rem',
+    backgroundColor: 'var(--primary-dark)',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.8rem',
+    color: '#ffffff'
+  },
+  botAvatarIcon: {
+    width: '40px',
+    height: '40px',
+    borderRadius: '50%',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '1.3rem',
+    border: '1px solid rgba(255, 255, 255, 0.15)'
+  },
+  activePulseIndicator: {
+    position: 'absolute' as const,
+    bottom: '2px',
+    right: '2px',
+    width: '10px',
+    height: '10px',
+    borderRadius: '50%',
+    backgroundColor: '#4caf50',
+    border: '2px solid var(--primary-dark)',
+    boxShadow: '0 0 0 2px rgba(76, 175, 80, 0.4)',
+    animation: 'pulseDot 2s infinite ease-in-out'
+  },
+  chatHeaderTitle: {
+    fontSize: '0.95rem',
+    fontWeight: '800',
+    color: '#ffffff',
+    lineHeight: '1.2'
+  },
+  chatHeaderSubtitle: {
+    fontSize: '0.75rem',
+    color: 'hsl(var(--magenta-200))',
+    fontWeight: '500'
+  },
+  uploadArea: {
+    border: '2px dashed var(--border-light)',
+    borderRadius: 'var(--radius-md)',
+    padding: '2rem',
+    textAlign: 'center' as const,
+    backgroundColor: 'var(--bg-app)',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    display: 'flex',
+    flexDirection: 'column' as const,
+    alignItems: 'center',
+    gap: '0.4rem',
+    width: '100%',
+    boxSizing: 'border-box' as const
+  },
+  uploadLabel: {
+    cursor: 'pointer',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column' as const,
+    alignItems: 'center'
+  },
+  skipUploadBtn: {
+    padding: '0.65rem 1.2rem',
+    backgroundColor: 'transparent',
+    color: 'var(--text-muted)',
+    fontSize: '0.85rem',
+    fontWeight: '600',
+    textAlign: 'center' as const,
+    border: '1px dashed var(--border-light)',
+    borderRadius: 'var(--radius-sm)',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    width: '100%'
   }
 };

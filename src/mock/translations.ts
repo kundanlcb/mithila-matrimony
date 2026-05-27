@@ -113,8 +113,12 @@ export const TRANSLATIONS: Record<string, TranslationItem> = {
     hi: "बस कुछ ही कदम और! अपनी रुचियों और शौक का चयन करें (कम से कम एक चुनें)।" 
   },
   bot_bio: { 
-    en: "Finally, write a brief, warm 'About Me' description.", 
-    hi: "अंत में, अपने बारे में संक्षेप में एक प्यारा सा परिचय लिखें।" 
+    en: "Write a brief, warm 'About Me' description.", 
+    hi: "अपने बारे में संक्षेप में एक प्यारा सा परिचय लिखें।" 
+  },
+  bot_photo: {
+    en: "Perfect! Finally, please upload a nice profile photo so compatible matches can see your warm smile.",
+    hi: "बहुत बढ़िया! अंत में, कृपया एक सुंदर प्रोफाइल फ़ोटो अपलोड करें ताकि अनुकूल मिलान आपका मुस्कुराता हुआ चेहरा देख सकें।"
   },
   bot_summary: { 
     en: "Excellent! I have compiled your Mithila Biodata. Please review the summary card below.", 
