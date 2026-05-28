@@ -341,68 +341,127 @@ function App() {
             
             {/* HERO SECTION — Full-width centered, no card deck */}
             <section className="full-bleed-row hero-section-padded">
+              
+              {/* Background Hearts */}
+              <svg className="bg-heart heart-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <svg className="bg-heart heart-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <svg className="bg-heart heart-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <svg className="bg-heart heart-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <svg className="bg-heart heart-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+
               <div className="section-wrapper">
-                <div className="hero-centered-layout">
-                  {/* Gotra-Safe Platform Badge */}
-                  <div style={{ alignSelf: 'flex-start', padding: '0.4rem 1rem', background: 'var(--primary-light)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-full)', color: 'var(--primary)', fontSize: '0.85rem', fontWeight: '700', marginBottom: '-0.5rem' }}>
-                    {t('hero_tag') || '🧬 Gotra-Safe Matrimonial Platform'}
+                <div className="hero-split-layout">
+                  {/* Centered Content */}
+                  <div className="hero-text-content">
+                    {/* Gotra-Safe Platform Badge */}
+                    <div style={{ padding: '0.4rem 1rem', background: 'var(--primary-light)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-full)', color: 'var(--primary)', fontSize: '0.85rem', fontWeight: '700', marginBottom: '-0.5rem', display: 'inline-block' }}>
+                      {t('hero_tag') || '🧬 Gotra-Safe Matrimonial Platform'}
+                    </div>
+
+                    <h1 className="display" style={styles.heroTitle}>
+                      {t('hero_title_prefix')}
+                      <span style={{ color: 'var(--primary)' }}>{t('hero_title_accent')}</span>
+                    </h1>
+                    <p style={styles.heroSub}>
+                      {t('hero_subtitle')}
+                    </p>
+
+                    {/* HERO CTA BUTTONS */}
+                    <div className="hero-cta-group animate-fade" style={{ display: 'flex', gap: '1rem', marginTop: '2rem', flexWrap: 'wrap' }}>
+                      <button 
+                        onClick={() => setActiveView('auth')} 
+                        style={{ 
+                          padding: '1rem 2rem', 
+                          fontSize: '1.1rem', 
+                          fontWeight: '700',
+                          borderRadius: '50px', 
+                          background: 'var(--primary)', 
+                          color: 'white',
+                          border: 'none',
+                          boxShadow: '0 8px 20px rgba(216, 27, 96, 0.4)',
+                          cursor: 'pointer',
+                          transition: 'transform 0.2s'
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                        onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                      >
+                        {locale === 'en' ? 'Get Started — Register Free' : 'शुरू करें — नि:शुल्क रजिस्टर करें'}
+                      </button>
+                      <button 
+                        onClick={() => setActiveView('auth')} 
+                        style={{ 
+                          padding: '1rem 2rem', 
+                          fontSize: '1.1rem', 
+                          fontWeight: '700',
+                          borderRadius: '50px', 
+                          background: 'var(--bg-glass)', 
+                          color: 'var(--text-main)',
+                          border: '1px solid var(--border-glass)',
+                          backdropFilter: 'blur(10px)',
+                          cursor: 'pointer',
+                          transition: 'transform 0.2s'
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                        onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                      >
+                        {locale === 'en' ? 'Login' : 'लॉग इन करें'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* NEW SECTION: HOW IT WORKS */}
+            <section className="full-bleed-row how-it-works-section">
+              <div className="section-wrapper">
+                <div className="how-it-works-header">
+                  <h2 className="how-it-works-title">{locale === 'en' ? 'How Mithila Matrimony works' : 'मिथिला मैट्रिमोनी कैसे काम करता है'}</h2>
+                  <p className="how-it-works-subtitle">{locale === 'en' ? 'A very easy 4 step process to find your partner.' : 'अपना जीवनसाथी खोजने की बहुत ही आसान 4-चरण प्रक्रिया।'}</p>
+                </div>
+                
+                <div className="hiw-card-grid">
+                  
+                  {/* Card 1 */}
+                  <div className="hiw-glass-card animate-fade">
+                    <span className="hiw-step-bg-number">01</span>
+                    <div className="hiw-icon-container">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+                    </div>
+                    <h3 className="hiw-card-title">{locale === 'en' ? 'Create Biodata' : 'बायोडाटा बनाएं'}</h3>
+                    <p className="hiw-card-desc">{locale === 'en' ? 'You can easily create a biodata completely free of cost within some steps.' : 'आप कुछ ही चरणों में पूरी तरह से निःशुल्क बायोडाटा बना सकते हैं।'}</p>
                   </div>
 
-                  <h1 className="display" style={styles.heroTitle}>
-                    {t('hero_title_prefix')}
-                    <span style={{ color: 'var(--primary)' }}>{t('hero_title_accent')}</span>
-                  </h1>
-                  <p style={styles.heroSub}>
-                    {t('hero_subtitle')}
-                  </p>
-
-                  {/* QUICK MATCH WIDGET */}
-                  <form onSubmit={handleQuickMatchSubmit} className="quick-match-widget animate-fade">
-                    <div className="widget-input-group">
-                      <label className="widget-label">{t('widget_gender')}</label>
-                      <select 
-                        className="widget-select"
-                        value={searchGender}
-                        onChange={(e) => setSearchGender(e.target.value as 'Male' | 'Female')}
-                      >
-                        <option value="Male">{t('widget_male')}</option>
-                        <option value="Female">{t('widget_female')}</option>
-                      </select>
+                  {/* Card 2 */}
+                  <div className="hiw-glass-card animate-fade" style={{ animationDelay: '0.2s' }}>
+                    <span className="hiw-step-bg-number">02</span>
+                    <div className="hiw-icon-container">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
                     </div>
+                    <h3 className="hiw-card-title">{locale === 'en' ? 'Search Biodata' : 'बायोडाटा खोजें'}</h3>
+                    <p className="hiw-card-desc">{locale === 'en' ? 'You can easily search biodata using many filters including age, profession, educational qualification, gotra and more.' : 'आप उम्र, पेशा, शिक्षा, गोत्र और अन्य कई फ़िल्टर का उपयोग करके आसानी से बायोडाटा खोज सकते हैं।'}</p>
+                  </div>
 
-                    <div className="widget-input-group">
-                      <label className="widget-label">{t('widget_look')}</label>
-                      <select 
-                        className="widget-select"
-                        value={searchLook}
-                        onChange={(e) => setSearchLook(e.target.value as 'Male' | 'Female')}
-                      >
-                        <option value="Female">{t('widget_female')}</option>
-                        <option value="Male">{t('widget_male')}</option>
-                      </select>
+                  {/* Card 3 */}
+                  <div className="hiw-glass-card animate-fade" style={{ animationDelay: '0.4s' }}>
+                    <span className="hiw-step-bg-number">03</span>
+                    <div className="hiw-icon-container">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                     </div>
+                    <h3 className="hiw-card-title">{locale === 'en' ? 'Browse Match' : 'मैच ब्राउज़ करें'}</h3>
+                    <p className="hiw-card-desc">{locale === 'en' ? 'Once someone likes your biodata or you like someone\'s biodata, you can instantly review profiles.' : 'एक बार जब किसी को आपका बायोडाटा पसंद आ जाता है या आपको किसी का बायोडाटा पसंद आता है, तो आप तुरंत प्रोफ़ाइल की समीक्षा कर सकते हैं।'}</p>
+                  </div>
 
-                    <div className="widget-input-group">
-                      <label className="widget-label">{t('widget_gotra')}</label>
-                      <select 
-                        className="widget-select"
-                        value={searchGotra}
-                        onChange={(e) => setSearchGotra(e.target.value)}
-                      >
-                        <option value="Any">{t('widget_any')}</option>
-                        <option value="Kashyap">Kashyap</option>
-                        <option value="Shandilya">Shandilya</option>
-                        <option value="Vatsa">Vatsa</option>
-                        <option value="Katyayan">Katyayan</option>
-                        <option value="Parashar">Parashar</option>
-                        <option value="Bhardwaj">Bhardwaj</option>
-                      </select>
+                  {/* Card 4 */}
+                  <div className="hiw-glass-card animate-fade" style={{ animationDelay: '0.6s' }}>
+                    <span className="hiw-step-bg-number">04</span>
+                    <div className="hiw-icon-container">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                     </div>
+                    <h3 className="hiw-card-title">{locale === 'en' ? 'Send Request' : 'अनुरोध भेजें'}</h3>
+                    <p className="hiw-card-desc">{locale === 'en' ? 'If you feel the connection is strong, contact their guardians directly and proceed to get married according to traditions.' : 'यदि आपको लगता है कि संबंध मजबूत है, तो उनके अभिभावकों से सीधे संपर्क करें और परंपराओं के अनुसार शादी करने के लिए आगे बढ़ें।'}</p>
+                  </div>
 
-                    <button type="submit" className="widget-submit-btn">
-                      {t('widget_submit')}
-                    </button>
-                  </form>
                 </div>
               </div>
             </section>
@@ -504,92 +563,51 @@ function App() {
               </div>
             </section>
 
-            {/* SECTION A: WHY & WHO WE ARE (CONSOLIDATED EDITORIAL & STATS DASHBOARD) */}
-            <section className="full-bleed-row">
+            {/* SECTION A: STATS ONLY DASHBOARD */}
+            <section className="full-bleed-row" style={{ padding: '4rem 0' }}>
               <div className="section-wrapper">
-                <div className="why-split-layout">
-                  {/* Left Column: Bold Copy & Consolidated Badge Lists */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', textAlign: 'left' }}>
-                    <div style={{ alignSelf: 'flex-start', padding: '0.35rem 0.9rem', background: 'var(--primary-light)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-full)', color: 'var(--primary)', fontSize: '0.85rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                      {locale === 'en' ? 'Cultural Heritage & Stats' : 'सांस्कृतिक धरोहर और आँकड़े'}
+                <div className="stats-grid animate-fade">
+                  
+                  <div className="animate-scale" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
+                    <div className="stat-circle">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     </div>
-                    <h2 className="display" style={{ fontSize: '2.5rem', lineHeight: '1.2', color: 'var(--text-headers)' }}>
-                      {t('landing_why_title')}
-                    </h2>
-                    <p style={{ fontSize: '1.05rem', color: 'var(--text-muted)', lineHeight: '1.7' }}>
-                      {t('landing_why_desc')}
-                    </p>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', marginTop: '0.5rem' }}>
-                      {/* Item 1: Gotra Compatibility */}
-                      <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'flex-start' }}>
-                        <span style={{ fontSize: '1.2rem', marginTop: '0.1rem' }}>🧬</span>
-                        <div>
-                          <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-headers)', marginBottom: '0.2rem' }}>
-                            {t('landing_why_item1_title')}
-                          </h4>
-                          <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
-                            {t('landing_why_item1_desc')}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Item 2: Secure Contact Verification */}
-                      <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'flex-start' }}>
-                        <span style={{ fontSize: '1.2rem', marginTop: '0.1rem' }}>🔒</span>
-                        <div>
-                          <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-headers)', marginBottom: '0.2rem' }}>
-                            {t('landing_why_item2_title')}
-                          </h4>
-                          <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
-                            {t('landing_why_item2_desc')}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Item 3: Global Maithil Community */}
-                      <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'flex-start' }}>
-                        <span style={{ fontSize: '1.2rem', marginTop: '0.1rem' }}>🌎</span>
-                        <div>
-                          <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-headers)', marginBottom: '0.2rem' }}>
-                            {t('landing_who_item1_title')}
-                          </h4>
-                          <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
-                            {t('landing_who_item1_desc')}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div style={{ marginTop: '1rem' }}>
-                      <button onClick={() => setActiveView('auth')} className="cta-button-landing">
-                        {t('btn_begin_search')}
-                      </button>
+                    <div>
+                      <h3 style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--text-main)', margin: '0' }}>12K+</h3>
+                      <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', margin: '0', fontWeight: '500' }}>{locale === 'en' ? 'Verified Couples' : 'सत्यापित जोड़े'}</p>
                     </div>
                   </div>
 
-                  {/* Right Column: Dynamic Statistics Dashboard Grid */}
-                  <div className="stats-grid-landing">
-                    <div className="stat-dashboard-card animate-scale" style={{ borderLeft: '3px solid var(--gold-primary)' }}>
-                      <span className="stat-number-large">12K+</span>
-                      <span className="stat-label-desc">{locale === 'en' ? 'Verified Couples' : 'सत्यापित जोड़े'}</span>
+                  <div className="animate-scale" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', animationDelay: '0.1s' }}>
+                    <div className="stat-circle">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                     </div>
-
-                    <div className="stat-dashboard-card animate-scale" style={{ borderLeft: '3px solid var(--primary)' }}>
-                      <span className="stat-number-large">99.8%</span>
-                      <span className="stat-label-desc">{locale === 'en' ? 'Gotra Match Rating' : 'गोत्र अनुकूलता दर'}</span>
-                    </div>
-
-                    <div className="stat-dashboard-card animate-scale" style={{ borderLeft: '3px solid var(--primary)' }}>
-                      <span className="stat-number-large">100%</span>
-                      <span className="stat-label-desc">{locale === 'en' ? 'Privacy Secured' : 'पूर्ण गोपनीयता'}</span>
-                    </div>
-
-                    <div className="stat-dashboard-card animate-scale" style={{ borderLeft: '3px solid var(--gold-primary)' }}>
-                      <span className="stat-number-large">50+</span>
-                      <span className="stat-label-desc">{locale === 'en' ? 'Maithil Cities' : 'वैश्विक मैथिल शहर'}</span>
+                    <div>
+                      <h3 style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--text-main)', margin: '0' }}>100%</h3>
+                      <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', margin: '0', fontWeight: '500' }}>{locale === 'en' ? 'Privacy Secured' : 'पूर्ण गोपनीयता'}</p>
                     </div>
                   </div>
+
+                  <div className="animate-scale" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', animationDelay: '0.2s' }}>
+                    <div className="stat-circle">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                    </div>
+                    <div>
+                      <h3 style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--text-main)', margin: '0' }}>50+</h3>
+                      <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', margin: '0', fontWeight: '500' }}>{locale === 'en' ? 'Maithil Cities' : 'वैश्विक मैथिल शहर'}</p>
+                    </div>
+                  </div>
+
+                  <div className="animate-scale" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', animationDelay: '0.3s' }}>
+                    <div className="stat-circle">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    </div>
+                    <div>
+                      <h3 style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--text-main)', margin: '0' }}>99.8%</h3>
+                      <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', margin: '0', fontWeight: '500' }}>{locale === 'en' ? 'Match Rating' : 'गोत्र अनुकूलता दर'}</p>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </section>
