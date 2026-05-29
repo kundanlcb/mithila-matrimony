@@ -1,5 +1,5 @@
 /* 
- * Mithila Matrimony - TypeScript Interfaces
+ * Maithil Match - TypeScript Interfaces
  * Defines core application data models
  */
 

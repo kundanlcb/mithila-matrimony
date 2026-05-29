@@ -420,7 +420,7 @@ function App() {
                     {locale === 'en' ? 'Simple Process' : 'सरल प्रक्रिया'}
                   </div>
                   <h2 className="display" style={{ fontSize: '2.5rem', lineHeight: '1.2', color: 'var(--text-headers)', margin: 0 }}>
-                    {locale === 'en' ? 'How Mithila Matrimony works' : 'मिथिला मैट्रिमोनी कैसे काम करता है'}
+                    {locale === 'en' ? 'How Maithil Match works' : 'मैथिल मैच कैसे काम करता है'}
                   </h2>
                   <p style={{ fontSize: '1.05rem', color: 'var(--text-muted)', lineHeight: '1.7', margin: 0 }}>
                     {locale === 'en' ? 'A very easy 4 step process to find your partner.' : 'अपना जीवनसाथी खोजने की बहुत ही आसान 4-चरण प्रक्रिया।'}

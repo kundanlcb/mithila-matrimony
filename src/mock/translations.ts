@@ -1,5 +1,5 @@
 /* 
- * Mithila Matrimony - Central Translations Database
+ * Maithil Match - Central Translations Database
  * Supports English (en) and Hindi (hi) localizations
  */
 
@@ -10,8 +10,8 @@ export interface TranslationItem {
 
 export const TRANSLATIONS: Record<string, TranslationItem> = {
   // General Navigation & Brand
-  brand_serif: { en: "Mithila", hi: "मिथिला" },
-  brand_sans: { en: "Matrimony", hi: "विवाह" },
+  brand_serif: { en: "Maithil", hi: "मैथिल" },
+  brand_sans: { en: "Match", hi: "मैच" },
   btn_logout: { en: "Log Out", hi: "लॉग आउट" },
   btn_auth: { en: "Register / Sign In", hi: "रजिस्टर / साइन इन" },
   namaste: { en: "Namaste", hi: "नमस्ते" },
@@ -40,7 +40,7 @@ export const TRANSLATIONS: Record<string, TranslationItem> = {
   trust_stat2_title: { en: "Gotra Compatibility Engine", hi: "गोत्र-मिलान तकनीक" },
 
   // Landing "Why Choose Us" Localizations
-  landing_why_title: { en: "Why Mithila Matrimony?", hi: "क्यूं Mithila Matrimony?" },
+  landing_why_title: { en: "Why Maithil Match?", hi: "क्यूं Maithil Match?" },
   landing_why_desc: { en: "Preserving legacy through verified cultural lineage, secure gotra rules, and trusted connections.", hi: "विश्वसनीय गोत्र मिलान और समृद्ध सांस्कृतिक परंपराओं के माध्यम से परिवारों को जोड़ना।" },
   landing_why_item1_title: { en: "🧬 Gotra Compatibility Safeguards", hi: "🧬 गोत्र मिलान सुरक्षा" },
   landing_why_item1_desc: { en: "Automated filters screen matches based on traditional gotra customs to align with lineage values.", hi: "हमारी प्रणाली पारंपरिक गोत्र नियमों के अनुसार अनुकूल मिलान स्वतः और सुरक्षित रूप से खोजती है।" },
@@ -79,8 +79,8 @@ export const TRANSLATIONS: Record<string, TranslationItem> = {
 
   // ChatBot Dialogue Sequence
   bot_welcome: { 
-    en: "Namaste! Welcome to Mithila Matrimony. Let's create your matrimonial biodata in an engaging way. First, what is your full name?", 
-    hi: "नमस्ते! मिथिला मैट्रिमोनी में स्वागत है। चलिए एक संवादात्मक बातचीत के माध्यम से आपका बायोडाटा बनाते हैं। सबसे पहले, आपका पूरा नाम क्या है?" 
+    en: "Namaste! Welcome to Maithil Match. Let's create your matrimonial biodata in an engaging way. First, what is your full name?", 
+    hi: "नमस्ते! मैथिल मैच में स्वागत है। चलिए एक संवादात्मक बातचीत के माध्यम से आपका बायोडाटा बनाते हैं। सबसे पहले, आपका पूरा नाम क्या है?" 
   },
   bot_gender: { 
     en: "Pleasure to meet you, {name}! Please select your gender.", 
@@ -127,8 +127,8 @@ export const TRANSLATIONS: Record<string, TranslationItem> = {
     hi: "बहुत बढ़िया! अंत में, कृपया एक सुंदर प्रोफाइल फ़ोटो अपलोड करें ताकि अनुकूल मिलान आपका मुस्कुराता हुआ चेहरा देख सकें।"
   },
   bot_summary: { 
-    en: "Excellent! I have compiled your Mithila Biodata. Please review the summary card below.", 
-    hi: "अद्भुत! मैंने आपका मिथिला बायोडाटा तैयार कर लिया है। कृपया नीचे दिए गए सारांश कार्ड की समीक्षा करें।" 
+    en: "Excellent! I have compiled your Maithil Biodata. Please review the summary card below.", 
+    hi: "अद्भुत! मैंने आपका मैथिल बायोडाटा तैयार कर लिया है। कृपया नीचे दिए गए सारांश कार्ड की समीक्षा करें।" 
   },
 
   // Chat validations & buttons
@@ -139,7 +139,7 @@ export const TRANSLATIONS: Record<string, TranslationItem> = {
   chat_error_income: { en: "Annual income must be a valid positive number.", hi: "वार्षिक आय एक वैध सकारात्मक संख्या होनी चाहिए।" },
 
   // Summary Card Review
-  summary_title: { en: "Mithila Matrimony Biodata", hi: "मिथिला मैट्रिमोनी बायोडाटा" },
+  summary_title: { en: "Maithil Match Biodata", hi: "मैथिल मैच बायोडाटा" },
   summary_gotra: { en: "Gotra", hi: "गोत्र" },
   summary_location: { en: "Location", hi: "स्थान" },
   summary_income: { en: "Annual Income", hi: "वार्षिक आय" },
