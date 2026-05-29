@@ -233,7 +233,7 @@ function App() {
             style={styles.logoBox} 
             onClick={() => setActiveView(activeUser ? (activeUser.registrationStep === 'completed' ? 'browse' : 'register') : 'home')}
           >
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+            <svg className="brand-logo-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
               <circle cx="9" cy="12" r="6" stroke="var(--primary)" strokeWidth="2.5" />
               <circle cx="15" cy="12" r="6" stroke="var(--gold-primary, #D4AF37)" strokeWidth="2.5" />
             </svg>
@@ -1105,7 +1105,7 @@ function App() {
             {/* Column 1: Brand Info */}
             <div className="footer-col">
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem' }}>
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0, marginRight: '0.2rem' }}>
+                <svg className="footer-logo-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0, marginRight: '0.2rem' }}>
                   <circle cx="9" cy="12" r="6" stroke="#ffffff" strokeWidth="2.5" />
                   <circle cx="15" cy="12" r="6" stroke="var(--gold-primary, #D4AF37)" strokeWidth="2.5" />
                 </svg>
