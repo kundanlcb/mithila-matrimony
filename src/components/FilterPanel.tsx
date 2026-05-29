@@ -36,6 +36,17 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onApplyFilters, onClose, isMo
     if (onClose) onClose();
   };
 
+  const handleReset = () => {
+    setGotra('');
+    setAgeRange({ min: 18, max: 70 });
+    setLocation('');
+    setProfession('');
+    setMaritalStatus('');
+    setDiet('');
+    onApplyFilters({});
+    if (onClose) onClose();
+  };
+
   return (
     <div style={styles.container}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
@@ -130,9 +141,14 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onApplyFilters, onClose, isMo
         </select>
       </div>
 
-      <button onClick={handleApply} style={styles.applyBtn}>
-        {t('filter_apply')}
-      </button>
+      <div style={{ display: 'flex', gap: '0.8rem', marginTop: '0.5rem' }}>
+        <button onClick={handleReset} style={{ ...styles.applyBtn, background: 'var(--bg-card)', color: 'var(--text-main)', border: '1px solid var(--border-light)', flex: 1 }}>
+          {locale === 'en' ? 'Reset' : 'रीसेट करें'}
+        </button>
+        <button onClick={handleApply} style={{ ...styles.applyBtn, flex: 2 }}>
+          {t('filter_apply')}
+        </button>
+      </div>
     </div>
   );
 };
@@ -178,7 +194,8 @@ const styles = {
     borderRadius: '8px',
     background: 'var(--bg-app)',
     color: 'var(--text-main)',
-    fontFamily: 'inherit'
+    fontFamily: 'inherit',
+    fontSize: '1rem'
   },
   select: {
     width: '100%',
@@ -192,6 +209,7 @@ const styles = {
     backgroundSize: '1rem',
     color: 'var(--text-main)',
     fontFamily: 'inherit',
+    fontSize: '1rem',
     cursor: 'pointer',
     WebkitAppearance: 'none' as const,
     MozAppearance: 'none' as const,

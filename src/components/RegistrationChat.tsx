@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { mockSubmitBiodata } from '../mock/mockDb';
+import { BiodataService } from '../api/biodata.service';
 import type { Biodata } from '../types';
 
 interface ChatMessage {
@@ -286,10 +286,13 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
   };
 
   // Save profile and trigger complete redirection callback
-  const handleFinalRegister = () => {
-    const res = mockSubmitBiodata(biodataForm);
-    if (res.success) {
+  const handleFinalRegister = async () => {
+    try {
+      await BiodataService.updateMine(biodataForm);
+      await BiodataService.complete();
       onComplete();
+    } catch (e) {
+      setErrorMsg('Failed to complete registration. Please try again.');
     }
   };
 
@@ -510,10 +513,10 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
       )}
 
       {/* Chat bottom input text prompt panel */}
-      {currentStep !== 11 && currentStep !== 10 && currentStep !== 8 && currentStep !== 1 && currentStep !== 3 && (
+      {(!messages.length || messages[messages.length - 1].sender === 'user' || messages[messages.length - 1].inputType === 'text') && (
         <form onSubmit={handleUserSubmit} className="chat-input-bar">
           <input
-            type={currentStep === 2 || currentStep === 7 ? 'number' : 'text'}
+            type={currentStep === 2 || currentStep === 11 ? 'number' : 'text'}
             placeholder={t('chat_placeholder')}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}

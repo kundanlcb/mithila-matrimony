@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # The PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: mithila-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: mithila_user
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: mithila_matrimony
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Optionally running the Backend locally via Docker
+  # (Though for active dev, you usually run the Spring Boot app directly from your IDE)
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mithila-backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/mithila_matrimony
+      - SPRING_DATASOURCE_USERNAME=mithila_user
+      - SPRING_DATASOURCE_PASSWORD=password123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

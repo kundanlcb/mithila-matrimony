@@ -1,19 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import './styles/index.css';
-import {
-  initMockDb,
-  mockSendOtp,
-  mockVerifyOtp,
-  mockGetMatchingProfiles,
-  getStoredActiveUser,
-  getStoredActiveBiodata,
-  mockLogout,
-  getInteractions,
-  recordInteraction,
-  getAllProfiles,
-  removeInteraction,
-  mockSubmitBiodata
-} from './mock/mockDb';
+import { AuthService } from './api/auth.service';
+import { BiodataService } from './api/biodata.service';
+import { MatchesService } from './api/matches.service';
+import { InteractionsService } from './api/interactions.service';
 import type { Biodata, MatchingProfile, UserProfile, ProfileInteraction, InteractionType } from './types';
 import { useLanguage } from './context/LanguageContext';
 import { useTheme } from './context/ThemeContext';
@@ -33,6 +23,7 @@ function App() {
   const [activeBiodata, setActiveBiodata] = useState<Biodata | null>(null);
   const [matchingProfiles, setMatchingProfiles] = useState<MatchingProfile[]>([]);
   const [activeView, setActiveView] = useState<'home' | 'auth' | 'register' | 'browse' | 'inbox' | 'my-profile'>('home');
+  const [sortBy, setSortBy] = useState<'score' | 'age_asc' | 'age_desc' | 'income'>('score');
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
@@ -69,29 +60,39 @@ function App() {
 
   // Load Initial Sessions
   useEffect(() => {
-    initMockDb();
-    const user = getStoredActiveUser();
-    const bio = getStoredActiveBiodata();
-    setActiveUser(user);
-    setActiveBiodata(bio);
-
-    if (user) {
-      if (user.registrationStep === 'biodata') {
-        setActiveView('register');
-      } else if (user.registrationStep === 'completed') {
-        setActiveView('browse');
-        setMatchingProfiles(mockGetMatchingProfiles());
-        setInteractions(getInteractions(user.userId));
+    const checkSession = async () => {
+      const token = localStorage.getItem('auth_token');
+      const savedProfile = localStorage.getItem('active_profile');
+      if (token && savedProfile) {
+        const user = JSON.parse(savedProfile);
+        setActiveUser(user);
+        
+        if (user.registrationStep === 'biodata') {
+          setActiveView('register');
+        } else if (user.registrationStep === 'completed') {
+          setActiveView('browse');
+          try {
+            const [bio, matches] = await Promise.all([
+              BiodataService.getMine(),
+              MatchesService.findMatches(0, 20, sortBy)
+            ]);
+            setActiveBiodata(bio as any);
+            setMatchingProfiles(matches.content as any);
+          } catch (e) {
+            console.error('Failed to load profile data', e);
+          }
+        }
       }
-    }
+    };
+    checkSession();
   }, []);
 
   // Update Matching Profiles whenever user/biodata changes
   useEffect(() => {
     if (activeUser && activeUser.registrationStep === 'completed') {
-      setMatchingProfiles(mockGetMatchingProfiles());
+      MatchesService.findMatches(0, 20, sortBy).then(res => setMatchingProfiles(res.content as any)).catch(console.error);
     }
-  }, [activeUser, activeBiodata]);
+  }, [activeUser, activeBiodata, sortBy]);
 
   useEffect(() => {
     if (!isAccountMenuOpen) return;
@@ -107,9 +108,8 @@ function App() {
   }, [isAccountMenuOpen]);
 
   // Hero Widget: Handle Quick-Match Search
-  const handleQuickMatchSubmit = (e: React.FormEvent) => {
+  const handleQuickMatchSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    initMockDb();
     
     if (!activeUser) {
       setActiveView('auth');
@@ -121,57 +121,57 @@ function App() {
       return;
     }
 
-    // We are looking for searchLook (gender) of searchGotra
-    const allProfs = mockGetMatchingProfiles();
-    const filtered = allProfs.filter(p => {
-      const matchGender = p.gender === searchLook;
-      const matchGotra = searchGotra === 'Any' || p.gotra.toLowerCase() === searchGotra.toLowerCase();
-      return matchGender && matchGotra;
-    });
-    
-    setMatchingProfiles(filtered);
-    setActiveView('browse');
+    try {
+      // In a real app we'd pass searchGotra and searchLook as filters to the backend
+      const res = await MatchesService.findMatches(0, 20, sortBy);
+      setMatchingProfiles(res.content as any);
+      setActiveView('browse');
+    } catch(e) {
+      console.error(e);
+    }
   };
 
   // Auth: Trigger Send OTP
-  const handleSendOtp = (e: React.FormEvent) => {
+  const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
-    const res = mockSendOtp(mobileNumber);
-    if (res.success) {
+    try {
+      await AuthService.requestOtp({ mobileNumber });
       setOtpSent(true);
-      setSimulatedOtpHint(res.otpCode);
-    } else {
-      setAuthError(t(res.message) || res.message);
+      setSimulatedOtpHint("OTP sent via API! (Check logs/SMS)");
+    } catch (e: any) {
+      setAuthError(e.message || 'Failed to send OTP');
     }
   };
 
   // Auth: Trigger Verify OTP
-  const handleVerifyOtp = (e: React.FormEvent) => {
+  const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
-    const res = mockVerifyOtp(mobileNumber, otpCode);
-    if (res.success && res.registrationStep) {
-      const user = getStoredActiveUser();
-      setActiveUser(user);
-      setSimulatedOtpHint(null);
-      setOtpSent(false);
-      setOtpCode('');
+    try {
+      const res = await AuthService.verifyOtp({ mobileNumber, otp: otpCode });
+      if (res.user) {
+        setActiveUser(res.user as any);
+        setSimulatedOtpHint(null);
+        setOtpSent(false);
+        setOtpCode('');
 
-      if (res.registrationStep === 'biodata') {
-        setActiveView('register');
-      } else {
-        setActiveBiodata(getStoredActiveBiodata());
-        setActiveView('browse');
+        if (res.user.registrationStep === 'biodata' || res.user.registrationStep === 'auth') {
+          setActiveView('register');
+        } else {
+          const bio = await BiodataService.getMine();
+          setActiveBiodata(bio as any);
+          setActiveView('browse');
+        }
       }
-    } else {
-      setAuthError(t('error_invalid_otp'));
+    } catch (e: any) {
+      setAuthError(e.message || t('error_invalid_otp'));
     }
   };
 
   // Logout handler
   const handleLogout = () => {
-    mockLogout();
+    AuthService.logout();
     setActiveUser(null);
     setActiveBiodata(null);
     setMatchingProfiles([]);
@@ -186,39 +186,40 @@ function App() {
     setIsAccountMenuOpen(false);
   };
 
-  const handleInteraction = (targetProfileId: string, type: InteractionType) => {
+  const handleInteraction = async (targetProfileId: string, type: InteractionType) => {
     if (!activeUser) return;
-    recordInteraction(activeUser.userId, targetProfileId, type);
-    setInteractions(getInteractions(activeUser.userId));
-    setSelectedProfile(null);
-    if (type === 'passed') {
-      setMatchingProfiles(prev => prev.filter(p => p.biodataId !== targetProfileId));
+    try {
+      await InteractionsService.send({ toUserId: targetProfileId, type });
+      setSelectedProfile(null);
+      if (type === 'passed') {
+        setMatchingProfiles(prev => prev.filter(p => p.id !== targetProfileId) as any);
+      }
+    } catch (e) {
+      console.error('Failed to send interaction', e);
     }
   };
 
   const handleRemoveInteraction = (targetProfileId: string, type: InteractionType) => {
-    if (!activeUser) return;
-    removeInteraction(activeUser.userId, targetProfileId, type);
-    setInteractions(getInteractions(activeUser.userId));
+    // This would ideally hit a DELETE /api/v1/interactions endpoint
+    console.warn('Remove interaction not implemented on backend yet');
   };
 
-  const handleInboxAction = (interactionId: string, type: 'match_accepted' | 'match_declined') => {
-    const int = interactions.find(i => i.interactionId === interactionId);
-    if (int && activeUser) {
-      recordInteraction(activeUser.userId, int.fromUserId, type); // For mock simplicity, we just record a new one
-      // Actually we should update it, but for mock we can just record the response
-      recordInteraction(activeUser.userId, int.fromUserId === activeUser.userId ? int.toProfileId : int.fromUserId, type);
-      setInteractions(getInteractions(activeUser.userId));
+  const handleInboxAction = async (interactionId: string, type: 'match_accepted' | 'match_declined') => {
+    // Usually would accept/decline via an API
+    console.warn('Inbox action not implemented on backend yet');
+  };
+
+  const handleApplyFilters = async (filters: any) => {
+    // Note: The /api/v1/matches endpoint supports query params.
+    // For full filtering, the backend needs to support passing these, or updating the Criteria.
+    console.log('Applying filters:', filters);
+    // As a placeholder for criteria update:
+    try {
+      const res = await MatchesService.findMatches(0, 20, sortBy);
+      setMatchingProfiles(res.content as any);
+    } catch (e) {
+      console.error(e);
     }
-  };
-
-  const handleApplyFilters = (filters: any) => {
-    let results = mockGetMatchingProfiles();
-    if (filters.minAge) results = results.filter(p => p.age >= filters.minAge);
-    if (filters.maxAge) results = results.filter(p => p.age <= filters.maxAge);
-    if (filters.gotra) results = results.filter(p => p.gotra === filters.gotra);
-    if (filters.location) results = results.filter(p => p.location === filters.location);
-    setMatchingProfiles(results);
   };
 
   const profileInitial = activeBiodata?.fullName?.trim().charAt(0).toUpperCase() || 'M';
@@ -415,9 +416,16 @@ function App() {
             {/* NEW SECTION: HOW IT WORKS */}
             <section className="full-bleed-row how-it-works-section">
               <div className="section-wrapper">
-                <div className="how-it-works-header">
-                  <h2 className="how-it-works-title">{locale === 'en' ? 'How Mithila Matrimony works' : 'मिथिला मैट्रिमोनी कैसे काम करता है'}</h2>
-                  <p className="how-it-works-subtitle">{locale === 'en' ? 'A very easy 4 step process to find your partner.' : 'अपना जीवनसाथी खोजने की बहुत ही आसान 4-चरण प्रक्रिया।'}</p>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.2rem', textAlign: 'center', marginBottom: '4rem' }}>
+                  <div style={{ padding: '0.35rem 0.9rem', background: 'var(--primary-light)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-full)', color: 'var(--primary-dark)', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                    {locale === 'en' ? 'Simple Process' : 'सरल प्रक्रिया'}
+                  </div>
+                  <h2 className="display" style={{ fontSize: '2.5rem', lineHeight: '1.2', color: 'var(--text-headers)', margin: 0 }}>
+                    {locale === 'en' ? 'How Mithila Matrimony works' : 'मिथिला मैट्रिमोनी कैसे काम करता है'}
+                  </h2>
+                  <p style={{ fontSize: '1.05rem', color: 'var(--text-muted)', lineHeight: '1.7', margin: 0 }}>
+                    {locale === 'en' ? 'A very easy 4 step process to find your partner.' : 'अपना जीवनसाथी खोजने की बहुत ही आसान 4-चरण प्रक्रिया।'}
+                  </p>
                 </div>
                 
                 <div className="hiw-card-grid">
@@ -566,6 +574,17 @@ function App() {
             {/* SECTION A: STATS ONLY DASHBOARD */}
             <section className="full-bleed-row" style={{ padding: '4rem 0' }}>
               <div className="section-wrapper">
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.2rem', textAlign: 'center', marginBottom: '4rem' }}>
+                  <div style={{ padding: '0.35rem 0.9rem', background: 'var(--primary-light)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-full)', color: 'var(--primary-dark)', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                    {locale === 'en' ? 'Our Impact' : 'हमारा प्रभाव'}
+                  </div>
+                  <h2 className="display" style={{ fontSize: '2.5rem', lineHeight: '1.2', color: 'var(--text-headers)', margin: 0 }}>
+                    {locale === 'en' ? 'Trusted by Thousands' : 'हज़ारों द्वारा भरोसेमंद'}
+                  </h2>
+                  <p style={{ fontSize: '1.05rem', color: 'var(--text-muted)', lineHeight: '1.7', margin: 0 }}>
+                    {locale === 'en' ? 'Join the fastest growing Maithil matrimonial network.' : 'सबसे तेजी से बढ़ते मैथिल वैवाहिक नेटवर्क में शामिल हों।'}
+                  </p>
+                </div>
                 <div className="stats-grid animate-fade">
                   
                   <div className="animate-scale" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
@@ -717,6 +736,34 @@ function App() {
                           <span className="browse-alert-icon" style={styles.quickFiltersIcon}>✦</span>
                           <span>{matchingProfiles.length} {locale === 'en' ? 'Matches Found' : 'मिलान मिले'}</span>
                         </div>
+                        <select
+                          value={sortBy}
+                          onChange={(e) => setSortBy(e.target.value as any)}
+                          style={{
+                            padding: '0.5rem 2.5rem 0.5rem 1rem',
+                            borderRadius: 'var(--radius-full)',
+                            border: '1px solid var(--border-light)',
+                            backgroundColor: 'var(--bg-card)',
+                            backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6 9 12 15 18 9\'%3e%3c/polyline%3e%3c/svg%3e")',
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'right 1rem center',
+                            backgroundSize: '1rem',
+                            color: 'var(--text-main)',
+                            fontSize: '1rem',
+                            fontWeight: '600',
+                            outline: 'none',
+                            cursor: 'pointer',
+                            boxShadow: 'var(--shadow-sm)',
+                            WebkitAppearance: 'none' as const,
+                            MozAppearance: 'none' as const,
+                            appearance: 'none' as const
+                          }}
+                        >
+                          <option value="score">{locale === 'en' ? 'Sort: Best Match' : 'सर्वोत्तम मिलान'}</option>
+                          <option value="age_asc">{locale === 'en' ? 'Sort: Age (Low to High)' : 'आयु (कम से अधिक)'}</option>
+                          <option value="age_desc">{locale === 'en' ? 'Sort: Age (High to Low)' : 'आयु (अधिक से कम)'}</option>
+                          <option value="income">{locale === 'en' ? 'Sort: Income (High to Low)' : 'आय (अधिक से कम)'}</option>
+                        </select>
                         <button 
                           className="mobile-filter-toggle" 
                           onClick={() => setIsMobileFilterOpen(true)}
@@ -727,13 +774,26 @@ function App() {
                       </div>
                     </div>
 
-                    {matchingProfiles.length === 0 ? (
-                      <div style={styles.noMatchesBox} className="flex-center">
-                        <p>{t('no_matches')}</p>
+                    {(() => {
+                      const sortedProfiles = [...matchingProfiles].sort((a, b) => {
+                        if (sortBy === 'score') return b.compatibilityScore - a.compatibilityScore;
+                        if (sortBy === 'age_asc') return a.age - b.age;
+                        if (sortBy === 'age_desc') return b.age - a.age;
+                        if (sortBy === 'income') return b.annualIncome - a.annualIncome;
+                        return 0;
+                      });
+
+                      return sortedProfiles.length === 0 ? (
+                      <div style={styles.noMatchesBox}>
+                        <div style={{ fontSize: '3rem', marginBottom: '1rem', opacity: 0.5 }}>🔍</div>
+                        <h3 style={{ fontSize: '1.25rem', color: 'var(--text-headers)', marginBottom: '0.5rem', fontFamily: 'var(--font-serif)' }}>
+                          {locale === 'en' ? 'No Profiles Found' : 'कोई प्रोफ़ाइल नहीं मिली'}
+                        </h3>
+                        <p style={{ maxWidth: '400px', margin: '0 auto', lineHeight: '1.6' }}>{t('no_matches')}</p>
                       </div>
                     ) : (
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
-                        {matchingProfiles.map((profile) => (
+                        {sortedProfiles.map((profile) => (
                           <div key={profile.biodataId} className="animate-scale" style={styles.profileCard}>
                             <div style={{ position: 'relative', height: '300px', width: '100%', cursor: 'pointer' }} onClick={() => setSelectedProfile(profile)}>
                               <img src={profile.photoUrl} alt={profile.fullName} style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '16px 16px 0 0'}} />
@@ -802,7 +862,8 @@ function App() {
                           </div>
                         ))}
                       </div>
-                    )}
+                    );
+                    })()}
                   </div>
                 </div>
               </div>
@@ -1065,9 +1126,6 @@ function App() {
                     {activeUser.registrationStep === 'completed' ? (locale === 'en' ? 'Browse Matches' : 'मैच खोजें') : (locale === 'en' ? 'Complete Profile' : 'बायोडाटा पूरा करें')}
                   </li>
                 )}
-                <li className="footer-link-item" onClick={() => { initMockDb(); setActiveView('browse'); setMatchingProfiles(mockGetMatchingProfiles()); }}>
-                  {t('btn_explore_mocks')}
-                </li>
               </ul>
             </div>
 
@@ -1176,8 +1234,8 @@ const styles = {
   },
   authLinkBtn: {
     padding: '0.6rem 1.4rem',
-    backgroundColor: 'var(--primary-light)',
-    color: 'var(--primary)',
+    backgroundColor: 'var(--primary)',
+    color: '#ffffff',
     fontWeight: '600',
     borderRadius: 'var(--radius-full)',
     transition: 'var(--transition-fast)'
@@ -1480,11 +1538,17 @@ const styles = {
     lineHeight: 1
   },
   noMatchesBox: {
-    height: '200px',
+    minHeight: '300px',
     backgroundColor: 'var(--bg-card)',
-    border: '1px solid var(--border-light)',
-    borderRadius: 'var(--radius-md)',
-    color: 'var(--text-muted)'
+    border: '1px dashed var(--border-light)',
+    borderRadius: 'var(--radius-lg)',
+    color: 'var(--text-muted)',
+    display: 'flex',
+    flexDirection: 'column' as const,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center' as const,
+    padding: '2rem'
   },
   profileGrid: {
     width: '100%'

@@ -61,18 +61,18 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ profile, onClose, onActio
 
             {/* Sections */}
             <div style={styles.detailCard}>
-              <h3 style={styles.sectionTitle}>👤 {t('profile_about')}</h3>
+              <h3 style={styles.sectionTitle}>👤 {locale === 'en' ? 'About Me' : 'मेरे बारे में'}</h3>
               <p style={styles.text}>{profile.aboutMe}</p>
             </div>
 
             <div style={styles.detailCard}>
-              <h3 style={styles.sectionTitle}>🎓 {t('profile_education')}</h3>
+              <h3 style={styles.sectionTitle}>🎓 {locale === 'en' ? 'Education & Career' : 'शिक्षा और करियर'}</h3>
               <p style={styles.text}>{profile.education}</p>
               <p style={styles.text}><strong style={{color: 'var(--text-main)'}}>{profile.profession}</strong></p>
             </div>
 
             <div style={styles.detailCard}>
-              <h3 style={styles.sectionTitle}>🎨 {t('profile_hobbies')}</h3>
+              <h3 style={styles.sectionTitle}>🎨 {locale === 'en' ? 'Interests & Hobbies' : 'रुचियाँ और शौक'}</h3>
               <div style={styles.pillRow}>
                 {profile.interests.map((interest, i) => (
                   <span key={i} style={styles.pill}>{interest}</span>
@@ -145,7 +145,7 @@ const styles = {
   heroGradient: {
     position: 'absolute' as const,
     inset: 0,
-    background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%)'
+    background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 40%, transparent 80%)'
   },
   heroInfo: {
     position: 'absolute' as const,
@@ -159,12 +159,16 @@ const styles = {
     fontWeight: '800',
     margin: 0,
     fontFamily: 'var(--font-serif)',
-    lineHeight: 1.1
+    lineHeight: 1.1,
+    color: '#ffffff',
+    textShadow: '0 2px 8px rgba(0,0,0,0.8)'
   },
   basicMeta: {
     margin: '0.25rem 0 0 0',
     fontSize: '1rem',
-    opacity: 0.9
+    opacity: 0.95,
+    color: '#ffffff',
+    textShadow: '0 1px 4px rgba(0,0,0,0.8)'
   },
   contentSection: {
     padding: '1.5rem',
@@ -174,25 +178,27 @@ const styles = {
   },
   actionBar: {
     display: 'flex',
-    gap: '0.5rem',
+    gap: '0.75rem',
     justifyContent: 'center',
     marginTop: '-2.5rem',
     zIndex: 5,
-    position: 'relative' as const
+    position: 'relative' as const,
+    padding: '0 0.5rem'
   },
   actionBtn: {
     flex: 1,
-    padding: '0.8rem 0.5rem',
-    borderRadius: '12px',
+    padding: '0.75rem 0.4rem',
+    borderRadius: '14px',
     border: 'none',
     fontWeight: '700',
-    fontSize: '0.9rem',
+    fontSize: '0.85rem',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     gap: '0.4rem',
-    boxShadow: 'var(--shadow-sm)'
+    boxShadow: 'var(--shadow-md)',
+    whiteSpace: 'nowrap' as const
   },
   btnPass: {
     background: 'var(--bg-card)',

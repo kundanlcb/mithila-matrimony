@@ -1,0 +1,12 @@
+.git
+.idea
+target/
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+*.log
+*.sh
+.DS_Store
+.mvn/wrapper/maven-wrapper.jar
