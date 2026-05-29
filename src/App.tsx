@@ -36,14 +36,14 @@ function App() {
   const [otpSent, setOtpSent] = useState(false);
 
   // Quick-Match Form States
-  const [searchGender, setSearchGender] = useState<'Male' | 'Female'>('Male');
-  const [searchLook, setSearchLook] = useState<'Male' | 'Female'>('Female');
-  const [searchGotra, setSearchGotra] = useState('Any');
+  // const [searchGender, setSearchGender] = useState<'Male' | 'Female'>('Male');
+  // const [searchLook, setSearchLook] = useState<'Male' | 'Female'>('Female');
+  // const [searchGotra, setSearchGotra] = useState('Any');
 
 
 
   // Phase 3 States
-  const [interactions, setInteractions] = useState<ProfileInteraction[]>([]);
+  const [interactions] = useState<ProfileInteraction[]>([]);
   const [selectedProfile, setSelectedProfile] = useState<Biodata | null>(null);
   const [showPaywall, setShowPaywall] = useState<boolean>(false);
   const [profileModalView, setProfileModalView] = useState<'edit' | 'preferences' | 'privacy' | null>(null);
@@ -108,28 +108,27 @@ function App() {
   }, [isAccountMenuOpen]);
 
   // Hero Widget: Handle Quick-Match Search
-  const handleQuickMatchSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!activeUser) {
-      setActiveView('auth');
-      return;
-    }
-
-    if (activeUser.registrationStep !== 'completed') {
-      setActiveView('register');
-      return;
-    }
-
-    try {
-      // In a real app we'd pass searchGotra and searchLook as filters to the backend
-      const res = await MatchesService.findMatches(0, 20, sortBy);
-      setMatchingProfiles(res.content as any);
-      setActiveView('browse');
-    } catch(e) {
-      console.error(e);
-    }
-  };
+  // const handleQuickMatchSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   
+  //   if (!activeUser) {
+  //     setActiveView('auth');
+  //     return;
+  //   }
+  //
+  //   if (activeUser.registrationStep !== 'completed') {
+  //     setActiveView('register');
+  //     return;
+  //   }
+  //
+  //   try {
+  //     const res = await MatchesService.findMatches(0, 20, sortBy);
+  //     setMatchingProfiles(res.content as any);
+  //     setActiveView('browse');
+  //   } catch(e) {
+  //     console.error(e);
+  //   }
+  // };
 
   // Auth: Trigger Send OTP
   const handleSendOtp = async (e: React.FormEvent) => {
@@ -192,19 +191,19 @@ function App() {
       await InteractionsService.send({ toUserId: targetProfileId, type });
       setSelectedProfile(null);
       if (type === 'passed') {
-        setMatchingProfiles(prev => prev.filter(p => p.id !== targetProfileId) as any);
+        setMatchingProfiles(prev => prev.filter(p => p.biodataId !== targetProfileId) as any);
       }
     } catch (e) {
       console.error('Failed to send interaction', e);
     }
   };
 
-  const handleRemoveInteraction = (targetProfileId: string, type: InteractionType) => {
+  const handleRemoveInteraction = (_targetProfileId: string, _type: InteractionType) => {
     // This would ideally hit a DELETE /api/v1/interactions endpoint
     console.warn('Remove interaction not implemented on backend yet');
   };
 
-  const handleInboxAction = async (interactionId: string, type: 'match_accepted' | 'match_declined') => {
+  const handleInboxAction = async (_interactionId: string, _type: 'match_accepted' | 'match_declined') => {
     // Usually would accept/decline via an API
     console.warn('Inbox action not implemented on backend yet');
   };
@@ -696,8 +695,9 @@ function App() {
             <div style={{ maxWidth: '650px', margin: '0 auto' }}>
               <RegistrationChat 
                 onComplete={() => {
-                  setActiveUser(getStoredActiveUser());
-                  setActiveBiodata(getStoredActiveBiodata());
+                  const user = JSON.parse(localStorage.getItem('active_profile') || 'null');
+                  setActiveUser(user);
+                  BiodataService.getMine().then(res => setActiveBiodata(res as any)).catch(console.error);
                   setActiveView('browse');
                 }}
               />
@@ -874,7 +874,7 @@ function App() {
               <div className="animate-fade" style={{ width: '100%', padding: '2rem 1rem' }}>
                 <MatchInbox 
                   interactions={interactions} 
-                  profiles={getAllProfiles()} 
+                  profiles={matchingProfiles} 
                   activeUserId={activeUser.userId}
                   onAccept={(id) => handleInboxAction(id, 'match_accepted')}
                   onDecline={(id) => handleInboxAction(id, 'match_declined')}
@@ -990,8 +990,9 @@ function App() {
                   {profileModalView === 'edit' && (
                     <form onSubmit={(e) => {
                       e.preventDefault();
-                      mockSubmitBiodata(editForm as any);
-                      setActiveBiodata(getStoredActiveBiodata());
+                      BiodataService.updateMine(editForm as any).then(() => {
+                        BiodataService.getMine().then(res => setActiveBiodata(res as any)).catch(console.error);
+                      }).catch(console.error);
                       setProfileModalView(null);
                     }}>
                       <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--text-headers)' }}>{locale === 'en' ? 'Edit Profile' : 'प्रोफ़ाइल संपादित करें'}</h2>

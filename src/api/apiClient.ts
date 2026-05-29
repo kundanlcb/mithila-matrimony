@@ -1,9 +1,11 @@
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
 export class ApiError extends Error {
-  constructor(public status: number, message: string) {
+  status: number;
+  constructor(status: number, message: string) {
     super(message);
     this.name = 'ApiError';
+    this.status = status;
   }
 }
 
@@ -61,7 +63,7 @@ async function fetchClient<T>(endpoint: string, options: RequestOptions = {}): P
 
     // Return empty object for 204 No Content or empty responses
     const text = await response.text();
-    return text ? JSON.parse(text) : {};
+    return text ? JSON.parse(text) : {} as unknown as T;
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
