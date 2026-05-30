@@ -830,7 +830,7 @@ button {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: 4rem;
+    gap: 6rem;
   }
 }
 
@@ -851,7 +851,7 @@ button {
 
 @media (min-width: 992px) {
   .hero-text-content {
-    max-width: 55%;
+    max-width: 45%;
     gap: 2.5rem;
   }
 }
@@ -862,7 +862,7 @@ button {
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin-top: 1.5rem;
+  margin-top: 0.5rem;
   padding-bottom: 0.5rem;
 }
 
