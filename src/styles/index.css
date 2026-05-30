@@ -783,9 +783,9 @@ button {
 /* Hero asymmetrical layout */
 .hero-section-padded {
   min-height: calc(100vh - 72px);
-  padding: 2rem 0;
+  padding: 3.5rem 0 2rem;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   position: relative;
   overflow: hidden;
 }
@@ -1013,6 +1013,7 @@ button {
 @media (min-width: 768px) {
   .hero-section-padded {
     padding: 6rem 0;
+    align-items: center;
   }
 }
 

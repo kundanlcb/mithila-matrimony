@@ -1247,7 +1247,7 @@ const styles = {
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
-    gap: '0.6rem',
+    gap: '0.3rem',
     minHeight: '2.5rem',
     whiteSpace: 'nowrap' as const
   },
@@ -1262,7 +1262,7 @@ const styles = {
     fontSize: '1.7rem',
     fontWeight: '700',
     color: 'var(--primary)',
-    marginLeft: '-0.25rem',
+    marginLeft: '0',
   },
   navMenu: {
     display: 'flex',
