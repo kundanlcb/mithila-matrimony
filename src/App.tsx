@@ -1263,7 +1263,7 @@ const styles = {
     fontSize: '1.7rem',
     fontWeight: '700',
     color: 'var(--primary)',
-    marginLeft: '0.4rem',
+    marginLeft: '-0.25rem',
   },
   navMenu: {
     display: 'flex',
