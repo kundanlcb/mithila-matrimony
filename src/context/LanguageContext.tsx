@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { TRANSLATIONS } from '../mock/translations';
 
-export type Locale = 'en' | 'hi';
+export type Locale = 'ma' | 'en' | 'hi';
 
 interface LanguageContextProps {
   locale: Locale;
@@ -12,12 +12,12 @@ interface LanguageContextProps {
 const LanguageContext = createContext<LanguageContextProps | undefined>(undefined);
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [locale, setLocaleState] = useState<Locale>('en');
+  const [locale, setLocaleState] = useState<Locale>('ma');
 
   // Load language preference from local storage
   useEffect(() => {
     const savedLocale = localStorage.getItem('matrimony_locale') as Locale;
-    if (savedLocale === 'en' || savedLocale === 'hi') {
+    if (savedLocale === 'ma' || savedLocale === 'en' || savedLocale === 'hi') {
       setLocaleState(savedLocale);
     }
   }, []);

@@ -234,8 +234,8 @@ function App() {
             onClick={() => setActiveView(activeUser ? (activeUser.registrationStep === 'completed' ? 'browse' : 'register') : 'home')}
           >
             <svg className="brand-logo-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
-              <circle cx="9" cy="12" r="6" stroke="var(--primary)" strokeWidth="2.5" />
-              <circle cx="15" cy="12" r="6" stroke="var(--gold-primary, #D4AF37)" strokeWidth="2.5" />
+              <circle cx="9" cy="12" r="6" fill="var(--primary)" fillOpacity="0.85" />
+              <circle cx="15" cy="12" r="6" fill="var(--gold-primary, #D4AF37)" fillOpacity="0.85" />
             </svg>
             <span className="logo-serif" style={styles.logoSerif}>{t('brand_serif')}</span>
             <span className="logo-sans" style={styles.logoSans}>{t('brand_sans')}</span>
@@ -398,10 +398,9 @@ function App() {
                           fontSize: '1.1rem', 
                           fontWeight: '700',
                           borderRadius: '50px', 
-                          background: 'var(--bg-glass)', 
-                          color: 'var(--text-main)',
-                          border: '1px solid var(--border-glass)',
-                          backdropFilter: 'blur(10px)',
+                          background: 'transparent', 
+                          color: 'var(--primary)',
+                          border: '2px solid var(--primary)',
                           cursor: 'pointer',
                           transition: 'transform 0.2s'
                         }}
@@ -440,7 +439,7 @@ function App() {
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
                     </div>
                     <h3 className="hiw-card-title">{locale === 'en' ? 'Create Biodata' : 'बायोडाटा बनाएं'}</h3>
-                    <p className="hiw-card-desc">{locale === 'en' ? 'You can easily create a biodata completely free of cost within some steps.' : 'आप कुछ ही चरणों में पूरी तरह से निःशुल्क बायोडाटा बना सकते हैं।'}</p>
+                    <p className="hiw-card-desc">{locale === 'en' ? 'Create your biodata completely free in just a few easy steps and start searching.' : 'कुछ ही आसान स्टेप्स में अपना बायोडाटा बिल्कुल मुफ्त बनाएं और खोजना शुरू करें।'}</p>
                   </div>
 
                   {/* Card 2 */}
@@ -529,7 +528,7 @@ function App() {
                       {/* CTA inside card */}
                       <div className="pmc-footer">
                         <span className="pmc-footer-text">
-                          {locale === 'en' ? 'Join to see your matches' : 'अपने मेल देखने के लिए जुड़ें'}
+                          {locale === 'en' ? 'Register to view your perfect matches' : 'मनपसंद प्रोफाइल देखने के लिए रजिस्टर करें'}
                         </span>
                         <div className="pmc-footer-arrow">→</div>
                       </div>
@@ -1106,8 +1105,8 @@ function App() {
             <div className="footer-col">
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem' }}>
                 <svg className="footer-logo-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0, marginRight: '0.2rem' }}>
-                  <circle cx="9" cy="12" r="6" stroke="#ffffff" strokeWidth="2.5" />
-                  <circle cx="15" cy="12" r="6" stroke="var(--gold-primary, #D4AF37)" strokeWidth="2.5" />
+                  <circle cx="9" cy="12" r="6" fill="#ffffff" fillOpacity="0.85" />
+                  <circle cx="15" cy="12" r="6" fill="var(--gold-primary, #D4AF37)" fillOpacity="0.85" />
                 </svg>
                 <span style={{ ...styles.logoSerif, color: '#ffffff' }}>{t('brand_serif')}</span>
                 <span style={{ ...styles.logoSans, color: 'var(--gold-primary)' }}>{t('brand_sans')}</span>
@@ -1155,14 +1154,17 @@ function App() {
             <div className="footer-col">
               <h4 className="footer-col-title">{locale === 'en' ? 'Settings' : 'सिस्टम विकल्प'}</h4>
               <div className="footer-controls-group">
-                {/* Language Switcher Button */}
-                <button 
+                {/* Language Switcher Dropdown */}
+                <select 
                   className="footer-toggle-btn"
-                  onClick={() => setLanguage(locale === 'en' ? 'hi' : 'en')}
-                  title={locale === 'en' ? 'Switch Language to Hindi' : 'भाषा हिंदी से अंग्रेजी में बदलें'}
+                  value={locale}
+                  onChange={(e) => setLanguage(e.target.value as any)}
+                  style={{ appearance: 'none', textAlign: 'center', cursor: 'pointer' }}
                 >
-                  🌐 {locale === 'en' ? 'हिंदी (Hindi)' : 'English (अंग्रेजी)'}
-                </button>
+                  <option value="ma">🌐 मैथिली (Maithili)</option>
+                  <option value="hi">🌐 हिंदी (Hindi)</option>
+                  <option value="en">🌐 English (अंग्रेजी)</option>
+                </select>
                 
                 {/* Theme Selector Switcher */}
                 <button 
@@ -1230,12 +1232,11 @@ const styles = {
     color: 'var(--primary)',
   },
   logoSans: {
-    fontFamily: 'var(--font-logo-sans)',
-    fontSize: '1.5rem',
+    fontFamily: 'var(--font-serif)',
+    fontSize: '1.7rem',
     fontWeight: '700',
-    color: 'var(--primary-dark)',
-    textTransform: 'uppercase' as const,
-    letterSpacing: '1px'
+    color: 'var(--primary)',
+    marginLeft: '0.4rem',
   },
   navMenu: {
     display: 'flex',
