@@ -263,10 +263,10 @@ function App() {
                       boxShadow: 'var(--shadow-sm)'
                     }}
                     onClick={() => setActiveView('inbox')}
-                    title={locale === 'en' ? 'Inbox' : 'इनबॉक्स'}
+                    title={locale === 'en' ? 'Inbox' : locale === 'hi' ? 'इनबॉक्स' : 'इनबॉक्स'}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                    <span className="hide-on-mobile">{locale === 'en' ? 'Inbox' : 'इनबॉक्स'}</span>
+                    <span className="hide-on-mobile">{locale === 'en' ? 'Inbox' : locale === 'hi' ? 'इनबॉक्स' : 'इनबॉक्स'}</span>
                     
                     {/* Notification Badge */}
                     <span style={{
@@ -299,7 +299,7 @@ function App() {
                   style={styles.profileMenuButton}
                   aria-haspopup="menu"
                   aria-expanded={isAccountMenuOpen}
-                  aria-label={locale === 'en' ? 'Open account menu' : 'खाता मेनू खोलें'}
+                  aria-label={locale === 'en' ? 'Open account menu' : locale === 'hi' ? 'खाता मेनू खोलें' : 'खाता मेनू खोलें'}
                 >
                   <span style={styles.profileAvatar}>{profileInitial}</span>
                   <span className="dropdown-chevron" style={styles.dropdownChevron} aria-hidden="true" />
@@ -314,7 +314,7 @@ function App() {
                       style={styles.accountMenuItem}
                       role="menuitem"
                     >
-                      {locale === 'en' ? 'Account' : 'खाता'}
+                      {locale === 'en' ? 'Account' : locale === 'hi' ? 'खाता' : 'खाता'}
                     </button>
                     <button
                       className="account-menu-item account-menu-item-danger"
@@ -389,7 +389,7 @@ function App() {
                         onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
                         onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
                       >
-                        {locale === 'en' ? 'Get Started — Register Free' : 'शुरू करें — नि:शुल्क रजिस्टर करें'}
+                        {locale === 'en' ? 'Get Started — Register Free' : locale === 'hi' ? 'शुरू करें — नि:शुल्क रजिस्टर करें' : 'शुरू करू — नि:शुल्क रजिस्टर करू'}
                       </button>
                       <button 
                         onClick={() => setActiveView('auth')} 
@@ -407,7 +407,7 @@ function App() {
                         onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
                         onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
                       >
-                        {locale === 'en' ? 'Login' : 'लॉग इन करें'}
+                        {locale === 'en' ? 'Login' : locale === 'hi' ? 'लॉग इन करें' : 'लॉग इन करू'}
                       </button>
                     </div>
                   </div>
@@ -424,14 +424,14 @@ function App() {
                         <div className="badge-icon-circle">✓</div>
                         <div className="badge-text-stack">
                           <span className="badge-title">{t('trust_stat1_title')}</span>
-                          <span className="badge-subtitle">{locale === 'en' ? 'Authentic Community' : 'सच्चा समुदाय'}</span>
+                          <span className="badge-subtitle">{locale === 'en' ? 'Authentic Community' : locale === 'hi' ? 'सच्चा समुदाय' : 'सच्चा समुदाय'}</span>
                         </div>
                       </div>
                       <div className="badge-bottom-right">
                         <div className="badge-icon-circle">🧬</div>
                         <div className="badge-text-stack">
                           <span className="badge-title">{t('trust_stat2_title')}</span>
-                          <span className="badge-subtitle">{locale === 'en' ? 'Perfect Matches' : 'सटीक मिलान'}</span>
+                          <span className="badge-subtitle">{locale === 'en' ? 'Perfect Matches' : locale === 'hi' ? 'सटीक मिलान' : 'सटीक मिलान'}</span>
                         </div>
                       </div>
                     </div>
@@ -446,13 +446,13 @@ function App() {
               <div className="section-wrapper">
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.2rem', textAlign: 'center', marginBottom: '4rem' }}>
                   <div style={{ padding: '0.35rem 0.9rem', background: 'var(--primary-light)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-full)', color: 'var(--primary-dark)', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                    {locale === 'en' ? 'Simple Process' : 'सरल प्रक्रिया'}
+                    {locale === 'en' ? 'Simple Process' : locale === 'hi' ? 'सरल प्रक्रिया' : 'सरल प्रक्रिया'}
                   </div>
                   <h2 className="display" style={{ fontSize: '2.5rem', lineHeight: '1.2', color: 'var(--text-headers)', margin: 0 }}>
-                    {locale === 'en' ? 'How Maithil Match works' : 'मैथिल मैच कैसे काम करता है'}
+                    {locale === 'en' ? 'How Maithil Match works' : locale === 'hi' ? 'मैथिल मैच कैसे काम करता है' : 'मैथिल मैच कैसे काम करता अछि'}
                   </h2>
                   <p style={{ fontSize: '1.05rem', color: 'var(--text-muted)', lineHeight: '1.7', margin: 0 }}>
-                    {locale === 'en' ? 'A very easy 4 step process to find your partner.' : 'अपना जीवनसाथी खोजने की बहुत ही आसान 4-चरण प्रक्रिया।'}
+                    {locale === 'en' ? 'A very easy 4 step process to find your partner.' : locale === 'hi' ? 'अपना जीवनसाथी खोजने की बहुत ही आसान 4-चरण प्रक्रिया।' : 'अपन जीवनसाथी खोजने की बहुत ही आसान 4-चरण प्रक्रिया।'}
                   </p>
                 </div>
                 
@@ -464,8 +464,8 @@ function App() {
                     <div className="hiw-icon-container">
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
                     </div>
-                    <h3 className="hiw-card-title">{locale === 'en' ? 'Create Biodata' : 'बायोडाटा बनाएं'}</h3>
-                    <p className="hiw-card-desc">{locale === 'en' ? 'Create your biodata completely free in just a few easy steps and start searching.' : 'कुछ ही आसान स्टेप्स में अपना बायोडाटा बिल्कुल मुफ्त बनाएं और खोजना शुरू करें।'}</p>
+                    <h3 className="hiw-card-title">{locale === 'en' ? 'Create Biodata' : locale === 'hi' ? 'बायोडाटा बनाएं' : 'बायोडाटा बनाउ'}</h3>
+                    <p className="hiw-card-desc">{locale === 'en' ? 'Create your biodata completely free in just a few easy steps and start searching.' : locale === 'hi' ? 'कुछ ही आसान स्टेप्स में अपना बायोडाटा बिल्कुल मुफ्त बनाएं और खोजना शुरू करें।' : 'कुछ ही आसान स्टेप्स में अपन बायोडाटा बिल्कुल मुफ्त बनाउ आ खोजना शुरू करू।'}</p>
                   </div>
 
                   {/* Card 2 */}
@@ -474,8 +474,8 @@ function App() {
                     <div className="hiw-icon-container">
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
                     </div>
-                    <h3 className="hiw-card-title">{locale === 'en' ? 'Search Biodata' : 'बायोडाटा खोजें'}</h3>
-                    <p className="hiw-card-desc">{locale === 'en' ? 'You can easily search biodata using many filters including age, profession, educational qualification, gotra and more.' : 'आप उम्र, पेशा, शिक्षा, गोत्र और अन्य कई फ़िल्टर का उपयोग करके आसानी से बायोडाटा खोज सकते हैं।'}</p>
+                    <h3 className="hiw-card-title">{locale === 'en' ? 'Search Biodata' : locale === 'hi' ? 'बायोडाटा खोजें' : 'बायोडाटा खोजू'}</h3>
+                    <p className="hiw-card-desc">{locale === 'en' ? 'You can easily search biodata using many filters including age, profession, educational qualification, gotra and more.' : locale === 'hi' ? 'आप उम्र, पेशा, शिक्षा, गोत्र और अन्य कई फ़िल्टर का उपयोग करके आसानी से बायोडाटा खोज सकते हैं।' : 'अहाँ उम्र, पेशा, शिक्षा, गोत्र आ अन्य कई फ़िल्टर का उपयोग करके आसानी से बायोडाटा खोज सकते छथि।'}</p>
                   </div>
 
                   {/* Card 3 */}
@@ -484,7 +484,7 @@ function App() {
                     <div className="hiw-icon-container">
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                     </div>
-                    <h3 className="hiw-card-title">{locale === 'en' ? 'Browse Match' : 'मैच ब्राउज़ करें'}</h3>
+                    <h3 className="hiw-card-title">{locale === 'en' ? 'Browse Match' : locale === 'hi' ? 'मैच ब्राउज़ करें' : 'मैच ब्राउज़ करू'}</h3>
                     <p className="hiw-card-desc">{locale === 'en' ? 'Once someone likes your biodata or you like someone\'s biodata, you can instantly review profiles.' : 'एक बार जब किसी को आपका बायोडाटा पसंद आ जाता है या आपको किसी का बायोडाटा पसंद आता है, तो आप तुरंत प्रोफ़ाइल की समीक्षा कर सकते हैं।'}</p>
                   </div>
 
@@ -494,8 +494,8 @@ function App() {
                     <div className="hiw-icon-container">
                       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                     </div>
-                    <h3 className="hiw-card-title">{locale === 'en' ? 'Send Request' : 'अनुरोध भेजें'}</h3>
-                    <p className="hiw-card-desc">{locale === 'en' ? 'If you feel the connection is strong, contact their guardians directly and proceed to get married according to traditions.' : 'यदि आपको लगता है कि संबंध मजबूत है, तो उनके अभिभावकों से सीधे संपर्क करें और परंपराओं के अनुसार शादी करने के लिए आगे बढ़ें।'}</p>
+                    <h3 className="hiw-card-title">{locale === 'en' ? 'Send Request' : locale === 'hi' ? 'अनुरोध भेजें' : 'अनुरोध भेजू'}</h3>
+                    <p className="hiw-card-desc">{locale === 'en' ? 'If you feel the connection is strong, contact their guardians directly and proceed to get married according to traditions.' : locale === 'hi' ? 'यदि आपको लगता है कि संबंध मजबूत है, तो उनके अभिभावकों से सीधे संपर्क करें और परंपराओं के अनुसार शादी करने के लिए आगे बढ़ें।' : 'यदि आपको लगता अछि कि संबंध मजबूत अछि, तो उनके अभिभावकों से सीधे संपर्क करू आ परंपराओं के अनुसार शादी करने के लिए आगे बढ़ें।'}</p>
                   </div>
 
                 </div>
@@ -512,7 +512,7 @@ function App() {
                     <div className="premium-match-card animate-scale">
                       {/* Card top: platform badge */}
                       <div className="pmc-header">
-                        <span className="pmc-badge">⚡ {locale === 'en' ? 'Smart Match' : 'स्मार्ट मैच'}</span>
+                        <span className="pmc-badge">⚡ {locale === 'en' ? 'Smart Match' : locale === 'hi' ? 'स्मार्ट मैच' : 'स्मार्ट मैच'}</span>
                         <span className="pmc-live-dot"><span className="pmc-dot-pulse" />Live</span>
                       </div>
 
@@ -523,7 +523,7 @@ function App() {
                             <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=120&h=120" alt="Ananya" className="pmc-avatar-img" />
                           </div>
                           <span className="pmc-name">Ananya Jha</span>
-                          <span className="pmc-meta">{locale === 'en' ? '25 · Delhi' : '25 · दिल्ली'}</span>
+                          <span className="pmc-meta">{locale === 'en' ? '25 · Delhi' : locale === 'hi' ? '25 · दिल्ली' : '25 · दिल्ली'}</span>
                         </div>
 
                         {/* Score pill in center */}
@@ -532,7 +532,7 @@ function App() {
                             <span className="pmc-score-num">99</span>
                             <span className="pmc-score-pct">%</span>
                           </div>
-                          <span className="pmc-score-label">{locale === 'en' ? 'Match' : 'मेल'}</span>
+                          <span className="pmc-score-label">{locale === 'en' ? 'Match' : locale === 'hi' ? 'मेल' : 'मेल'}</span>
                         </div>
 
                         <div className="pmc-profile">
@@ -540,21 +540,21 @@ function App() {
                             <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=120&h=120" alt="Vikas" className="pmc-avatar-img" />
                           </div>
                           <span className="pmc-name">Vikas Jha</span>
-                          <span className="pmc-meta">{locale === 'en' ? '28 · Mumbai' : '28 · मुम्बई'}</span>
+                          <span className="pmc-meta">{locale === 'en' ? '28 · Mumbai' : locale === 'hi' ? '28 · मुम्बई' : '28 · मुम्बई'}</span>
                         </div>
                       </div>
 
                       {/* Compatibility chips */}
                       <div className="pmc-chips-row">
-                        <span className="pmc-chip pmc-chip--green">🧬 {locale === 'en' ? 'Gotra Safe' : 'गोत्र सुरक्षित'}</span>
-                        <span className="pmc-chip pmc-chip--blue">🛡️ {locale === 'en' ? 'Verified' : 'सत्यापित'}</span>
-                        <span className="pmc-chip pmc-chip--gold">🌎 {locale === 'en' ? 'Maithil' : 'मैथिल'}</span>
+                        <span className="pmc-chip pmc-chip--green">🧬 {locale === 'en' ? 'Gotra Safe' : locale === 'hi' ? 'गोत्र सुरक्षित' : 'गोत्र सुरक्षित'}</span>
+                        <span className="pmc-chip pmc-chip--blue">🛡️ {locale === 'en' ? 'Verified' : locale === 'hi' ? 'सत्यापित' : 'सत्यापित'}</span>
+                        <span className="pmc-chip pmc-chip--gold">🌎 {locale === 'en' ? 'Maithil' : locale === 'hi' ? 'मैथिल' : 'मैथिल'}</span>
                       </div>
 
                       {/* CTA inside card */}
                       <div className="pmc-footer">
                         <span className="pmc-footer-text">
-                          {locale === 'en' ? 'Register to view your perfect matches' : 'मनपसंद प्रोफाइल देखने के लिए रजिस्टर करें'}
+                          {locale === 'en' ? 'Register to view your perfect matches' : locale === 'hi' ? 'मनपसंद प्रोफाइल देखने के लिए रजिस्टर करें' : 'मनपसंद प्रोफाइल देखने के लिए रजिस्टर करू'}
                         </span>
                         <div className="pmc-footer-arrow">→</div>
                       </div>
@@ -564,7 +564,7 @@ function App() {
                   {/* RIGHT: Editorial text */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', textAlign: 'left' }}>
                     <div style={{ alignSelf: 'flex-start', padding: '0.35rem 0.9rem', background: 'var(--primary-light)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-full)', color: 'var(--primary-dark)', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                      {locale === 'en' ? 'Core Platform Services' : 'मुख्य मंच की विशेषताएं'}
+                      {locale === 'en' ? 'Core Platform Services' : locale === 'hi' ? 'मुख्य मंच की विशेषताएं' : 'मुख्य मंच की विशेषताएं'}
                     </div>
                     <h2 className="display" style={{ fontSize: '2.5rem', lineHeight: '1.2', color: 'var(--text-headers)' }}>
                       {t('landing_what_title')}
@@ -590,7 +590,7 @@ function App() {
 
                     <div style={{ marginTop: '1rem' }}>
                       <button onClick={() => setActiveView('auth')} className="cta-button-landing">
-                        {locale === 'en' ? 'Get Started Now' : 'अभी शुरुआत करें'}
+                        {locale === 'en' ? 'Get Started Now' : locale === 'hi' ? 'अभी शुरुआत करें' : 'अभी शुरुआत करू'}
                       </button>
                     </div>
                   </div>
@@ -604,13 +604,13 @@ function App() {
               <div className="section-wrapper">
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.2rem', textAlign: 'center', marginBottom: '4rem' }}>
                   <div style={{ padding: '0.35rem 0.9rem', background: 'var(--primary-light)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-full)', color: 'var(--primary-dark)', fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                    {locale === 'en' ? 'Our Impact' : 'हमारा प्रभाव'}
+                    {locale === 'en' ? 'Our Impact' : locale === 'hi' ? 'हमारा प्रभाव' : 'हमारा प्रभाव'}
                   </div>
                   <h2 className="display" style={{ fontSize: '2.5rem', lineHeight: '1.2', color: 'var(--text-headers)', margin: 0 }}>
-                    {locale === 'en' ? 'Trusted by Thousands' : 'हज़ारों द्वारा भरोसेमंद'}
+                    {locale === 'en' ? 'Trusted by Thousands' : locale === 'hi' ? 'हज़ारों द्वारा भरोसेमंद' : 'हज़ारों द्वारा भरोसेमंद'}
                   </h2>
                   <p style={{ fontSize: '1.05rem', color: 'var(--text-muted)', lineHeight: '1.7', margin: 0 }}>
-                    {locale === 'en' ? 'Join the fastest growing Maithil matrimonial network.' : 'सबसे तेजी से बढ़ते मैथिल वैवाहिक नेटवर्क में शामिल हों।'}
+                    {locale === 'en' ? 'Join the fastest growing Maithil matrimonial network.' : locale === 'hi' ? 'सबसे तेजी से बढ़ते मैथिल वैवाहिक नेटवर्क में शामिल हों।' : 'सबसे तेजी से बढ़ते मैथिल वैवाहिक नेटवर्क में शामिल हों।'}
                   </p>
                 </div>
                 <div className="stats-grid animate-fade">
@@ -621,7 +621,7 @@ function App() {
                     </div>
                     <div>
                       <h3 style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--text-main)', margin: '0' }}>12K+</h3>
-                      <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', margin: '0', fontWeight: '500' }}>{locale === 'en' ? 'Verified Couples' : 'सत्यापित जोड़े'}</p>
+                      <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', margin: '0', fontWeight: '500' }}>{locale === 'en' ? 'Verified Couples' : locale === 'hi' ? 'सत्यापित जोड़े' : 'सत्यापित जोड़े'}</p>
                     </div>
                   </div>
 
@@ -631,7 +631,7 @@ function App() {
                     </div>
                     <div>
                       <h3 style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--text-main)', margin: '0' }}>100%</h3>
-                      <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', margin: '0', fontWeight: '500' }}>{locale === 'en' ? 'Privacy Secured' : 'पूर्ण गोपनीयता'}</p>
+                      <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', margin: '0', fontWeight: '500' }}>{locale === 'en' ? 'Privacy Secured' : locale === 'hi' ? 'पूर्ण गोपनीयता' : 'पूर्ण गोपनीयता'}</p>
                     </div>
                   </div>
 
@@ -641,7 +641,7 @@ function App() {
                     </div>
                     <div>
                       <h3 style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--text-main)', margin: '0' }}>50+</h3>
-                      <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', margin: '0', fontWeight: '500' }}>{locale === 'en' ? 'Maithil Cities' : 'वैश्विक मैथिल शहर'}</p>
+                      <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', margin: '0', fontWeight: '500' }}>{locale === 'en' ? 'Maithil Cities' : locale === 'hi' ? 'वैश्विक मैथिल शहर' : 'वैश्विक मैथिल शहर'}</p>
                     </div>
                   </div>
 
@@ -651,7 +651,7 @@ function App() {
                     </div>
                     <div>
                       <h3 style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--text-main)', margin: '0' }}>99.8%</h3>
-                      <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', margin: '0', fontWeight: '500' }}>{locale === 'en' ? 'Match Rating' : 'गोत्र अनुकूलता दर'}</p>
+                      <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', margin: '0', fontWeight: '500' }}>{locale === 'en' ? 'Match Rating' : locale === 'hi' ? 'गोत्र अनुकूलता दर' : 'गोत्र अनुकूलता दर'}</p>
                     </div>
                   </div>
 
@@ -763,7 +763,7 @@ function App() {
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
                         <div className="browse-alert-badge" style={styles.quickFiltersContainer}>
                           <span className="browse-alert-icon" style={styles.quickFiltersIcon}>✦</span>
-                          <span>{matchingProfiles.length} {locale === 'en' ? 'Matches Found' : 'मिलान मिले'}</span>
+                          <span>{matchingProfiles.length} {locale === 'en' ? 'Matches Found' : locale === 'hi' ? 'मिलान मिले' : 'मिलान मिले'}</span>
                         </div>
                         <select
                           value={sortBy}
@@ -788,17 +788,17 @@ function App() {
                             appearance: 'none' as const
                           }}
                         >
-                          <option value="score">{locale === 'en' ? 'Sort: Best Match' : 'सर्वोत्तम मिलान'}</option>
-                          <option value="age_asc">{locale === 'en' ? 'Sort: Age (Low to High)' : 'आयु (कम से अधिक)'}</option>
-                          <option value="age_desc">{locale === 'en' ? 'Sort: Age (High to Low)' : 'आयु (अधिक से कम)'}</option>
-                          <option value="income">{locale === 'en' ? 'Sort: Income (High to Low)' : 'आय (अधिक से कम)'}</option>
+                          <option value="score">{locale === 'en' ? 'Sort: Best Match' : locale === 'hi' ? 'सर्वोत्तम मिलान' : 'सर्वोत्तम मिलान'}</option>
+                          <option value="age_asc">{locale === 'en' ? 'Sort: Age (Low to High)' : locale === 'hi' ? 'आयु (कम से अधिक)' : 'आयु (कम से अधिक)'}</option>
+                          <option value="age_desc">{locale === 'en' ? 'Sort: Age (High to Low)' : locale === 'hi' ? 'आयु (अधिक से कम)' : 'आयु (अधिक से कम)'}</option>
+                          <option value="income">{locale === 'en' ? 'Sort: Income (High to Low)' : locale === 'hi' ? 'आय (अधिक से कम)' : 'आय (अधिक से कम)'}</option>
                         </select>
                         <button 
                           className="mobile-filter-toggle" 
                           onClick={() => setIsMobileFilterOpen(true)}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
-                          {locale === 'en' ? 'Filters' : 'फ़िल्टर'}
+                          {locale === 'en' ? 'Filters' : locale === 'hi' ? 'फ़िल्टर' : 'फ़िल्टर'}
                         </button>
                       </div>
                     </div>
@@ -816,7 +816,7 @@ function App() {
                       <div style={styles.noMatchesBox}>
                         <div style={{ fontSize: '3rem', marginBottom: '1rem', opacity: 0.5 }}>🔍</div>
                         <h3 style={{ fontSize: '1.25rem', color: 'var(--text-headers)', marginBottom: '0.5rem', fontFamily: 'var(--font-serif)' }}>
-                          {locale === 'en' ? 'No Profiles Found' : 'कोई प्रोफ़ाइल नहीं मिली'}
+                          {locale === 'en' ? 'No Profiles Found' : locale === 'hi' ? 'कोई प्रोफ़ाइल नहीं मिली' : 'कोई प्रोफ़ाइल नहीं मिली'}
                         </h3>
                         <p style={{ maxWidth: '400px', margin: '0 auto', lineHeight: '1.6' }}>{t('no_matches')}</p>
                       </div>
@@ -852,7 +852,7 @@ function App() {
                                         cursor: 'pointer',
                                         transition: 'all 0.2s ease'
                                       }}
-                                      title={isShortlisted ? (locale === 'en' ? 'Shortlisted' : 'शॉर्टलिस्ट किया गया') : (locale === 'en' ? 'Shortlist' : 'शॉर्टलिस्ट करें')}
+                                      title={isShortlisted ? (locale === 'en' ? 'Shortlisted' : locale === 'hi' ? 'शॉर्टलिस्ट किया गया' : 'शॉर्टलिस्ट किया गया') : (locale === 'en' ? 'Shortlist' : locale === 'hi' ? 'शॉर्टलिस्ट करें' : 'शॉर्टलिस्ट करू')}
                                     >
                                       {isShortlisted ? (
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -875,7 +875,7 @@ function App() {
                                       {isInterestSent ? (
                                         <>
                                           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                          {locale === 'en' ? 'Sent' : 'भेजा गया'}
+                                          {locale === 'en' ? 'Sent' : locale === 'hi' ? 'भेजा गया' : 'भेजा गया'}
                                         </>
                                       ) : (
                                         <>
@@ -922,7 +922,7 @@ function App() {
                     <img src={activeBiodata.photoUrl} alt="My Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '2rem 1.5rem 1.5rem', background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%)', color: '#fff' }}>
                       <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.2rem', margin: '0 0 0.2rem 0', color: '#fff' }}>{activeBiodata.fullName}</h2>
-                      <p style={{ margin: 0, fontSize: '1rem', color: '#f0f0f0', opacity: 0.9 }}>{activeBiodata.age} {locale === 'en' ? 'Yrs' : 'वर्ष'} • {activeBiodata.location}</p>
+                      <p style={{ margin: 0, fontSize: '1rem', color: '#f0f0f0', opacity: 0.9 }}>{activeBiodata.age} {locale === 'en' ? 'Yrs' : locale === 'hi' ? 'वर्ष' : 'वर्ष'} • {activeBiodata.location}</p>
                     </div>
                   </div>
                   
@@ -930,36 +930,36 @@ function App() {
                     {/* Bio & Details Grid */}
                     <div style={{ marginBottom: '2rem' }}>
                       <h3 style={{ fontSize: '1.1rem', color: 'var(--primary-dark)', marginBottom: '1rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.5rem' }}>
-                        {locale === 'en' ? 'About Me' : 'मेरे बारे में'}
+                        {locale === 'en' ? 'About Me' : locale === 'hi' ? 'मेरे बारे में' : 'मेरे बारे में'}
                       </h3>
                       <p style={{ color: 'var(--text-main)', lineHeight: '1.6', fontSize: '0.95rem', marginBottom: '1.5rem' }}>
-                        {activeBiodata.aboutMe || (locale === 'en' ? 'No bio provided yet.' : 'अभी तक कोई बायो नहीं दिया गया है।')}
+                        {activeBiodata.aboutMe || (locale === 'en' ? 'No bio provided yet.' : locale === 'hi' ? 'अभी तक कोई बायो नहीं दिया गया है।' : 'अभी तक कोई बायो नहीं दिया गया अछि।')}
                       </p>
 
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.2rem' }}>
                         <div>
-                          <p style={{ margin: '0 0 0.3rem 0', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>{locale === 'en' ? 'Gotra' : 'गोत्र'}</p>
+                          <p style={{ margin: '0 0 0.3rem 0', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>{locale === 'en' ? 'Gotra' : locale === 'hi' ? 'गोत्र' : 'गोत्र'}</p>
                           <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-headers)', fontWeight: 500 }}>{activeBiodata.gotra}</p>
                         </div>
                         <div>
-                          <p style={{ margin: '0 0 0.3rem 0', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>{locale === 'en' ? 'Education' : 'शिक्षा'}</p>
+                          <p style={{ margin: '0 0 0.3rem 0', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>{locale === 'en' ? 'Education' : locale === 'hi' ? 'शिक्षा' : 'शिक्षा'}</p>
                           <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-headers)', fontWeight: 500 }}>{activeBiodata.education || 'N/A'}</p>
                         </div>
                         <div>
-                          <p style={{ margin: '0 0 0.3rem 0', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>{locale === 'en' ? 'Profession' : 'पेशा'}</p>
+                          <p style={{ margin: '0 0 0.3rem 0', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>{locale === 'en' ? 'Profession' : locale === 'hi' ? 'पेशा' : 'पेशा'}</p>
                           <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-headers)', fontWeight: 500 }}>{activeBiodata.profession}</p>
                         </div>
                         <div>
-                          <p style={{ margin: '0 0 0.3rem 0', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>{locale === 'en' ? 'Income' : 'आय'}</p>
+                          <p style={{ margin: '0 0 0.3rem 0', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>{locale === 'en' ? 'Income' : locale === 'hi' ? 'आय' : 'आय'}</p>
                           <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-headers)', fontWeight: 500 }}>
-                            {activeBiodata.annualIncome ? `₹${(activeBiodata.annualIncome / 100000).toFixed(1)}L / ${locale === 'en' ? 'yr' : 'वर्ष'}` : 'N/A'}
+                            {activeBiodata.annualIncome ? `₹${(activeBiodata.annualIncome / 100000).toFixed(1)}L / ${locale === 'en' ? 'yr' : locale === 'hi' ? 'वर्ष' : 'वर्ष'}` : 'N/A'}
                           </p>
                         </div>
                       </div>
 
                       {activeBiodata.interests && activeBiodata.interests.length > 0 && (
                         <div style={{ marginTop: '1.5rem' }}>
-                          <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>{locale === 'en' ? 'Interests' : 'रुचियां'}</p>
+                          <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>{locale === 'en' ? 'Interests' : locale === 'hi' ? 'रुचियां' : 'रुचियां'}</p>
                           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                             {activeBiodata.interests.map(interest => (
                               <span key={interest} style={{ padding: '0.3rem 0.8rem', backgroundColor: 'var(--primary-light)', color: 'var(--primary-dark)', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 500 }}>
@@ -978,7 +978,7 @@ function App() {
                         style={{ width: '100%', padding: '0.9rem', background: 'var(--primary)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                        {locale === 'en' ? 'Edit Profile' : 'प्रोफ़ाइल संपादित करें'}
+                        {locale === 'en' ? 'Edit Profile' : locale === 'hi' ? 'प्रोफ़ाइल संपादित करें' : 'प्रोफ़ाइल संपादित करू'}
                       </button>
                       
                       <div style={{ display: 'flex', gap: '0.8rem' }}>
@@ -986,13 +986,13 @@ function App() {
                           onClick={() => setProfileModalView('preferences')} 
                           style={{ flex: 1, padding: '0.9rem', background: 'var(--bg-app)', color: 'var(--text-main)', border: '1px solid var(--border-light)', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}
                         >
-                          {locale === 'en' ? 'Preferences' : 'प्राथमिकताएं'}
+                          {locale === 'en' ? 'Preferences' : locale === 'hi' ? 'प्राथमिकताएं' : 'प्राथमिकताएं'}
                         </button>
                         <button 
                           onClick={() => setProfileModalView('privacy')} 
                           style={{ flex: 1, padding: '0.9rem', background: 'var(--bg-app)', color: 'var(--text-main)', border: '1px solid var(--border-light)', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}
                         >
-                          {locale === 'en' ? 'Privacy' : 'गोपनीयता'}
+                          {locale === 'en' ? 'Privacy' : locale === 'hi' ? 'गोपनीयता' : 'गोपनीयता'}
                         </button>
                       </div>
 
@@ -1024,37 +1024,37 @@ function App() {
                       }).catch(console.error);
                       setProfileModalView(null);
                     }}>
-                      <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--text-headers)' }}>{locale === 'en' ? 'Edit Profile' : 'प्रोफ़ाइल संपादित करें'}</h2>
+                      <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--text-headers)' }}>{locale === 'en' ? 'Edit Profile' : locale === 'hi' ? 'प्रोफ़ाइल संपादित करें' : 'प्रोफ़ाइल संपादित करू'}</h2>
                       
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         <div>
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>{locale === 'en' ? 'Full Name' : 'पूरा नाम'}</label>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>{locale === 'en' ? 'Full Name' : locale === 'hi' ? 'पूरा नाम' : 'पूरा नाम'}</label>
                           <input type="text" value={editForm.fullName || ''} onChange={(e) => setEditForm({...editForm, fullName: e.target.value})} style={styles.input} required />
                         </div>
                         <div>
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>{locale === 'en' ? 'Profession' : 'पेशा'}</label>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>{locale === 'en' ? 'Profession' : locale === 'hi' ? 'पेशा' : 'पेशा'}</label>
                           <input type="text" value={editForm.profession || ''} onChange={(e) => setEditForm({...editForm, profession: e.target.value})} style={styles.input} required />
                         </div>
                         <div>
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>{locale === 'en' ? 'Location' : 'स्थान'}</label>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>{locale === 'en' ? 'Location' : locale === 'hi' ? 'स्थान' : 'स्थान'}</label>
                           <input type="text" value={editForm.location || ''} onChange={(e) => setEditForm({...editForm, location: e.target.value})} style={styles.input} required />
                         </div>
                         <div>
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>{locale === 'en' ? 'Annual Income (₹)' : 'वार्षिक आय (₹)'}</label>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>{locale === 'en' ? 'Annual Income (₹)' : locale === 'hi' ? 'वार्षिक आय (₹)' : 'वार्षिक आय (₹)'}</label>
                           <input type="number" value={editForm.annualIncome || ''} onChange={(e) => setEditForm({...editForm, annualIncome: parseInt(e.target.value)})} style={styles.input} />
                         </div>
                         <div>
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>{locale === 'en' ? 'About Me' : 'मेरे बारे में'}</label>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>{locale === 'en' ? 'About Me' : locale === 'hi' ? 'मेरे बारे में' : 'मेरे बारे में'}</label>
                           <textarea rows={4} value={editForm.aboutMe || ''} onChange={(e) => setEditForm({...editForm, aboutMe: e.target.value})} style={{...styles.input, resize: 'vertical'}}></textarea>
                         </div>
-                        <button type="submit" style={{ ...styles.primaryBtnWidth, marginTop: '1rem' }}>{locale === 'en' ? 'Save Changes' : 'परिवर्तन सहेजें'}</button>
+                        <button type="submit" style={{ ...styles.primaryBtnWidth, marginTop: '1rem' }}>{locale === 'en' ? 'Save Changes' : locale === 'hi' ? 'परिवर्तन सहेजें' : 'परिवर्तन सहेजें'}</button>
                       </div>
                     </form>
                   )}
 
                   {profileModalView === 'preferences' && (
                     <div>
-                      <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--text-headers)' }}>{locale === 'en' ? 'Match Preferences' : 'मिलान प्राथमिकताएं'}</h2>
+                      <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--text-headers)' }}>{locale === 'en' ? 'Match Preferences' : locale === 'hi' ? 'मिलान प्राथमिकताएं' : 'मिलान प्राथमिकताएं'}</h2>
                       <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Update your desired match criteria here.</p>
                       
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -1070,14 +1070,14 @@ function App() {
                           <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>Preferred Location</label>
                           <input type="text" defaultValue="Any" style={styles.input} />
                         </div>
-                        <button onClick={() => setProfileModalView(null)} style={{ ...styles.primaryBtnWidth, marginTop: '1rem' }}>{locale === 'en' ? 'Save Preferences' : 'प्राथमिकताएं सहेजें'}</button>
+                        <button onClick={() => setProfileModalView(null)} style={{ ...styles.primaryBtnWidth, marginTop: '1rem' }}>{locale === 'en' ? 'Save Preferences' : locale === 'hi' ? 'प्राथमिकताएं सहेजें' : 'प्राथमिकताएं सहेजें'}</button>
                       </div>
                     </div>
                   )}
 
                   {profileModalView === 'privacy' && (
                     <div>
-                      <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--text-headers)' }}>{locale === 'en' ? 'Privacy Settings' : 'गोपनीयता सेटिंग्स'}</h2>
+                      <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--text-headers)' }}>{locale === 'en' ? 'Privacy Settings' : locale === 'hi' ? 'गोपनीयता सेटिंग्स' : 'गोपनीयता सेटिंग्स'}</h2>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <div>
@@ -1093,7 +1093,7 @@ function App() {
                           </div>
                           <input type="checkbox" defaultChecked style={{ width: '20px', height: '20px' }} />
                         </div>
-                        <button onClick={() => setProfileModalView(null)} style={{ ...styles.primaryBtnWidth, marginTop: '1rem' }}>{locale === 'en' ? 'Save Settings' : 'सेटिंग्स सहेजें'}</button>
+                        <button onClick={() => setProfileModalView(null)} style={{ ...styles.primaryBtnWidth, marginTop: '1rem' }}>{locale === 'en' ? 'Save Settings' : locale === 'hi' ? 'सेटिंग्स सहेजें' : 'सेटिंग्स सहेजें'}</button>
                       </div>
                     </div>
                   )}
@@ -1146,10 +1146,10 @@ function App() {
 
             {/* Column 2: Quick Links */}
             <div className="footer-col">
-              <h4 className="footer-col-title">{locale === 'en' ? 'Navigate' : 'नेविगेट'}</h4>
+              <h4 className="footer-col-title">{locale === 'en' ? 'Navigate' : locale === 'hi' ? 'नेविगेट' : 'नेविगेट'}</h4>
               <ul className="footer-links">
                 <li className="footer-link-item" onClick={() => setActiveView(activeUser ? (activeUser.registrationStep === 'completed' ? 'browse' : 'register') : 'home')}>
-                  {locale === 'en' ? 'Home' : 'मुख्य पृष्ठ'}
+                  {locale === 'en' ? 'Home' : locale === 'hi' ? 'मुख्य पृष्ठ' : 'मुख्य पृष्ठ'}
                 </li>
                 {!activeUser ? (
                   <li className="footer-link-item" onClick={() => setActiveView('auth')}>
@@ -1157,7 +1157,7 @@ function App() {
                   </li>
                 ) : (
                   <li className="footer-link-item" onClick={() => setActiveView(activeUser.registrationStep === 'completed' ? 'browse' : 'register')}>
-                    {activeUser.registrationStep === 'completed' ? (locale === 'en' ? 'Browse Matches' : 'मैच खोजें') : (locale === 'en' ? 'Complete Profile' : 'बायोडाटा पूरा करें')}
+                    {activeUser.registrationStep === 'completed' ? (locale === 'en' ? 'Browse Matches' : locale === 'hi' ? 'मैच खोजें' : 'मैच खोजू') : (locale === 'en' ? 'Complete Profile' : locale === 'hi' ? 'बायोडाटा पूरा करें' : 'बायोडाटा पूरा करू')}
                   </li>
                 )}
               </ul>
@@ -1165,20 +1165,20 @@ function App() {
 
             {/* Column 3: Gotras & Customs */}
             <div className="footer-col">
-              <h4 className="footer-col-title">{locale === 'en' ? 'Lineages' : 'प्रमुख गोत्र'}</h4>
+              <h4 className="footer-col-title">{locale === 'en' ? 'Lineages' : locale === 'hi' ? 'प्रमुख गोत्र' : 'प्रमुख गोत्र'}</h4>
               <ul className="footer-links" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem' }}>
-                <li className="footer-link-item" style={{ cursor: 'default' }}>{locale === 'en' ? 'Kashyap' : 'कश्यप'}</li>
-                <li className="footer-link-item" style={{ cursor: 'default' }}>{locale === 'en' ? 'Shandilya' : 'शांडिल्य'}</li>
-                <li className="footer-link-item" style={{ cursor: 'default' }}>{locale === 'en' ? 'Vatsa' : 'वत्स'}</li>
-                <li className="footer-link-item" style={{ cursor: 'default' }}>{locale === 'en' ? 'Katyayan' : 'कात्यायन'}</li>
-                <li className="footer-link-item" style={{ cursor: 'default' }}>{locale === 'en' ? 'Parashar' : 'पराशर'}</li>
-                <li className="footer-link-item" style={{ cursor: 'default' }}>{locale === 'en' ? 'Bhardwaj' : 'भारद्वाज'}</li>
+                <li className="footer-link-item" style={{ cursor: 'default' }}>{locale === 'en' ? 'Kashyap' : locale === 'hi' ? 'कश्यप' : 'कश्यप'}</li>
+                <li className="footer-link-item" style={{ cursor: 'default' }}>{locale === 'en' ? 'Shandilya' : locale === 'hi' ? 'शांडिल्य' : 'शांडिल्य'}</li>
+                <li className="footer-link-item" style={{ cursor: 'default' }}>{locale === 'en' ? 'Vatsa' : locale === 'hi' ? 'वत्स' : 'वत्स'}</li>
+                <li className="footer-link-item" style={{ cursor: 'default' }}>{locale === 'en' ? 'Katyayan' : locale === 'hi' ? 'कात्यायन' : 'कात्यायन'}</li>
+                <li className="footer-link-item" style={{ cursor: 'default' }}>{locale === 'en' ? 'Parashar' : locale === 'hi' ? 'पराशर' : 'पराशर'}</li>
+                <li className="footer-link-item" style={{ cursor: 'default' }}>{locale === 'en' ? 'Bhardwaj' : locale === 'hi' ? 'भारद्वाज' : 'भारद्वाज'}</li>
               </ul>
             </div>
 
             {/* Column 4: Highly Optimized System Controls */}
             <div className="footer-col">
-              <h4 className="footer-col-title">{locale === 'en' ? 'Settings' : 'सिस्टम विकल्प'}</h4>
+              <h4 className="footer-col-title">{locale === 'en' ? 'Settings' : locale === 'hi' ? 'सिस्टम विकल्प' : 'सिस्टम विकल्प'}</h4>
               <div className="footer-controls-group">
                 {/* Language Switcher Dropdown */}
                 <select 
@@ -1196,7 +1196,7 @@ function App() {
                 <button 
                   className="footer-toggle-btn"
                   onClick={toggleTheme}
-                  title={locale === 'en' ? 'Switch Color Theme' : 'थीम बदलें'}
+                  title={locale === 'en' ? 'Switch Color Theme' : locale === 'hi' ? 'थीम बदलें' : 'थीम बदलें'}
                 >
                   {theme === 'light' ? '🌙 Dark Mode' : '☀️ Light Mode'}
                 </button>
@@ -1208,10 +1208,10 @@ function App() {
 
           <div className="footer-bottom-row">
             <p className="footer-copyright">
-              © 2026 {t('brand_serif')}{t('brand_sans')}. {locale === 'en' ? 'All Rights Reserved. Proudly protecting Maithil heritage and lineage custom safeties.' : 'सर्वाधिकार सुरक्षित। गर्व से मैथिल परंपराओं और गोत्र अनुकूलता नियमों की रक्षा करता है।'}
+              © 2026 {t('brand_serif')}{t('brand_sans')}. {locale === 'en' ? 'All Rights Reserved. Proudly protecting Maithil heritage and lineage custom safeties.' : locale === 'hi' ? 'सर्वाधिकार सुरक्षित। गर्व से मैथिल परंपराओं और गोत्र अनुकूलता नियमों की रक्षा करता है।' : 'सर्वाधिकार सुरक्षित। गर्व से मैथिल परंपराओं आ गोत्र अनुकूलता नियमों की रक्षा करता अछि।'}
             </p>
             <p style={{ fontSize: '0.85rem', color: 'hsl(var(--magenta-300))' }}>
-              {locale === 'en' ? 'Developed with Pure Vanilla CSS & React 19' : 'प्योर वैनिला सीएसएस और रिएक्ट 19 द्वारा संचालित'}
+              {locale === 'en' ? 'Developed with Pure Vanilla CSS & React 19' : locale === 'hi' ? 'प्योर वैनिला सीएसएस और रिएक्ट 19 द्वारा संचालित' : 'प्योर वैनिला सीएसएस आ रिएक्ट 19 द्वारा संचालित'}
             </p>
           </div>
         </div>
