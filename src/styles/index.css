@@ -783,11 +783,17 @@ button {
 /* Hero asymmetrical layout */
 .hero-section-padded {
   min-height: calc(100vh - 72px);
-  padding: 3.5rem 0 2rem;
+  padding: 1.5rem 0 1rem;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   position: relative;
   overflow: hidden;
+}
+
+@media (min-width: 992px) {
+  .hero-section-padded {
+    padding: 3.5rem 0 2rem;
+  }
 }
 
 /* Background Hearts for Hero */
@@ -856,16 +862,16 @@ button {
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin-top: 3rem;
-  padding-bottom: 2rem;
+  margin-top: 1.5rem;
+  padding-bottom: 0.5rem;
 }
 
 .hero-hearts-svg {
-  width: 80%;
+  width: 70%;
   height: auto;
-  max-width: 280px;
+  max-width: 220px;
   filter: drop-shadow(0 15px 25px rgba(216,27,96,0.2));
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 @media (min-width: 992px) {
@@ -933,38 +939,62 @@ button {
 
 .badge-top-left {
   position: absolute;
-  top: 15%;
-  left: -5%;
+  top: 5%;
+  left: 2%;
   background: var(--bg-glass);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  padding: 0.8rem 1.2rem;
+  padding: 0.5rem 0.8rem;
   border-radius: 50px;
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--border-light);
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.5rem;
   z-index: 3;
   animation: floatUpDown 6s ease-in-out infinite;
+  transform: scale(0.85);
+  transform-origin: left top;
+}
+
+@media (min-width: 992px) {
+  .badge-top-left {
+    top: 15%;
+    left: -5%;
+    padding: 0.8rem 1.2rem;
+    gap: 0.8rem;
+    transform: scale(1);
+  }
 }
 
 .badge-bottom-right {
   position: absolute;
-  bottom: 10%;
-  right: -5%;
+  bottom: 0%;
+  right: 2%;
   background: var(--bg-glass);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  padding: 0.8rem 1.2rem;
+  padding: 0.5rem 0.8rem;
   border-radius: 50px;
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--border-light);
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.5rem;
   z-index: 3;
   animation: floatUpDown 6s ease-in-out infinite 3s;
+  transform: scale(0.85);
+  transform-origin: right bottom;
+}
+
+@media (min-width: 992px) {
+  .badge-bottom-right {
+    bottom: 10%;
+    right: -5%;
+    padding: 0.8rem 1.2rem;
+    gap: 0.8rem;
+    transform: scale(1);
+  }
 }
 
 .badge-icon-circle {
