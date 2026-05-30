@@ -1,5 +1,13 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { TRANSLATIONS } from '../mock/translations';
+import enTranslations from '../locales/en.json';
+import hiTranslations from '../locales/hi.json';
+import maTranslations from '../locales/ma.json';
+
+const TRANSLATIONS: Record<string, Record<string, string>> = {
+  en: enTranslations,
+  hi: hiTranslations,
+  ma: maTranslations,
+};
 
 export type Locale = 'ma' | 'en' | 'hi';
 
@@ -28,12 +36,12 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const t = (key: string, replacements?: Record<string, string | number>): string => {
-    const item = TRANSLATIONS[key];
-    if (!item) {
+    const localeTranslations = TRANSLATIONS[locale];
+    if (!localeTranslations || !localeTranslations[key]) {
       return key;
     }
     
-    let text = item[locale];
+    let text = localeTranslations[key];
     
     if (replacements) {
       Object.entries(replacements).forEach(([placeholder, value]) => {
