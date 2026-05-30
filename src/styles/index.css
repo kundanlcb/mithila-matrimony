@@ -782,7 +782,10 @@ button {
 
 /* Hero asymmetrical layout */
 .hero-section-padded {
-  padding: 5rem 0;
+  min-height: calc(100vh - 72px);
+  padding: 2rem 0;
+  display: flex;
+  align-items: center;
   position: relative;
   overflow: hidden;
 }
@@ -816,6 +819,15 @@ button {
   width: 100%;
 }
 
+@media (min-width: 992px) {
+  .hero-split-layout {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4rem;
+  }
+}
+
 .hero-text-content {
   display: flex;
   flex-direction: column;
@@ -827,17 +839,26 @@ button {
   margin: 0;
 }
 
+@media (min-width: 992px) {
+  .hero-text-content {
+    max-width: 55%;
+  }
+}
+
 .hero-visual-content {
   position: relative;
   display: none;
   justify-content: center;
   align-items: center;
   width: 100%;
+  margin-top: 4rem;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .hero-visual-content {
     display: flex;
+    max-width: 45%;
+    margin-top: 0;
   }
 }
 

@@ -410,7 +410,33 @@ function App() {
                         {locale === 'en' ? 'Login' : 'लॉग इन करें'}
                       </button>
                     </div>
+                    </div>
                   </div>
+
+                  {/* Right Side Visual Content (Desktop Only) */}
+                  <div className="hero-visual-content animate-fade" style={{ animationDelay: '0.2s' }}>
+                    <div className="hero-glow-bg"></div>
+                    <div className="hero-image-container">
+                      <div className="hero-arch-mask">
+                        <img src="/hero-art.png" alt="Premium Maithil Matrimony" />
+                      </div>
+                      <div className="badge-top-left">
+                        <div className="badge-icon-circle">✓</div>
+                        <div className="badge-text-stack">
+                          <span className="badge-title">{t('trust_stat1_title')}</span>
+                          <span className="badge-subtitle">{locale === 'en' ? 'Authentic Community' : 'सच्चा समुदाय'}</span>
+                        </div>
+                      </div>
+                      <div className="badge-bottom-right">
+                        <div className="badge-icon-circle">🧬</div>
+                        <div className="badge-text-stack">
+                          <span className="badge-title">{t('trust_stat2_title')}</span>
+                          <span className="badge-subtitle">{locale === 'en' ? 'Perfect Matches' : 'सटीक मिलान'}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </section>
