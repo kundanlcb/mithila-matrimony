@@ -852,18 +852,34 @@ button {
 
 .hero-visual-content {
   position: relative;
-  display: none;
+  display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin-top: 4rem;
+  margin-top: 3rem;
+  padding-bottom: 2rem;
+}
+
+.hero-hearts-svg {
+  width: 80%;
+  height: auto;
+  max-width: 280px;
+  filter: drop-shadow(0 15px 25px rgba(216,27,96,0.2));
+  transform: scale(1.1);
 }
 
 @media (min-width: 992px) {
   .hero-visual-content {
     display: flex;
-    max-width: 45%;
+    flex: 1;
     margin-top: 0;
+    padding-bottom: 0;
+  }
+  .hero-hearts-svg {
+    width: 90%;
+    max-width: 480px;
+    filter: drop-shadow(0 20px 40px rgba(216,27,96,0.25));
+    transform: scale(1.15);
   }
 }
 
