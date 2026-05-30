@@ -407,7 +407,7 @@ function App() {
                         onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
                         onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
                       >
-                        {locale === 'en' ? 'Login' : locale === 'hi' ? 'लॉग इन करें' : 'लॉग इन करू'}
+                        {t('btn_auth')}
                       </button>
                     </div>
                   </div>

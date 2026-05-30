@@ -14,7 +14,7 @@ export const TRANSLATIONS: Record<string, TranslationItem> = {
   brand_serif: { en: "Maithil", hi: "मैथिल", ma: "मैथिल" },
   brand_sans: { en: "Match", hi: "मैच", ma: "मैच" },
   btn_logout: { en: "Log Out", hi: "लॉग आउट", ma: "लॉग आउट" },
-  btn_auth: { en: "Sign In", hi: "साइन इन", ma: "साइन इन" },
+  btn_auth: { en: "Log In", hi: "लॉग इन", ma: "लॉग इन" },
   namaste: { en: "Namaste", hi: "नमस्ते", ma: "नमस्ते" },
 
   // Hero / Landing view
@@ -67,7 +67,7 @@ export const TRANSLATIONS: Record<string, TranslationItem> = {
   landing_who_item2_desc: { en: "Respecting your privacy, values, and traditions while providing cutting edge searching interfaces.", hi: "आपकी गोपनीयता और परंपराओं का पूरा सम्मान करते हुए आधुनिकतम खोज और सुरक्षा उपकरण।", ma: "आपकी गोपनीयता आ परंपराओं का पूरा सम्मान करते हुए आधुनिकतम खोज आ सुरक्षा उपकरण।" },
 
   // Auth / OTP screen
-  auth_title: { en: "Sign In / SignUp", hi: "साइन इन / पंजीकरण", ma: "साइन इन / पंजीकरण" },
+  auth_title: { en: "Log In / SignUp", hi: "लॉग इन / पंजीकरण", ma: "लॉग इन / पंजीकरण" },
   auth_subtitle: { en: "Enter your mobile number to receive a simulated verification OTP", hi: "सत्यापन कोड (सिम्युलेटेड ओटीपी) प्राप्त करने के लिए अपना मोबाइल नंबर दर्ज करें", ma: "सत्यापन कोड (सिम्युलेटेड ओटीपी) प्राप्त करने के लिए अपन मोबाइल नंबर दर्ज करू" },
   label_phone: { en: "Mobile Number (E.164 format)", hi: "मोबाइल नंबर (E.164 प्रारूप)", ma: "मोबाइल नंबर (E.164 प्रारूप)" },
   label_otp: { en: "Enter 6-Digit OTP Code", hi: "6-अंकों का ओटीपी दर्ज करें", ma: "6-अंकों का ओटीपी दर्ज करू" },
