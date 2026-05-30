@@ -1,15 +1,67 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import type { Biodata } from '../types';
+import { SubscriptionService } from '../api/subscription.service';
 
 interface ProfileDetailProps {
   profile: Biodata;
   onClose: () => void;
   onAction: (type: 'interest_sent' | 'shortlisted' | 'passed') => void;
+  subscriptionStatus: any;
+  onShowPaywall: () => void;
+  onUnlockSuccess: () => void;
 }
 
-const ProfileDetail: React.FC<ProfileDetailProps> = ({ profile, onClose, onAction }) => {
+const ProfileDetail: React.FC<ProfileDetailProps> = ({ 
+  profile, 
+  onClose, 
+  onAction,
+  subscriptionStatus,
+  onShowPaywall,
+  onUnlockSuccess
+}) => {
   const { t, locale } = useLanguage();
+
+  // Photo Carousel State
+  const photos = [profile.photoUrl, ...(profile.additionalPhotos || [])].filter(Boolean);
+  const [currentPhotoIdx, setCurrentPhotoIdx] = React.useState(0);
+
+  const nextPhoto = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentPhotoIdx(prev => (prev + 1) % photos.length);
+  };
+
+  const prevPhoto = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentPhotoIdx(prev => (prev - 1 + photos.length) % photos.length);
+  };
+
+  const unlocked = !!(profile.phoneNumber || profile.email);
+
+  const handleReveal = async () => {
+    if (!subscriptionStatus || subscriptionStatus.planType === 'free') {
+      onShowPaywall();
+      return;
+    }
+
+    if (subscriptionStatus.planType === 'pay_per_contact') {
+      const confirmSpend = window.confirm(
+        locale === 'en' 
+          ? `1 credit will be used. You have ${subscriptionStatus.creditsRemaining} credits remaining. Reveal contact details?` 
+          : `1 क्रेडिट का उपयोग किया जाएगा। आपके पास ${subscriptionStatus.creditsRemaining} क्रेडिट बचे हैं। संपर्क विवरण प्रकट करें?`
+      );
+      if (!confirmSpend) return;
+    }
+
+    try {
+      const res = await SubscriptionService.reveal(profile.userId);
+      if (res.unlocked) {
+        onUnlockSuccess();
+      }
+    } catch (e: any) {
+      alert(e.message || 'Failed to reveal contact details. Make sure you have mutual interest first.');
+    }
+  };
 
   return (
     <div className="modal-overlay animate-fade" style={styles.overlay}>
@@ -17,9 +69,9 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ profile, onClose, onActio
         <button onClick={onClose} style={styles.closeBtn} aria-label="Close">✕</button>
         
         <div style={styles.scrollArea}>
-          {/* Header Region */}
+          {/* Header Image Carousel Region */}
           <div style={styles.heroSection}>
-            <img src={profile.photoUrl} alt={profile.fullName} style={styles.heroImage} />
+            <img src={photos[currentPhotoIdx]} alt={profile.fullName} style={styles.heroImage} />
             <div style={styles.heroGradient} />
             <div style={styles.heroInfo}>
               <h2 style={styles.name}>{profile.fullName}</h2>
@@ -27,6 +79,24 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ profile, onClose, onActio
                 {profile.age} {locale === 'en' ? 'Yrs' : 'वर्ष'} • {profile.location}
               </p>
             </div>
+            
+            {photos.length > 1 && (
+              <>
+                <button type="button" onClick={prevPhoto} style={{ ...styles.carouselBtn, left: '1rem' }} aria-label="Previous image">‹</button>
+                <button type="button" onClick={nextPhoto} style={{ ...styles.carouselBtn, right: '1rem' }} aria-label="Next image">›</button>
+                <div style={styles.carouselDots}>
+                  {photos.map((_, idx) => (
+                    <span 
+                      key={idx} 
+                      style={{ 
+                        ...styles.carouselDot, 
+                        backgroundColor: idx === currentPhotoIdx ? 'var(--primary)' : 'rgba(255,255,255,0.6)' 
+                      }} 
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
           <div style={styles.contentSection}>
@@ -58,6 +128,78 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ profile, onClose, onActio
               <span style={styles.badge}>💼 {profile.profession}</span>
               <span style={styles.badge}>💰 ₹{(profile.annualIncome / 100000).toFixed(1)} {t('summary_lakh')}</span>
             </div>
+
+            {/* Contact Gated Block */}
+            <div style={styles.detailCard}>
+              <h3 style={styles.sectionTitle}>📞 {locale === 'en' ? 'Contact Details' : 'संपर्क विवरण'}</h3>
+              {unlocked ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <p style={styles.text}><strong>📱 {locale === 'en' ? 'Phone' : 'फ़ोन'}:</strong> {profile.phoneNumber}</p>
+                  <p style={styles.text}><strong>📧 {locale === 'en' ? 'Email' : 'ईमेल'}:</strong> {profile.email || 'N/A'}</p>
+                </div>
+              ) : (
+                <div>
+                  <p style={{ ...styles.text, color: 'var(--text-muted)', marginBottom: '0.8rem', fontStyle: 'italic' }}>
+                    🔒 {locale === 'en' ? 'Unlock with Premium to view phone, email, and exact addresses.' : 'फोन, ईमेल और सटीक पता देखने के लिए प्रीमियम के साथ ऑनलॉक करें।'}
+                  </p>
+                  <button 
+                    type="button" 
+                    onClick={handleReveal} 
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      backgroundColor: 'var(--primary)',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '12px',
+                      fontWeight: 'bold',
+                      fontSize: '0.9rem',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem',
+                      boxShadow: 'var(--shadow-sm)',
+                      transition: 'background 0.2s'
+                    }}
+                  >
+                    🔓 {locale === 'en' ? 'Reveal Contact Details' : 'संपर्क विवरण प्रकट करें'}
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Current Address display */}
+            {profile.addresses && profile.addresses.filter(a => a.addressType === 'current').map(addr => (
+              <div key={addr.id} style={styles.detailCard}>
+                <h3 style={styles.sectionTitle}>📍 {locale === 'en' ? 'Current Address' : 'वर्तमान पता'}</h3>
+                <p style={styles.text}>
+                  <strong>{locale === 'en' ? 'City' : 'शहर'}:</strong> {addr.city}, {addr.state}, {addr.country}
+                </p>
+                <p style={styles.text}>
+                  <strong>{locale === 'en' ? 'Pincode' : 'पिनकोड'}:</strong> {unlocked ? (addr.pincode || 'N/A') : '🔒 Locked'}
+                </p>
+                <p style={styles.text}>
+                  <strong>{locale === 'en' ? 'Street' : 'सड़क/सटीक पता'}:</strong> {unlocked ? (addr.streetAddress || 'N/A') : '🔒 Locked'}
+                </p>
+              </div>
+            ))}
+
+            {/* Native Address display */}
+            {profile.addresses && profile.addresses.filter(a => a.addressType === 'native').map(addr => (
+              <div key={addr.id} style={styles.detailCard}>
+                <h3 style={styles.sectionTitle}>🏡 {locale === 'en' ? 'Native / Hometown Address' : 'पैतृक निवास पता'}</h3>
+                <p style={styles.text}>
+                  <strong>{locale === 'en' ? 'City' : 'शहर'}:</strong> {addr.city}, {addr.state}, {addr.country}
+                </p>
+                <p style={styles.text}>
+                  <strong>{locale === 'en' ? 'Pincode' : 'पिनकोड'}:</strong> {unlocked ? (addr.pincode || 'N/A') : '🔒 Locked'}
+                </p>
+                <p style={styles.text}>
+                  <strong>{locale === 'en' ? 'Street' : 'सड़क/सटीक पता'}:</strong> {unlocked ? (addr.streetAddress || 'N/A') : '🔒 Locked'}
+                </p>
+              </div>
+            ))}
 
             {/* Sections */}
             <div style={styles.detailCard}>
@@ -169,6 +311,39 @@ const styles = {
     opacity: 0.95,
     color: '#ffffff',
     textShadow: '0 1px 4px rgba(0,0,0,0.8)'
+  },
+  carouselBtn: {
+    position: 'absolute' as const,
+    top: '50%',
+    transform: 'translateY(-50%)',
+    background: 'rgba(0,0,0,0.6)',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '50%',
+    width: '36px',
+    height: '36px',
+    fontSize: '1.6rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    zIndex: 10,
+    userSelect: 'none' as const
+  },
+  carouselDots: {
+    position: 'absolute' as const,
+    bottom: '1rem',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    display: 'flex',
+    gap: '0.4rem',
+    zIndex: 10
+  },
+  carouselDot: {
+    width: '8px',
+    height: '8px',
+    borderRadius: '50%',
+    transition: 'background-color 0.2s'
   },
   contentSection: {
     padding: '1.5rem',

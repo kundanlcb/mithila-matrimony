@@ -34,6 +34,8 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
   const [optionsGotra, setOptionsGotra] = useState<string[]>(['Kashyap', 'Shandilya', 'Vatsa', 'Bhardwaj', 'Parashar', 'Katyayan']);
   const [optionsCity, setOptionsCity] = useState<string[]>(['Darbhanga', 'Madhubani', 'Patna', 'Saharsa']);
   const [optionsProfession, setOptionsProfession] = useState<string[]>(['Software Engineer', 'Doctor', 'Teacher', 'Business']);
+  const [optionsReligion, setOptionsReligion] = useState<string[]>(['Hindu', 'Muslim', 'Christian', 'Sikh', 'Jain', 'Buddhist']);
+  const [optionsCaste, setOptionsCaste] = useState<string[]>(['Brahmin (Maithil)', 'Kayastha', 'Rajput', 'Baniya', 'Karna Kayastha', 'Yadav', 'Other']);
 
   // Biodata Form Accumulator State
   const [biodataForm, setBiodataForm] = useState<Omit<Biodata, 'biodataId' | 'userId'>>({
@@ -43,6 +45,8 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
     height: '5\' 6"',
     maritalStatus: 'Never Married',
     complexion: 'Fair',
+    religion: 'Hindu',
+    caste: 'Brahmin (Maithil)',
     gotra: 'Kashyap',
     diet: 'Vegetarian',
     profession: 'Software Engineer',
@@ -57,23 +61,35 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
   // Hobbies temporary accumulator (Step 8)
   const [tempInterests, setTempInterests] = useState<string[]>([]);
 
+  // Photo upload list
+  const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([]);
+
   // Auto Scroll to Bottom on message updates
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatEndRef.current) {
+      const scroller = chatEndRef.current.parentElement;
+      if (scroller) {
+        scroller.scrollTop = scroller.scrollHeight;
+      }
+    }
   }, [messages, typing]);
 
   // Fetch Master Data
   useEffect(() => {
     const fetchMasterData = async () => {
       try {
-        const [gotras, cities, professions] = await Promise.all([
+        const [gotras, cities, professions, religions, castes] = await Promise.all([
           apiClient.get<any[]>('/api/v1/admin/master-data/gotra'),
           apiClient.get<any[]>('/api/v1/admin/master-data/city'),
-          apiClient.get<any[]>('/api/v1/admin/master-data/profession')
+          apiClient.get<any[]>('/api/v1/admin/master-data/profession'),
+          apiClient.get<any[]>('/api/v1/admin/master-data/religion'),
+          apiClient.get<any[]>('/api/v1/admin/master-data/caste')
         ]);
         if (gotras?.length) setOptionsGotra(gotras.map(g => g.name));
         if (cities?.length) setOptionsCity(cities.map(c => c.name));
         if (professions?.length) setOptionsProfession(professions.map(p => p.name));
+        if (religions?.length) setOptionsReligion(religions.map(r => r.name));
+        if (castes?.length) setOptionsCaste(castes.map(c => c.name));
       } catch (e) {
         console.error('Failed to fetch master data', e);
       }
@@ -107,10 +123,14 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
       let text = msg.text;
       if (msg.text.includes(t('bot_welcome').substring(0, 10)) || msg.id === 'welcome') {
         text = t('bot_welcome');
-      } else if (msg.text.includes(t('bot_gender').substring(0, 10)) || msg.inputType === 'select') {
+      } else if (msg.text.includes(t('bot_gender').substring(0, 10)) || (msg.inputType === 'select' && msg.options && (msg.options.includes('Female') || msg.options.includes('Male')))) {
         text = t('bot_gender', { name: biodataForm.fullName });
       } else if (msg.text.includes(t('bot_age').substring(0, 10))) {
         text = t('bot_age');
+      } else if (msg.text.includes(t('bot_religion').substring(0, 8))) {
+        text = t('bot_religion');
+      } else if (msg.text.includes(t('bot_caste').substring(0, 8))) {
+        text = t('bot_caste');
       } else if (msg.text.includes(t('bot_gotra').substring(0, 10))) {
         text = t('bot_gotra');
       } else if (msg.text.includes(t('bot_city').substring(0, 10))) {
@@ -160,7 +180,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
     setErrorMsg(null);
     
     const valueToProcess = directValue !== undefined ? directValue : inputValue.trim();
-    if (!valueToProcess && currentStep !== 8) { // Hobbies selection done via button
+    if (!valueToProcess && currentStep !== 14) { // Hobbies selection done via button
       setErrorMsg(t('chat_error_empty'));
       return;
     }
@@ -169,7 +189,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
     setMessages(prev => [...prev, {
       id: 'user-' + Math.random().toString(36).substr(2, 9),
       sender: 'user',
-      text: currentStep === 8 ? tempInterests.join(', ') : valueToProcess,
+      text: currentStep === 14 ? tempInterests.join(', ') : valueToProcess,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }]);
 
@@ -241,41 +261,51 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
         triggerBotResponse(t('bot_complexion'), 'select', ['Very Fair', 'Fair', 'Wheatish', 'Dark']);
         break;
 
-      case 5: // Complexion entered -> Ask Gotra
+      case 5: // Complexion entered -> Ask Religion
         setBiodataForm(prev => ({ ...prev, complexion: valueToProcess }));
+        triggerBotResponse(t('bot_religion'), 'select', optionsReligion);
+        break;
+
+      case 6: // Religion entered -> Ask Caste
+        setBiodataForm(prev => ({ ...prev, religion: valueToProcess }));
+        triggerBotResponse(t('bot_caste'), 'select', optionsCaste);
+        break;
+
+      case 7: // Caste selected -> Ask Gotra
+        setBiodataForm(prev => ({ ...prev, caste: valueToProcess }));
         triggerBotResponse(t('bot_gotra'), 'select', optionsGotra);
         break;
 
-      case 6: // Gotra selected -> Ask Diet
+      case 8: // Gotra selected -> Ask Diet
         setBiodataForm(prev => ({ ...prev, gotra: valueToProcess }));
         triggerBotResponse(t('bot_diet'), 'select', ['Vegetarian', 'Non-Vegetarian', 'Eggetarian', 'Vegan']);
         break;
 
-      case 7: // Diet entered -> Ask City
+      case 9: // Diet entered -> Ask City
         setBiodataForm(prev => ({ ...prev, diet: valueToProcess }));
         triggerBotResponse(t('bot_city'), 'select', optionsCity);
         break;
 
-      case 8: // City entered -> Ask Education
+      case 10: // City entered -> Ask Education
         setBiodataForm(prev => ({ ...prev, location: valueToProcess }));
         triggerBotResponse(t('bot_education'), 'text');
         break;
 
-      case 9: // Education entered -> Ask Profession
+      case 11: // Education entered -> Ask Profession
         setBiodataForm(prev => ({ ...prev, education: valueToProcess }));
         triggerBotResponse(t('bot_profession'), 'select', optionsProfession);
         break;
 
-      case 10: // Profession entered -> Ask Income
+      case 12: // Profession entered -> Ask Income
         setBiodataForm(prev => ({ ...prev, profession: valueToProcess }));
         triggerBotResponse(t('bot_income'), 'text');
         break;
 
-      case 11: { // Income entered -> Ask Hobbies
+      case 13: { // Income entered -> Ask Hobbies
         const incomeNum = parseInt(valueToProcess);
         if (isNaN(incomeNum) || incomeNum <= 0) {
           setErrorMsg(t('chat_error_income'));
-          setCurrentStep(11);
+          setCurrentStep(13);
           setMessages(prev => prev.slice(0, -1));
           return;
         }
@@ -284,17 +314,17 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
         break;
       }
 
-      case 12: // Hobbies selected -> Ask Bio
+      case 14: // Hobbies selected -> Ask Bio
         setBiodataForm(prev => ({ ...prev, interests: tempInterests }));
         triggerBotResponse(t('bot_bio'), 'text');
         break;
 
-      case 13: // Bio entered -> Ask Photo Upload
+      case 15: // Bio entered -> Ask Photo Upload
         setBiodataForm(prev => ({ ...prev, aboutMe: valueToProcess }));
         triggerBotResponse(t('bot_photo'), 'file');
         break;
 
-      case 14: // Photo Uploaded -> Summary Review
+      case 16: // Photo Uploaded -> Summary Review
         if (valueToProcess && valueToProcess !== 'skip') {
           setBiodataForm(prev => ({ ...prev, photoUrl: valueToProcess }));
         }
@@ -330,7 +360,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
       const reader = new FileReader();
       reader.onload = (event) => {
         const base64Url = event.target?.result as string;
-        handleUserSubmit(undefined, base64Url);
+        setUploadedPhotos(prev => [...prev, base64Url]);
       };
       reader.readAsDataURL(file);
     }
@@ -339,7 +369,14 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
   // Save profile and trigger complete redirection callback
   const handleFinalRegister = async () => {
     try {
-      await BiodataService.updateMine(biodataForm);
+      const primary = uploadedPhotos[0] || biodataForm.photoUrl;
+      const additional = uploadedPhotos.slice(1);
+      const payload = {
+        ...biodataForm,
+        photoUrl: primary,
+        additionalPhotos: additional
+      };
+      await BiodataService.updateMine(payload as any);
       await BiodataService.complete();
       onComplete();
     } catch (e) {
@@ -400,6 +437,11 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
                           <div style={styles.detailBox}>
                             <span style={styles.detailLabel}>{t('summary_gotra')}</span>
                             <span style={styles.detailVal}>{biodataForm.gotra}</span>
+                          </div>
+
+                          <div style={styles.detailBox}>
+                            <span style={styles.detailLabel}>{t('summary_religion')} & {t('summary_caste')}</span>
+                            <span style={styles.detailVal}>{biodataForm.religion} • {biodataForm.caste}</span>
                           </div>
                     <div style={{ ...styles.detailBox, gridColumn: 'span 2' }}>
                       <span style={styles.detailLabel}>{t('summary_income')}</span>
@@ -536,24 +578,64 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
           {/* File Upload / Image drag-and-drop panel */}
           {messages[messages.length - 1].inputType === 'file' && (
             <div className="chat-choices-panel animate-fade" style={{ flexDirection: 'column', gap: '0.8rem', alignItems: 'stretch', padding: '1.2rem 1.5rem' }}>
-              <div style={styles.uploadArea}>
-                <input
-                  type="file"
-                  accept="image/*"
-                  id="chat-portrait-upload"
-                  onChange={handlePhotoUpload}
-                  style={{ display: 'none' }}
-                />
-                <label htmlFor="chat-portrait-upload" style={styles.uploadLabel}>
-                  <div style={{ fontSize: '2.2rem', marginBottom: '0.4rem' }}>📷</div>
-                  <span style={{ fontWeight: '700', fontSize: '0.9rem', color: 'var(--text-headers)' }}>
-                    {locale === 'en' ? 'Click to Upload Photo' : 'फ़ोटो अपलोड करने के लिए क्लिक करें'}
-                  </span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                    PNG, JPG or WEBP (Max 2MB)
-                  </span>
-                </label>
-              </div>
+              {/* Thumbnails of already uploaded photos */}
+              {uploadedPhotos.length > 0 && (
+                <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
+                  {uploadedPhotos.map((photo, index) => (
+                    <div key={index} style={{ position: 'relative', width: '70px', height: '70px', borderRadius: '8px', overflow: 'hidden', border: '2px solid var(--primary)' }}>
+                      <img src={photo} alt={`Upload ${index + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <button 
+                        type="button" 
+                        onClick={() => setUploadedPhotos(prev => prev.filter((_, i) => i !== index))}
+                        style={{ position: 'absolute', top: 2, right: 2, background: 'rgba(0,0,0,0.7)', color: '#fff', border: 'none', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifySelf: 'center', justifyContent: 'center', fontSize: '0.7rem', cursor: 'pointer', padding: 0 }}
+                      >
+                        ✕
+                      </button>
+                      {index === 0 && (
+                        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'var(--primary)', color: '#fff', fontSize: '0.55rem', textAlign: 'center', fontWeight: 'bold', padding: '1px 0' }}>
+                          Primary
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {uploadedPhotos.length < 10 && (
+                <div style={styles.uploadArea}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    id="chat-portrait-upload"
+                    onChange={handlePhotoUpload}
+                    style={{ display: 'none' }}
+                  />
+                  <label htmlFor="chat-portrait-upload" style={styles.uploadLabel}>
+                    <div style={{ fontSize: '2.2rem', marginBottom: '0.4rem' }}>📷</div>
+                    <span style={{ fontWeight: '700', fontSize: '0.9rem', color: 'var(--text-headers)' }}>
+                      {locale === 'en' ? `Click to Upload Photo (${uploadedPhotos.length}/10)` : `फ़ोटो अपलोड करने के लिए क्लिक करें (${uploadedPhotos.length}/10)`}
+                    </span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                      PNG, JPG or WEBP (Max 2MB)
+                    </span>
+                  </label>
+                </div>
+              )}
+
+              {uploadedPhotos.length > 0 && (
+                <button
+                  onClick={() => handleUserSubmit(undefined, uploadedPhotos[0])}
+                  style={{
+                    ...styles.primarySendBtn,
+                    alignSelf: 'stretch',
+                    marginTop: '0.5rem',
+                    backgroundColor: 'var(--primary)',
+                    color: '#fff'
+                  }}
+                >
+                  🚀 {locale === 'en' ? `Proceed with ${uploadedPhotos.length} Photo(s)` : `${uploadedPhotos.length} फ़ोटो के साथ आगे बढ़ें`}
+                </button>
+              )}
               
               <button
                 onClick={() => handleUserSubmit(undefined, 'skip')}
@@ -568,22 +650,31 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
       )}
 
       {/* Chat bottom input text prompt panel */}
-      {(!messages.length || messages[messages.length - 1].sender === 'user' || messages[messages.length - 1].inputType === 'text') && (
-        <form onSubmit={handleUserSubmit} className="chat-input-bar">
-          <input
-            type={currentStep === -1 ? 'password' : (currentStep === 2 || currentStep === 11 ? 'number' : 'text')}
-            placeholder={currentStep === -1 ? '••••••••' : t('chat_placeholder')}
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            disabled={typing}
-            style={styles.inputBox}
-            data-testid="chat-input"
-          />
-          <button type="submit" disabled={typing} style={styles.primarySendBtn} data-testid="chat-send">
-            {t('chat_btn_send')}
-          </button>
-        </form>
-      )}
+      <form onSubmit={handleUserSubmit} className="chat-input-bar">
+        <input
+          type={currentStep === -1 ? 'password' : (currentStep === 2 || currentStep === 13 ? 'number' : 'text')}
+          placeholder={
+            typing
+              ? (locale === 'en' ? 'Mithila Assistant is typing...' : 'मैथिल सहायक टाइप कर रहा है...')
+              : messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType !== 'text'
+                ? (locale === 'en' ? 'Please choose an option above...' : 'कृपया ऊपर एक विकल्प चुनें...')
+                : currentStep === -1 ? '••••••••' : t('chat_placeholder')
+          }
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          disabled={typing || (messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType !== 'text')}
+          style={styles.inputBox}
+          data-testid="chat-input"
+        />
+        <button
+          type="submit"
+          disabled={typing || (messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType !== 'text')}
+          style={styles.primarySendBtn}
+          data-testid="chat-send"
+        >
+          {t('chat_btn_send')}
+        </button>
+      </form>
     </div>
   );
 };

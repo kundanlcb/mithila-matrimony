@@ -37,12 +37,25 @@ export interface RequestOtpResponse {
   expiresInSeconds: number;
 }
 
+import type { AddressResponse } from './index';
+
+export interface AddressRequest {
+  addressType: 'current' | 'native';
+  city: string;
+  state: string;
+  country: string;
+  pincode?: string;
+  streetAddress?: string;
+}
+
 export interface BiodataResponse {
   id: string; // uuid
   fullName?: string;
   gender?: string;
   age?: number;
   gotra?: string;
+  religion?: string;
+  caste?: string;
   profession?: string;
   annualIncome?: number;
   location?: string;
@@ -54,6 +67,10 @@ export interface BiodataResponse {
   diet?: string;
   complexion?: string;
   interests?: string[];
+  additionalPhotos?: string[];
+  phoneNumber?: string;
+  email?: string;
+  addresses?: AddressResponse[];
 }
 
 export interface UpdateBiodataRequest {
@@ -61,6 +78,8 @@ export interface UpdateBiodataRequest {
   gender?: string;
   age?: number;
   gotra?: string;
+  religion?: string;
+  caste?: string;
   profession?: string;
   annualIncome?: number;
   location?: string;
@@ -72,6 +91,9 @@ export interface UpdateBiodataRequest {
   diet?: string;
   complexion?: string;
   interests?: string[];
+  additionalPhotos?: string[];
+  email?: string;
+  addresses?: AddressRequest[];
 }
 
 export interface PresignedUrlResponse {
@@ -126,4 +148,29 @@ export interface SendInteractionRequest {
 export interface SendInteractionResponse {
   status: string;
   isMutualMatch?: boolean;
+}
+
+export interface SubscriptionStatusResponse {
+  planType: 'monthly' | 'pay_per_contact' | 'free';
+  status: string;
+  creditsRemaining: number;
+  endDate?: string;
+}
+
+export interface PurchaseRequest {
+  planType: 'monthly' | 'pay_per_contact';
+  credits?: number;
+  paymentRef: string;
+}
+
+export interface PurchaseResponse {
+  status: string;
+  message: string;
+  subscriptionId: string;
+}
+
+export interface RevealResponse {
+  status: string;
+  message: string;
+  unlocked: boolean;
 }

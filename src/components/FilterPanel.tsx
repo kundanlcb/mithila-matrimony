@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { apiClient } from '../api/apiClient';
 
 interface FilterPanelProps {
-  onApplyFilters: (filters: { gotra?: string; minAge?: number; maxAge?: number; location?: string; minIncome?: number; profession?: string; maritalStatus?: string; diet?: string; }) => void;
+  onApplyFilters: (filters: { gotra?: string; minAge?: number; maxAge?: number; location?: string; minIncome?: number; profession?: string; maritalStatus?: string; diet?: string; religion?: string; caste?: string; }) => void;
   onClose?: () => void;
   isMobile?: boolean;
 }
@@ -16,12 +17,41 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onApplyFilters, onClose, isMo
   const [profession, setProfession] = useState<string>('');
   const [maritalStatus, setMaritalStatus] = useState<string>('');
   const [diet, setDiet] = useState<string>('');
+  const [religion, setReligion] = useState<string>('');
+  const [caste, setCaste] = useState<string>('');
 
-  const gotras = ['Kashyap', 'Shandilya', 'Vatsa', 'Bhardwaj', 'Katyayan', 'Parashar'];
-  const locations = ['Bangalore', 'Delhi NCR', 'Patna', 'Darbhanga', 'Mumbai'];
-  const professions = ['Software Engineer', 'Doctor', 'Teacher', 'Business', 'Government', 'Other'];
-  const maritalStatuses = ['Never Married', 'Divorced', 'Widowed'];
-  const diets = ['Vegetarian', 'Non-Vegetarian', 'Vegan'];
+  // Master Data Options States
+  const [gotras, setGotras] = useState<string[]>([]);
+  const [locations, setLocations] = useState<string[]>([]);
+  const [professions, setProfessions] = useState<string[]>([]);
+  const [religions, setReligions] = useState<string[]>([]);
+  const [castes, setCastes] = useState<string[]>([]);
+
+  const maritalStatuses = ['Never Married', 'Divorced', 'Widowed', 'Awaiting Divorce'];
+  const diets = ['Vegetarian', 'Non-Vegetarian', 'Eggetarian', 'Vegan'];
+
+  // Fetch all options dynamically on mount
+  useEffect(() => {
+    const fetchMasterData = async () => {
+      try {
+        const [gotrasList, citiesList, professionsList, religionsList, castesList] = await Promise.all([
+          apiClient.get<any[]>('/api/v1/admin/master-data/gotra'),
+          apiClient.get<any[]>('/api/v1/admin/master-data/city'),
+          apiClient.get<any[]>('/api/v1/admin/master-data/profession'),
+          apiClient.get<any[]>('/api/v1/admin/master-data/religion'),
+          apiClient.get<any[]>('/api/v1/admin/master-data/caste')
+        ]);
+        if (gotrasList?.length) setGotras(gotrasList.map(g => g.name));
+        if (citiesList?.length) setLocations(citiesList.map(c => c.name));
+        if (professionsList?.length) setProfessions(professionsList.map(p => p.name));
+        if (religionsList?.length) setReligions(religionsList.map(r => r.name));
+        if (castesList?.length) setCastes(castesList.map(c => c.name));
+      } catch (e) {
+        console.error('Failed to fetch master data in FilterPanel', e);
+      }
+    };
+    fetchMasterData();
+  }, []);
 
   const handleApply = () => {
     onApplyFilters({
@@ -31,7 +61,9 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onApplyFilters, onClose, isMo
       location: location || undefined,
       profession: profession || undefined,
       maritalStatus: maritalStatus || undefined,
-      diet: diet || undefined
+      diet: diet || undefined,
+      religion: religion || undefined,
+      caste: caste || undefined
     });
     if (onClose) onClose();
   };
@@ -43,6 +75,8 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onApplyFilters, onClose, isMo
     setProfession('');
     setMaritalStatus('');
     setDiet('');
+    setReligion('');
+    setCaste('');
     onApplyFilters({});
     if (onClose) onClose();
   };
@@ -90,6 +124,30 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onApplyFilters, onClose, isMo
         >
           <option value="">{t('filter_all')}</option>
           {gotras.map(g => <option key={g} value={g}>{g}</option>)}
+        </select>
+      </div>
+
+      <div style={styles.filterGroup}>
+        <label style={styles.label}>{locale === 'en' ? 'Religion' : locale === 'hi' ? 'धर्म' : 'धर्म'}</label>
+        <select 
+          value={religion} 
+          onChange={e => setReligion(e.target.value)}
+          style={styles.select}
+        >
+          <option value="">{t('filter_all')}</option>
+          {religions.map(r => <option key={r} value={r}>{r}</option>)}
+        </select>
+      </div>
+
+      <div style={styles.filterGroup}>
+        <label style={styles.label}>{locale === 'en' ? 'Caste' : locale === 'hi' ? 'जाति' : 'जाति'}</label>
+        <select 
+          value={caste} 
+          onChange={e => setCaste(e.target.value)}
+          style={styles.select}
+        >
+          <option value="">{t('filter_all')}</option>
+          {castes.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
       </div>
 

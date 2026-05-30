@@ -4,6 +4,9 @@ import { AuthService } from './api/auth.service';
 import { BiodataService } from './api/biodata.service';
 import { MatchesService } from './api/matches.service';
 import { InteractionsService } from './api/interactions.service';
+import { SubscriptionService } from './api/subscription.service';
+import { UserService } from './api/user.service';
+import { apiClient } from './api/apiClient';
 import type { Biodata, MatchingProfile, UserProfile, ProfileInteraction, InteractionType } from './types';
 import { useLanguage } from './context/LanguageContext';
 import { useTheme } from './context/ThemeContext';
@@ -49,9 +52,22 @@ function App() {
   const [selectedProfile, setSelectedProfile] = useState<Biodata | null>(null);
   const [showPaywall, setShowPaywall] = useState<boolean>(false);
   const [profileModalView, setProfileModalView] = useState<'edit' | 'preferences' | 'privacy' | null>(null);
+  const [activeFilters, setActiveFilters] = useState<any>({});
   
   // Edit Profile Form State
   const [editForm, setEditForm] = useState<Partial<Biodata>>({});
+
+  // Master data
+  const [masterGotras, setMasterGotras] = useState<string[]>([]);
+  const [masterCastes, setMasterCastes] = useState<string[]>([]);
+  const [masterProfessions, setMasterProfessions] = useState<string[]>([]);
+  const [masterReligions, setMasterReligions] = useState<string[]>([]);
+
+  // Subscription status
+  const [subscriptionStatus, setSubscriptionStatus] = useState<any>(null);
+
+  // Blocked users
+  const [blockedUsers, setBlockedUsers] = useState<any[]>([]);
 
   // Reset edit form when opening edit modal
   useEffect(() => {
@@ -89,6 +105,51 @@ function App() {
     checkSession();
   }, []);
 
+  // Load Master Data and Subscription Status
+  useEffect(() => {
+    const fetchMasterData = async () => {
+      try {
+        const [gotrasList, professionsList, religionsList, castesList] = await Promise.all([
+          apiClient.get<any[]>('/api/v1/admin/master-data/gotra'),
+          apiClient.get<any[]>('/api/v1/admin/master-data/profession'),
+          apiClient.get<any[]>('/api/v1/admin/master-data/religion'),
+          apiClient.get<any[]>('/api/v1/admin/master-data/caste')
+        ]);
+        if (gotrasList?.length) setMasterGotras(gotrasList.map(g => g.name));
+        if (professionsList?.length) setMasterProfessions(professionsList.map(p => p.name));
+        if (religionsList?.length) setMasterReligions(religionsList.map(r => r.name));
+        if (castesList?.length) setMasterCastes(castesList.map(c => c.name));
+      } catch (e) {
+        console.error('Failed to fetch master data in App', e);
+        // Premium localized defaults fallback
+        setMasterGotras(['Kashyap', 'Shandilya', 'Vatsa', 'Bhardwaj', 'Parashar', 'Katyayan']);
+        setMasterProfessions(['Software Engineer', 'Doctor', 'Teacher', 'Business']);
+        setMasterReligions(['Hindu', 'Muslim', 'Christian', 'Sikh', 'Jain', 'Buddhist']);
+        setMasterCastes(['Brahmin (Maithil)', 'Kayastha', 'Rajput', 'Baniya', 'Karna Kayastha', 'Yadav', 'Other']);
+      }
+    };
+
+    fetchMasterData();
+  }, []);
+
+  // Fetch subscription status whenever logged in user is available
+  useEffect(() => {
+    if (activeUser && activeUser.registrationStep === 'completed') {
+      SubscriptionService.getStatus()
+        .then(res => setSubscriptionStatus(res))
+        .catch(err => console.error('Failed to fetch subscription status', err));
+    }
+  }, [activeUser, activeBiodata]);
+
+  // Load blocked users whenever opening privacy modal view
+  useEffect(() => {
+    if (profileModalView === 'privacy' && activeUser) {
+      UserService.getBlocked()
+        .then(res => setBlockedUsers(res))
+        .catch(err => console.error('Failed to load blocked users', err));
+    }
+  }, [profileModalView]);
+
   // Update Matching Profiles whenever user/biodata changes
   useEffect(() => {
     if (activeUser && activeUser.registrationStep === 'completed') {
@@ -108,6 +169,53 @@ function App() {
     document.addEventListener('mousedown', handleOutsideClick);
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, [isAccountMenuOpen]);
+
+  // Photo upload for Profile Edit modal
+  const handleEditPhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        alert(locale === 'en' ? 'File size exceeds 2MB limit.' : 'फ़ाइल का आकार 2MB सीमा से अधिक है।');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64Url = event.target?.result as string;
+        setEditForm(prev => ({
+          ...prev,
+          additionalPhotos: [...(prev.additionalPhotos || []), base64Url]
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Address edit helpers
+  const getAddressValue = (type: 'current' | 'native', field: 'city' | 'state' | 'country' | 'pincode' | 'streetAddress') => {
+    const addr = editForm.addresses?.find(a => a.addressType === type);
+    return addr ? addr[field] : '';
+  };
+
+  const updateAddressValue = (type: 'current' | 'native', field: 'city' | 'state' | 'country' | 'pincode' | 'streetAddress', val: string) => {
+    setEditForm(prev => {
+      const list = [...(prev.addresses || [])];
+      const idx = list.findIndex(a => a.addressType === type);
+      if (idx !== -1) {
+        list[idx] = { ...list[idx], [field]: val };
+      } else {
+        list.push({
+          id: Math.random().toString(), // dummy id
+          addressType: type,
+          city: field === 'city' ? val : '',
+          state: field === 'state' ? val : '',
+          country: field === 'country' ? val : 'India',
+          pincode: field === 'pincode' ? val : '',
+          streetAddress: field === 'streetAddress' ? val : ''
+        } as any);
+      }
+      return { ...prev, addresses: list };
+    });
+  };
 
   // Hero Widget: Handle Quick-Match Search
   // const handleQuickMatchSubmit = async (e: React.FormEvent) => {
@@ -233,16 +341,8 @@ function App() {
   };
 
   const handleApplyFilters = async (filters: any) => {
-    // Note: The /api/v1/matches endpoint supports query params.
-    // For full filtering, the backend needs to support passing these, or updating the Criteria.
     console.log('Applying filters:', filters);
-    // As a placeholder for criteria update:
-    try {
-      const res = await MatchesService.findMatches(0, 20, sortBy);
-      setMatchingProfiles(res.content as any);
-    } catch (e) {
-      console.error(e);
-    }
+    setActiveFilters(filters);
   };
 
   const profileInitial = activeBiodata?.fullName?.trim().charAt(0).toUpperCase() || 'M';
@@ -314,6 +414,53 @@ function App() {
                       {interactions.length > 0 ? interactions.length : 2}
                     </span>
                   </button>
+                )}
+
+                {activeUser.registrationStep === 'completed' && (
+                  <div 
+                    onClick={() => {
+                      if (!subscriptionStatus || subscriptionStatus.planType === 'free') {
+                        setShowPaywall(true);
+                      }
+                    }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                      marginRight: '0.75rem',
+                      padding: '0.35rem 0.75rem',
+                      backgroundColor: subscriptionStatus?.planType === 'monthly'
+                        ? 'rgba(212, 175, 55, 0.15)'
+                        : subscriptionStatus?.planType === 'pay_per_contact'
+                          ? 'rgba(226, 0, 114, 0.1)'
+                          : 'transparent',
+                      border: subscriptionStatus?.planType === 'monthly'
+                        ? '1px solid #D4AF37'
+                        : subscriptionStatus?.planType === 'pay_per_contact'
+                          ? '1px solid var(--primary)'
+                          : '1px dashed var(--border-light)',
+                      borderRadius: '12px',
+                      color: subscriptionStatus?.planType === 'monthly'
+                        ? '#B8860B'
+                        : subscriptionStatus?.planType === 'pay_per_contact'
+                          ? 'var(--primary)'
+                          : 'var(--text-muted)',
+                      fontWeight: 'bold',
+                      fontSize: '0.8rem',
+                      cursor: 'pointer',
+                      boxShadow: 'var(--shadow-sm)',
+                      transition: 'all 0.2s'
+                    }}
+                    className="hide-on-mobile"
+                  >
+                    {subscriptionStatus?.planType === 'monthly' ? (
+                      <>👑 {locale === 'en' ? 'Premium' : 'प्रीमियम'}</>
+                    ) : subscriptionStatus?.planType === 'pay_per_contact' ? (
+                      <>⭐ {subscriptionStatus.creditsRemaining} {locale === 'en' ? 'Credits' : 'क्रेडिट'}</>
+                    ) : (
+                      <>💎 {locale === 'en' ? 'Go Premium' : 'प्रीमियम लें'}</>
+                    )}
+                  </div>
                 )}
 
                 <button
@@ -901,7 +1048,20 @@ function App() {
                     </div>
 
                     {(() => {
-                      const sortedProfiles = [...matchingProfiles].sort((a, b) => {
+                      const filteredProfiles = matchingProfiles.filter(profile => {
+                        if (activeFilters.gotra && profile.gotra !== activeFilters.gotra) return false;
+                        if (activeFilters.location && profile.location !== activeFilters.location) return false;
+                        if (activeFilters.profession && profile.profession !== activeFilters.profession) return false;
+                        if (activeFilters.maritalStatus && profile.maritalStatus !== activeFilters.maritalStatus) return false;
+                        if (activeFilters.diet && profile.diet !== activeFilters.diet) return false;
+                        if (activeFilters.religion && profile.religion !== activeFilters.religion) return false;
+                        if (activeFilters.caste && profile.caste !== activeFilters.caste) return false;
+                        if (activeFilters.minAge && profile.age < activeFilters.minAge) return false;
+                        if (activeFilters.maxAge && profile.age > activeFilters.maxAge) return false;
+                        return true;
+                      });
+
+                      const sortedProfiles = [...filteredProfiles].sort((a, b) => {
                         if (sortBy === 'score') return b.compatibilityScore - a.compatibilityScore;
                         if (sortBy === 'age_asc') return a.age - b.age;
                         if (sortBy === 'age_desc') return b.age - a.age;
@@ -1123,25 +1283,124 @@ function App() {
                     }}>
                       <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--text-headers)' }}>{t('app_edit_profile')}</h2>
                       
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
                         <div>
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>{t('app_full_name')}</label>
+                          <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.9rem', fontWeight: 600 }}>{t('app_full_name')}</label>
                           <input type="text" value={editForm.fullName || ''} onChange={(e) => setEditForm({...editForm, fullName: e.target.value})} style={styles.input} required />
                         </div>
+
                         <div>
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>{t('app_profession')}</label>
-                          <input type="text" value={editForm.profession || ''} onChange={(e) => setEditForm({...editForm, profession: e.target.value})} style={styles.input} required />
+                          <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.9rem', fontWeight: 600 }}>{locale === 'en' ? 'Gotra' : 'गोत्र'}</label>
+                          <select value={editForm.gotra || ''} onChange={(e) => setEditForm({...editForm, gotra: e.target.value})} style={styles.input} required>
+                            <option value="">-- Select Gotra --</option>
+                            {masterGotras.map(g => <option key={g} value={g}>{g}</option>)}
+                          </select>
                         </div>
+
                         <div>
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>{t('app_location')}</label>
+                          <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.9rem', fontWeight: 600 }}>{locale === 'en' ? 'Religion' : 'धर्म'}</label>
+                          <select value={editForm.religion || ''} onChange={(e) => setEditForm({...editForm, religion: e.target.value})} style={styles.input}>
+                            <option value="">-- Select Religion --</option>
+                            {masterReligions.map(r => <option key={r} value={r}>{r}</option>)}
+                          </select>
+                        </div>
+
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.9rem', fontWeight: 600 }}>{locale === 'en' ? 'Caste' : 'जाति'}</label>
+                          <select value={editForm.caste || ''} onChange={(e) => setEditForm({...editForm, caste: e.target.value})} style={styles.input}>
+                            <option value="">-- Select Caste --</option>
+                            {masterCastes.map(c => <option key={c} value={c}>{c}</option>)}
+                          </select>
+                        </div>
+
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.9rem', fontWeight: 600 }}>{t('app_profession')}</label>
+                          <select value={editForm.profession || ''} onChange={(e) => setEditForm({...editForm, profession: e.target.value})} style={styles.input} required>
+                            <option value="">-- Select Profession --</option>
+                            {masterProfessions.map(p => <option key={p} value={p}>{p}</option>)}
+                          </select>
+                        </div>
+
+                        <div>
+                          <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.9rem', fontWeight: 600 }}>{t('app_location')}</label>
                           <input type="text" value={editForm.location || ''} onChange={(e) => setEditForm({...editForm, location: e.target.value})} style={styles.input} required />
                         </div>
+
                         <div>
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>{t('app_annual_income')}</label>
+                          <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.9rem', fontWeight: 600 }}>{t('app_annual_income')}</label>
                           <input type="number" value={editForm.annualIncome || ''} onChange={(e) => setEditForm({...editForm, annualIncome: parseInt(e.target.value)})} style={styles.input} />
                         </div>
+
+                        {/* Current Address Group */}
+                        <div style={{ padding: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '10px', background: 'var(--bg-app)' }}>
+                          <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: 'var(--text-headers)' }}>📍 {locale === 'en' ? 'Current Address' : 'वर्तमान पता'}</h4>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                            <input type="text" placeholder="City" value={getAddressValue('current', 'city')} onChange={(e) => updateAddressValue('current', 'city', e.target.value)} style={styles.input} required />
+                            <input type="text" placeholder="State" value={getAddressValue('current', 'state')} onChange={(e) => updateAddressValue('current', 'state', e.target.value)} style={styles.input} required />
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                            <input type="text" placeholder="Country" value={getAddressValue('current', 'country')} onChange={(e) => updateAddressValue('current', 'country', e.target.value)} style={styles.input} required />
+                            <input type="text" placeholder="Pincode" value={getAddressValue('current', 'pincode')} onChange={(e) => updateAddressValue('current', 'pincode', e.target.value)} style={styles.input} />
+                          </div>
+                          <input type="text" placeholder="Street Address" value={getAddressValue('current', 'streetAddress')} onChange={(e) => updateAddressValue('current', 'streetAddress', e.target.value)} style={{ ...styles.input, marginTop: '0.2rem' }} />
+                        </div>
+
+                        {/* Native Address Group */}
+                        <div style={{ padding: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '10px', background: 'var(--bg-app)' }}>
+                          <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: 'var(--text-headers)' }}>🏡 {locale === 'en' ? 'Native Address' : 'पैतृक निवास पता'}</h4>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                            <input type="text" placeholder="City" value={getAddressValue('native', 'city')} onChange={(e) => updateAddressValue('native', 'city', e.target.value)} style={styles.input} />
+                            <input type="text" placeholder="State" value={getAddressValue('native', 'state')} onChange={(e) => updateAddressValue('native', 'state', e.target.value)} style={styles.input} />
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                            <input type="text" placeholder="Country" value={getAddressValue('native', 'country')} onChange={(e) => updateAddressValue('native', 'country', e.target.value)} style={styles.input} />
+                            <input type="text" placeholder="Pincode" value={getAddressValue('native', 'pincode')} onChange={(e) => updateAddressValue('native', 'pincode', e.target.value)} style={styles.input} />
+                          </div>
+                          <input type="text" placeholder="Street Address" value={getAddressValue('native', 'streetAddress')} onChange={(e) => updateAddressValue('native', 'streetAddress', e.target.value)} style={{ ...styles.input, marginTop: '0.2rem' }} />
+                        </div>
+
+                        {/* Manage Photos Section */}
+                        <div style={{ padding: '0.8rem', border: '1px solid var(--border-light)', borderRadius: '10px', background: 'var(--bg-app)' }}>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-headers)' }}>
+                            📸 {locale === 'en' ? 'Manage Photos (Up to 10)' : 'फ़ोटो प्रबंधित करें (अधिकतम 10)'}
+                          </label>
+                          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
+                            {editForm.photoUrl && (
+                              <div style={{ position: 'relative', width: '60px', height: '60px', borderRadius: '6px', overflow: 'hidden', border: '2px solid var(--primary)' }}>
+                                <img src={editForm.photoUrl} alt="Primary" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'var(--primary)', color: '#fff', fontSize: '0.5rem', textAlign: 'center', fontWeight: 'bold', padding: '1px 0' }}>
+                                  Primary
+                                </div>
+                              </div>
+                            )}
+                            {editForm.additionalPhotos?.map((p, idx) => (
+                              <div key={idx} style={{ position: 'relative', width: '60px', height: '60px', borderRadius: '6px', overflow: 'hidden', border: '1px solid var(--border-light)' }}>
+                                <img src={p} alt={`Photo ${idx}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <button
+                                  type="button"
+                                  onClick={() => setEditForm(prev => ({
+                                    ...prev,
+                                    additionalPhotos: prev.additionalPhotos?.filter((_, i) => i !== idx)
+                                  }))}
+                                  style={{ position: 'absolute', top: 1, right: 1, background: 'rgba(0,0,0,0.7)', color: '#fff', border: 'none', borderRadius: '50%', width: '15px', height: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.6rem', cursor: 'pointer', padding: 0 }}
+                                >
+                                  ✕
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                          {((editForm.additionalPhotos?.length || 0) + (editForm.photoUrl ? 1 : 0)) < 10 && (
+                            <div>
+                              <input type="file" accept="image/*" id="edit-photo-upload" onChange={handleEditPhotoUpload} style={{ display: 'none' }} />
+                              <label htmlFor="edit-photo-upload" style={{ display: 'inline-block', padding: '0.4rem 0.8rem', background: 'var(--bg-card)', border: '1px dashed var(--primary)', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer', color: 'var(--primary)', fontWeight: 600 }}>
+                                ➕ {locale === 'en' ? 'Add Photo' : 'फ़ोटो जोड़ें'}
+                              </label>
+                            </div>
+                          )}
+                        </div>
+
                         <div>
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', fontWeight: 600 }}>{t('app_about_me')}</label>
+                          <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.9rem', fontWeight: 600 }}>{t('app_about_me')}</label>
                           <textarea rows={4} value={editForm.aboutMe || ''} onChange={(e) => setEditForm({...editForm, aboutMe: e.target.value})} style={{...styles.input, resize: 'vertical'}}></textarea>
                         </div>
                         <button type="submit" style={{ ...styles.primaryBtnWidth, marginTop: '1rem' }}>{t('app_save_changes')}</button>
@@ -1176,21 +1435,123 @@ function App() {
                     <div>
                       <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--text-headers)' }}>{t('app_privacy_settings')}</h2>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                        
+                        {/* Toggle Profile Search (Hidden / Visible) */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <div>
-                            <h4 style={{ margin: '0 0 0.3rem 0' }}>Profile Visibility</h4>
-                            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)' }}>Allow others to see your profile.</p>
+                            <h4 style={{ margin: '0 0 0.3rem 0', color: 'var(--text-headers)' }}>
+                              {locale === 'en' ? 'Hide Profile from Search' : 'खोज से प्रोफ़ाइल छुपाएं'}
+                            </h4>
+                            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                              {locale === 'en' ? 'Temporarily hide your profile in browse matching feeds.' : 'खोज मिलान फ़ीड में अपनी प्रोफ़ाइल को अस्थायी रूप से छुपाएं।'}
+                            </p>
                           </div>
-                          <input type="checkbox" defaultChecked style={{ width: '20px', height: '20px' }} />
+                          <input 
+                            type="checkbox" 
+                            checked={activeUser?.hidden || false} 
+                            onChange={async () => {
+                              try {
+                                await UserService.toggleHidden();
+                                const updatedUser = { ...activeUser, hidden: !activeUser.hidden } as any;
+                                setActiveUser(updatedUser);
+                                localStorage.setItem('active_profile', JSON.stringify(updatedUser));
+                              } catch (e) {
+                                console.error(e);
+                              }
+                            }}
+                            style={{ width: '22px', height: '22px', accentColor: 'var(--primary)', cursor: 'pointer' }} 
+                          />
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <div>
-                            <h4 style={{ margin: '0 0 0.3rem 0' }}>Show Contact Info</h4>
-                            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)' }}>Display mobile number to accepted matches.</p>
-                          </div>
-                          <input type="checkbox" defaultChecked style={{ width: '20px', height: '20px' }} />
+
+                        {/* Deactivate Account */}
+                        <div style={{ padding: '1rem', border: '1px solid var(--border-light)', borderRadius: '8px', background: 'var(--bg-app)' }}>
+                          <h4 style={{ margin: '0 0 0.4rem 0', color: 'var(--text-headers)' }}>
+                            ⚠️ {locale === 'en' ? 'Deactivate Account' : 'खाता निष्क्रिय करें'}
+                          </h4>
+                          <p style={{ margin: '0 0 0.8rem 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                            {locale === 'en' ? 'Instantly hide your profile. Reactivate by logging back in.' : 'अपनी प्रोफ़ाइल तुरंत छुपाएं। वापस लॉग इन करके फिर से सक्रिय करें।'}
+                          </p>
+                          <button 
+                            type="button" 
+                            onClick={async () => {
+                              if (window.confirm(locale === 'en' ? 'Are you sure you want to deactivate your profile?' : 'क्या आप वाकई अपनी प्रोफ़ाइल को निष्क्रिय करना चाहते हैं?')) {
+                                try {
+                                  await UserService.deactivate();
+                                  handleLogout();
+                                } catch (e) {
+                                  alert('Deactivation failed.');
+                                }
+                              }
+                            }}
+                            style={{ padding: '0.5rem 1rem', background: '#ffebee', color: '#c62828', border: '1px solid #ffcdd2', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.85rem' }}
+                          >
+                            {locale === 'en' ? 'Deactivate' : 'निष्क्रिय करें'}
+                          </button>
                         </div>
-                        <button onClick={() => setProfileModalView(null)} style={{ ...styles.primaryBtnWidth, marginTop: '1rem' }}>{t('app_save_settings')}</button>
+
+                        {/* Request Deletion */}
+                        <div style={{ padding: '1rem', border: '1px solid var(--border-light)', borderRadius: '8px', background: 'var(--bg-app)' }}>
+                          <h4 style={{ margin: '0 0 0.4rem 0', color: 'var(--text-headers)' }}>
+                            🛑 {locale === 'en' ? 'Schedule Account Deletion' : 'खाता हटाने का अनुरोध करें'}
+                          </h4>
+                          <p style={{ margin: '0 0 0.8rem 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                            {locale === 'en' ? 'Schedule account deletion with a 30-day recovery cool-off.' : '30-दिवसीय रिकवरी कूल-ऑफ के साथ खाता हटाने का समय निर्धारित करें।'}
+                          </p>
+                          <button 
+                            type="button" 
+                            onClick={async () => {
+                              if (window.confirm(locale === 'en' ? 'Request permanent deletion? You have 30 days to cancel.' : 'स्थायी रूप से हटाने का अनुरोध करें? आपके पास रद्द करने के लिए 30 दिन हैं।')) {
+                                try {
+                                  await UserService.deleteRequest();
+                                  handleLogout();
+                                } catch (e) {
+                                  alert('Request failed.');
+                                }
+                              }
+                            }}
+                            style={{ padding: '0.5rem 1rem', background: '#ffebee', color: '#c62828', border: '1px solid #ffcdd2', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.85rem' }}
+                          >
+                            {locale === 'en' ? 'Delete Account' : 'खाता हटाएं'}
+                          </button>
+                        </div>
+
+                        {/* Block List Manager */}
+                        <div style={{ padding: '1rem', border: '1px solid var(--border-light)', borderRadius: '8px', background: 'var(--bg-app)' }}>
+                          <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--text-headers)' }}>
+                            🚫 {locale === 'en' ? 'Blocked Users' : 'अवरुद्ध उपयोगकर्ता'} ({blockedUsers.length})
+                          </h4>
+                          {blockedUsers.length === 0 ? (
+                            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                              {locale === 'en' ? 'You have not blocked any users.' : 'आपने किसी भी उपयोगकर्ता को अवरुद्ध नहीं किया है।'}
+                            </p>
+                          ) : (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '150px', overflowY: 'auto', marginTop: '0.5rem' }}>
+                              {blockedUsers.map(u => (
+                                <div key={u.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.4rem', borderBottom: '1px solid var(--border-light)' }}>
+                                  <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-headers)' }}>{u.fullName}</span>
+                                  <button
+                                    type="button"
+                                    onClick={async () => {
+                                      try {
+                                        await UserService.unblock(u.id);
+                                        setBlockedUsers(prev => prev.filter(item => item.id !== u.id));
+                                      } catch (e) {
+                                        alert('Failed to unblock.');
+                                      }
+                                    }}
+                                    style={{ padding: '2px 8px', background: 'var(--bg-card)', border: '1px solid var(--border-light)', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem', color: 'var(--text-main)' }}
+                                  >
+                                    Unblock
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        <button onClick={() => setProfileModalView(null)} style={{ ...styles.primaryBtnWidth, marginTop: '0.5rem' }}>
+                          {locale === 'en' ? 'Close Settings' : 'सेटिंग्स बंद करें'}
+                        </button>
                       </div>
                     </div>
                   )}
@@ -1206,6 +1567,29 @@ function App() {
             profile={selectedProfile} 
             onClose={() => setSelectedProfile(null)} 
             onAction={(type) => handleInteraction(selectedProfile.biodataId, type)} 
+            subscriptionStatus={subscriptionStatus}
+            onShowPaywall={() => setShowPaywall(true)}
+            onUnlockSuccess={async () => {
+              try {
+                // Refresh data to show revealed details
+                if (activeUser) {
+                  const [bio, matchesRes] = await Promise.all([
+                    BiodataService.getMine(),
+                    MatchesService.findMatches(0, 20, sortBy)
+                  ]);
+                  setActiveBiodata(bio as any);
+                  setMatchingProfiles(matchesRes.content as any);
+                  // Refresh subscription status too
+                  const sub = await SubscriptionService.getStatus();
+                  setSubscriptionStatus(sub);
+                  // Close detail modal and notify user
+                  setSelectedProfile(null);
+                  alert(locale === 'en' ? 'Contact details successfully unlocked!' : 'संपर्क विवरण सफलतापूर्वक अनलॉक हो गया!');
+                }
+              } catch (e) {
+                console.error('Failed to refresh data after unlock', e);
+              }
+            }}
           />
         )}
         

@@ -9,6 +9,19 @@ export interface UserProfile {
   isVerified: boolean;     // True if OTP verification succeeded
   registrationStep: 'auth' | 'biodata' | 'completed'; // Active step in onboarding wizard
   registeredAt: string;    // ISO-8601 Timestamp
+  hidden?: boolean;
+  active?: boolean;
+  email?: string;
+}
+
+export interface AddressResponse {
+  id: string;
+  addressType: 'current' | 'native';
+  city: string;
+  state: string;
+  country: string;
+  pincode?: string;
+  streetAddress?: string;
 }
 
 export interface Biodata {
@@ -18,6 +31,8 @@ export interface Biodata {
   gender: 'Male' | 'Female';
   age: number;             // Valid range: 18 to 70
   gotra: string;           // Clan/Lineage (e.g. Kashyap, Shandilya, Vatsa, Bhardwaj)
+  religion?: string;       // Religion (e.g. Hindu, Muslim, Christian)
+  caste?: string;          // Caste (e.g. Brahmin, Kayastha)
   profession: string;      // Occupation (e.g. Software Engineer, Doctor, Teacher)
   annualIncome: number;    // In INR per annum
   location: string;        // Resident city
@@ -29,6 +44,10 @@ export interface Biodata {
   maritalStatus?: string;  // Never Married, Divorced, etc.
   diet?: string;           // Vegetarian, Non-Vegetarian, etc.
   complexion?: string;     // Fair, Wheatish, etc.
+  phoneNumber?: string;
+  email?: string;
+  addresses?: AddressResponse[];
+  additionalPhotos?: string[];
 }
 
 export interface MatchCriteria {
