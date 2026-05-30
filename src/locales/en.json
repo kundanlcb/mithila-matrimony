@@ -21,7 +21,7 @@
   "widget_male": "Man",
   "widget_female": "Woman",
   "widget_any": "Any Gotra",
-  "trust_stat1_title": "12K+ Verified Profiles",
+  "trust_stat1_title": "1.2K+ Verified Profiles",
   "trust_stat2_title": "Gotra Compatibility Engine",
   "landing_why_title": "Why Maithil Match?",
   "landing_why_desc": "Preserving legacy through verified cultural lineage, secure gotra rules, and trusted connections.",
@@ -181,5 +181,6 @@
   "app_settings": "Settings",
   "app_switch_color_theme": "Switch Color Theme",
   "app_all_rights_reserved_proudly_protecting_maithil_heritage_and_lineage_custom_safeties": "All Rights Reserved. Proudly protecting Maithil heritage and lineage custom safeties.",
-  "app_developed_with_pure_vanilla_css_react_19": "Developed with Pure Vanilla CSS & React 19"
+  "app_developed_with_pure_vanilla_css_react_19": "Developed with Pure Vanilla CSS & React 19",
+  "app_footer_brand_desc": "The premier cultural matrimonial portal tailored for global Maithil families. Designed with heritage aesthetics, secure gotra rules, and high-fidelity compatibility algorithms."
 }

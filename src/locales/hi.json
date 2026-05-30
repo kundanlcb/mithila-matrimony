@@ -21,7 +21,7 @@
   "widget_male": "पुरुष",
   "widget_female": "महिला",
   "widget_any": "सभी गोत्र",
-  "trust_stat1_title": "12K+ सत्यापित प्रोफाइल",
+  "trust_stat1_title": "1.2K+ सत्यापित प्रोफाइल",
   "trust_stat2_title": "गोत्र-मिलान तकनीक",
   "landing_why_title": "क्यूं Maithil Match?",
   "landing_why_desc": "विश्वसनीय गोत्र मिलान और समृद्ध सांस्कृतिक परंपराओं के माध्यम से परिवारों को जोड़ना।",
@@ -181,5 +181,6 @@
   "app_settings": "सिस्टम विकल्प",
   "app_switch_color_theme": "थीम बदलें",
   "app_all_rights_reserved_proudly_protecting_maithil_heritage_and_lineage_custom_safeties": "सर्वाधिकार सुरक्षित। गर्व से मैथिल परंपराओं और गोत्र अनुकूलता नियमों की रक्षा करता है।",
-  "app_developed_with_pure_vanilla_css_react_19": "प्योर वैनिला सीएसएस और रिएक्ट 19 द्वारा संचालित"
+  "app_developed_with_pure_vanilla_css_react_19": "प्योर वैनिला सीएसएस और रिएक्ट 19 द्वारा संचालित",
+  "app_footer_brand_desc": "वैश्विक मैथिल परिवारों के लिए विशेष रूप से तैयार किया गया प्रमुख सांस्कृतिक विवाह मंच। समृद्ध सांस्कृतिक विरासत, सुरक्षित गोत्र नियमों और उच्च-सटीकता अनुकूलता एल्गोरिदम के साथ डिज़ाइन किया गया।"
 }

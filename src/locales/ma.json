@@ -21,7 +21,7 @@
   "widget_male": "पुरुष",
   "widget_female": "महिला",
   "widget_any": "सब गोत्र",
-  "trust_stat1_title": "12K+ सत्यापित प्रोफाइल",
+  "trust_stat1_title": "1.2K+ सत्यापित प्रोफाइल",
   "trust_stat2_title": "गोत्र-मिलान तकनीक",
   "landing_why_title": "किएक Maithil Match?",
   "landing_why_desc": "विश्वसनीय गोत्र मिलान आ समृद्ध सांस्कृतिक परंपराक माध्यम सँ परिवार सभ कें जोड़ब।",
@@ -181,5 +181,6 @@
   "app_settings": "सिस्टम विकल्प",
   "app_switch_color_theme": "थीम बदलू",
   "app_all_rights_reserved_proudly_protecting_maithil_heritage_and_lineage_custom_safeties": "सर्वाधिकार सुरक्षित। गर्व सँ मैथिल परंपरा आ गोत्र अनुकूलताक नियमक रक्षा करैत अछि।",
-  "app_developed_with_pure_vanilla_css_react_19": "प्योर वैनिला सीएसएस आ रिएक्ट 19 द्वारा संचालित"
+  "app_developed_with_pure_vanilla_css_react_19": "प्योर वैनिला सीएसएस आ रिएक्ट 19 द्वारा संचालित",
+  "app_footer_brand_desc": "वैश्विक मैथिल परिवारक लेल विशेष रूप सँ तैयार कएल गेल प्रमुख सांस्कृतिक विवाह मंच। समृद्ध सांस्कृतिक विरासत, सुरक्षित गोत्र नियम आ उच्च-सटीकता अनुकूलता एल्गोरिदमक संग डिजाइन कएल गेल।"
 }
