@@ -410,7 +410,6 @@ function App() {
                         {locale === 'en' ? 'Login' : 'लॉग इन करें'}
                       </button>
                     </div>
-                    </div>
                   </div>
 
                   {/* Right Side Visual Content (Desktop Only) */}
