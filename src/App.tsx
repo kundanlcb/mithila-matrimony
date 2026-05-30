@@ -234,8 +234,8 @@ function App() {
             onClick={() => setActiveView(activeUser ? (activeUser.registrationStep === 'completed' ? 'browse' : 'register') : 'home')}
           >
             <svg className="brand-logo-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
-              <circle cx="9" cy="12" r="6" fill="var(--primary)" fillOpacity="0.85" />
-              <circle cx="15" cy="12" r="6" fill="var(--gold-primary, #D4AF37)" fillOpacity="0.85" />
+              <path transform="translate(-0.4, 3.5) scale(0.7)" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="var(--primary)" fillOpacity="0.85"/>
+              <path transform="translate(7.6, 3.5) scale(0.7)" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="var(--gold-primary, #D4AF37)" fillOpacity="0.85"/>
             </svg>
             <span className="logo-serif" style={styles.logoSerif}>{t('brand_serif')}</span>
             <span className="logo-sans" style={styles.logoSans}>{t('brand_sans')}</span>
@@ -416,10 +416,11 @@ function App() {
                   {/* Right Side Visual Content (Desktop Only) */}
                   <div className="hero-visual-content animate-fade" style={{ animationDelay: '0.2s' }}>
                     <div className="hero-glow-bg"></div>
-                    <div className="hero-image-container">
-                      <div className="hero-arch-mask">
-                        <img src="/hero-art.png" alt="Premium Maithil Matrimony" />
-                      </div>
+                    <div className="hero-image-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '80%', height: 'auto', maxWidth: '350px', filter: 'drop-shadow(0 20px 40px rgba(216,27,96,0.25))' }}>
+                        <path transform="translate(-0.4, 3.5) scale(0.7)" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="var(--primary)" fillOpacity="0.85"/>
+                        <path transform="translate(7.6, 3.5) scale(0.7)" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="var(--gold-primary, #D4AF37)" fillOpacity="0.85"/>
+                      </svg>
                       <div className="badge-top-left">
                         <div className="badge-icon-circle">✓</div>
                         <div className="badge-text-stack">
@@ -1131,8 +1132,8 @@ function App() {
             <div className="footer-col">
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem' }}>
                 <svg className="footer-logo-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0, marginRight: '0.2rem' }}>
-                  <circle cx="9" cy="12" r="6" fill="#ffffff" fillOpacity="0.85" />
-                  <circle cx="15" cy="12" r="6" fill="var(--gold-primary, #D4AF37)" fillOpacity="0.85" />
+                  <path transform="translate(-0.4, 3.5) scale(0.7)" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#ffffff" fillOpacity="0.85"/>
+                  <path transform="translate(7.6, 3.5) scale(0.7)" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="var(--gold-primary, #D4AF37)" fillOpacity="0.85"/>
                 </svg>
                 <span style={{ ...styles.logoSerif, color: '#ffffff' }}>{t('brand_serif')}</span>
                 <span style={{ ...styles.logoSans, color: 'var(--gold-primary)' }}>{t('brand_sans')}</span>
