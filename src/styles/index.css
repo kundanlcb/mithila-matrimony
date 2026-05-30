@@ -831,7 +831,7 @@ button {
 .hero-text-content {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
   align-items: flex-start;
   text-align: left;
   width: 100%;
@@ -839,9 +839,14 @@ button {
   margin: 0;
 }
 
+.hero-text-content > * {
+  margin: 0;
+}
+
 @media (min-width: 992px) {
   .hero-text-content {
     max-width: 55%;
+    gap: 2.5rem;
   }
 }
 

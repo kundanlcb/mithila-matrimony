@@ -358,7 +358,7 @@ function App() {
                   {/* Centered Content */}
                   <div className="hero-text-content">
                     {/* Gotra-Safe Platform Badge */}
-                    <div style={{ padding: '0.4rem 1rem', background: 'var(--primary-light)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-full)', color: 'var(--primary)', fontSize: '0.85rem', fontWeight: '700', marginBottom: '-0.5rem', display: 'inline-block' }}>
+                    <div style={{ padding: '0.4rem 1rem', background: 'var(--primary-light)', border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-full)', color: 'var(--primary)', fontSize: '0.85rem', fontWeight: '700', display: 'inline-block' }}>
                       {t('hero_tag') || '🧬 Gotra-Safe Matrimonial Platform'}
                     </div>
 
@@ -371,7 +371,7 @@ function App() {
                     </p>
 
                     {/* HERO CTA BUTTONS */}
-                    <div className="hero-cta-group animate-fade" style={{ display: 'flex', gap: '1rem', marginTop: '2rem', flexWrap: 'wrap' }}>
+                    <div className="hero-cta-group animate-fade" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                       <button 
                         onClick={() => setActiveView('auth')} 
                         style={{ 
