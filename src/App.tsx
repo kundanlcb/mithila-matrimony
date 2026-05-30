@@ -362,11 +362,11 @@ function App() {
                       {t('hero_tag') || '🧬 Gotra-Safe Matrimonial Platform'}
                     </div>
 
-                    <h1 className="display" style={styles.heroTitle}>
+                    <h1 className="display hero-title">
                       {t('hero_title_prefix')}
                       <span style={{ color: 'var(--primary)' }}>{t('hero_title_accent')}</span>
                     </h1>
-                    <p style={styles.heroSub}>
+                    <p className="hero-subtitle">
                       {t('hero_subtitle')}
                     </p>
 
@@ -416,7 +416,7 @@ function App() {
                   <div className="hero-visual-content animate-fade" style={{ animationDelay: '0.2s' }}>
                     <div className="hero-glow-bg"></div>
                     <div className="hero-image-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '80%', height: 'auto', maxWidth: '350px', filter: 'drop-shadow(0 20px 40px rgba(216,27,96,0.25))' }}>
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '90%', height: 'auto', maxWidth: '480px', filter: 'drop-shadow(0 20px 40px rgba(216,27,96,0.25))', transform: 'scale(1.15)' }}>
                         <path transform="translate(-0.4, 3.5) scale(0.7)" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="var(--primary)" fillOpacity="0.85"/>
                         <path transform="translate(7.6, 3.5) scale(0.7)" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="var(--gold-primary, #D4AF37)" fillOpacity="0.85"/>
                       </svg>

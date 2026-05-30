@@ -18,9 +18,9 @@ export const TRANSLATIONS: Record<string, TranslationItem> = {
   namaste: { en: "Namaste", hi: "नमस्ते", ma: "नमस्ते" },
 
   // Hero / Landing view
-  hero_title_prefix: { en: "Discover Soulmates Embedded in ", hi: "अपनी संस्कृति और जड़ों से जुड़े ", ma: "अपन संस्कृति आ जड़ों से जुड़े" },
+  hero_title_prefix: { en: "Discover Soulmates Embedded in ", hi: "अपनी संस्कृति और जड़ों से जुड़े ", ma: "अपन संस्कृति आ मूल सँ जुड़ल " },
   hero_title_accent: { en: "Maithil Heritage", hi: "मैथिल जीवनसाथी खोजें", ma: "मैथिल जीवनसाथी खोजू" },
-  hero_subtitle: { en: "A secure and modern platform built with Maithil culture and traditions in mind. Discover fully verified (OTP Verified) profiles, secure gotra matching, and precise partner searches based on your preferences.", hi: "मैथिल संस्कृति और परंपराओं को ध्यान में रखकर बनाया गया एक सुरक्षित और आधुनिक मंच। यहाँ आपको मिलता है पूरी तरह से सत्यापित (OTP Verified) प्रोफाइल, सुरक्षित गोत्र मिलान और आपकी पसंद के अनुसार सटीक जीवनसाथी की खोज।", ma: "मैथिल संस्कृति आ परंपराओं को ध्यान में रखकर बनाया गया एक सुरक्षित आ आधुनिक मंच। ईाँ आपको मिलता अछि पूरी तरह से सत्यापित (OTP Verified) प्रोफाइल, सुरक्षित गोत्र मिलान आ आपकी पसंद के अनुसार सटीक जीवनसाथी की खोज।" },
+  hero_subtitle: { en: "A secure and modern platform built with Maithil culture and traditions in mind. Discover fully verified (OTP Verified) profiles, secure gotra matching, and precise partner searches based on your preferences.", hi: "मैथिल संस्कृति और परंपराओं को ध्यान में रखकर बनाया गया एक सुरक्षित और आधुनिक मंच। यहाँ आपको मिलता है पूरी तरह से सत्यापित (OTP Verified) प्रोफाइल, सुरक्षित गोत्र मिलान और आपकी पसंद के अनुसार सटीक जीवनसाथी की खोज।", ma: "मैथिल संस्कृति आ परंपराकें ध्यानमे राखि कऽ बनाएल गेल एकटा सुरक्षित आ आधुनिक मंच। एतय अहाँकें भेटत पूर्ण रूपसँ सत्यापित (OTP Verified) प्रोफाइल, सुरक्षित गोत्र मिलान आ अहाँक पसंदक अनुसार सटीक जीवनसाथीक खोज।" },
   btn_begin_search: { en: "Begin Free Search", hi: "खोज शुरू करें", ma: "खोज शुरू करू" },
   btn_explore_mocks: { en: "Explore Mock Profiles", hi: "डेमो प्रोफाइल देखें", ma: "डेमो प्रोफाइल देखू" },
   visual_card_title: { en: "Design Identity System", hi: "डिजाइन पहचान प्रणाली", ma: "डिजाइन पहचान प्रणाली" },

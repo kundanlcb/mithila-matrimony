@@ -1951,3 +1951,30 @@ select option {
 @media (max-width: 480px) {
   /* Logo sizes remain standard across web and mobile */
 }
+
+.hero-title {
+  font-size: 2.5rem;
+  line-height: 1.15;
+}
+
+.hero-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+}
+
+@media (min-width: 992px) {
+  .hero-title {
+    font-size: 4rem;
+  }
+  .hero-subtitle {
+    font-size: 1.25rem;
+    max-width: 90%;
+  }
+  .hero-visual-content {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    min-height: 500px;
+  }
+}
