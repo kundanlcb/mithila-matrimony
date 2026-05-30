@@ -18,6 +18,15 @@ export interface VerifyOtpResponse {
   user: AuthUserResponse;
 }
 
+export interface SetupPasswordRequest {
+  password?: string;
+}
+
+export interface LoginRequest {
+  mobileNumber?: string;
+  password?: string;
+}
+
 export interface RequestOtpRequest {
   mobileNumber: string;
 }

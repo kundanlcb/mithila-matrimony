@@ -29,7 +29,9 @@ function App() {
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
 
   // Interactive Form States
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [mobileNumber, setMobileNumber] = useState('');
+  const [password, setPassword] = useState('');
   const [otpCode, setOtpCode] = useState('');
   const [simulatedOtpHint, setSimulatedOtpHint] = useState<string | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -130,7 +132,7 @@ function App() {
   //   }
   // };
 
-  // Auth: Trigger Send OTP
+  // Auth: Trigger Send OTP (Register)
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
@@ -143,7 +145,7 @@ function App() {
     }
   };
 
-  // Auth: Trigger Verify OTP
+  // Auth: Trigger Verify OTP (Register)
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
@@ -155,7 +157,7 @@ function App() {
         setOtpSent(false);
         setOtpCode('');
 
-        if (res.user.registrationStep === 'biodata' || res.user.registrationStep === 'auth') {
+        if (res.user.registrationStep === 'biodata' || res.user.registrationStep === 'auth' || res.user.registrationStep === 'password') {
           setActiveView('register');
         } else {
           const bio = await BiodataService.getMine();
@@ -165,6 +167,28 @@ function App() {
       }
     } catch (e: any) {
       setAuthError(e.message || t('error_invalid_otp'));
+    }
+  };
+
+  // Auth: Trigger Login (Phone + Password)
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError(null);
+    try {
+      const res = await AuthService.login({ mobileNumber, password });
+      if (res.user) {
+        setActiveUser(res.user as any);
+        setPassword('');
+        if (res.user.registrationStep === 'completed') {
+          const bio = await BiodataService.getMine();
+          setActiveBiodata(bio as any);
+          setActiveView('browse');
+        } else {
+          setActiveView('register');
+        }
+      }
+    } catch (e: any) {
+      setAuthError(e.message || 'Invalid phone number or password');
     }
   };
 
@@ -665,13 +689,52 @@ function App() {
         {activeView === 'auth' && (
           <div className="auth-layout-wrapper animate-fade">
             <div style={styles.authCard}>
-              <h2 className="display" style={styles.authTitle}>{t('auth_title')}</h2>
-              <p style={styles.authSubtitle}>{t('auth_subtitle')}</p>
+              <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', justifyContent: 'center' }}>
+                <button 
+                  onClick={() => { setAuthMode('login'); setAuthError(null); }}
+                  style={{ 
+                    flex: 1, 
+                    padding: '0.8rem', 
+                    background: authMode === 'login' ? 'var(--primary)' : 'transparent',
+                    color: authMode === 'login' ? 'white' : 'var(--text-main)',
+                    border: authMode === 'login' ? 'none' : '1px solid var(--border-light)',
+                    borderRadius: 'var(--radius-full)',
+                    cursor: 'pointer',
+                    fontWeight: 600
+                  }}
+                  data-testid="tab-login"
+                >
+                  {t('auth_tab_login')}
+                </button>
+                <button 
+                  onClick={() => { setAuthMode('register'); setAuthError(null); setOtpSent(false); }}
+                  style={{ 
+                    flex: 1, 
+                    padding: '0.8rem', 
+                    background: authMode === 'register' ? 'var(--primary)' : 'transparent',
+                    color: authMode === 'register' ? 'white' : 'var(--text-main)',
+                    border: authMode === 'register' ? 'none' : '1px solid var(--border-light)',
+                    borderRadius: 'var(--radius-full)',
+                    cursor: 'pointer',
+                    fontWeight: 600
+                  }}
+                  data-testid="tab-register"
+                >
+                  {t('auth_tab_register')}
+                </button>
+              </div>
 
-              {authError && <div style={styles.errorBanner}>{authError}</div>}
+              <h2 className="display" style={styles.authTitle}>
+                {authMode === 'login' ? t('auth_title_login') : t('auth_title_register')}
+              </h2>
+              <p style={styles.authSubtitle}>
+                {authMode === 'login' ? t('auth_subtitle_login') : t('auth_subtitle_register')}
+              </p>
 
-              {!otpSent ? (
-                <form onSubmit={handleSendOtp} style={styles.form}>
+              {authError && <div style={styles.errorBanner} data-testid="auth-error">{authError}</div>}
+
+              {authMode === 'login' ? (
+                <form onSubmit={handleLogin} style={styles.form} data-testid="login-form">
                   <div style={styles.inputGroup}>
                     <label style={styles.label}>{t('label_phone')}</label>
                     <input
@@ -681,38 +744,72 @@ function App() {
                       onChange={(e) => setMobileNumber(e.target.value)}
                       required
                       style={styles.input}
+                      data-testid="login-phone"
                     />
                   </div>
-                  <button type="submit" style={styles.primaryBtnWidth}>
-                    {t('btn_request_otp')}
+                  <div style={styles.inputGroup}>
+                    <label style={styles.label}>{t('label_password')}</label>
+                    <input
+                      type="password"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      style={styles.input}
+                      data-testid="login-password"
+                    />
+                  </div>
+                  <button type="submit" style={styles.primaryBtnWidth} data-testid="btn-login">
+                    {t('btn_login')}
                   </button>
                 </form>
               ) : (
-                <form onSubmit={handleVerifyOtp} style={styles.form}>
-                  <div style={styles.inputGroup}>
-                    <label style={styles.label}>{t('label_otp')}</label>
-                    <input
-                      type="text"
-                      maxLength={6}
-                      placeholder="e.g. 123456"
-                      value={otpCode}
-                      onChange={(e) => setOtpCode(e.target.value)}
-                      required
-                      style={styles.input}
-                    />
-                  </div>
-                  {simulatedOtpHint && (
-                    <div style={styles.simulatedOtpHintBox}>
-                      🔔 <strong>{t('simulated_otp_alert')}:</strong> {t('simulated_otp_alert') === 'Mock Server Message' ? 'Your verification code is' : 'आपका सत्यापन कोड है'}: <code>{simulatedOtpHint}</code>
+                !otpSent ? (
+                  <form onSubmit={handleSendOtp} style={styles.form} data-testid="register-form">
+                    <div style={styles.inputGroup}>
+                      <label style={styles.label}>{t('label_phone')}</label>
+                      <input
+                        type="tel"
+                        placeholder="e.g. +919876543210"
+                        value={mobileNumber}
+                        onChange={(e) => setMobileNumber(e.target.value)}
+                        required
+                        style={styles.input}
+                        data-testid="register-phone"
+                      />
                     </div>
-                  )}
-                  <button type="submit" style={styles.primaryBtnWidth}>
-                    {t('btn_verify_otp')}
-                  </button>
-                  <button type="button" onClick={() => setOtpSent(false)} style={styles.backBtn}>
-                    {t('btn_change_phone')}
-                  </button>
-                </form>
+                    <button type="submit" style={styles.primaryBtnWidth} data-testid="btn-request-otp">
+                      {t('btn_request_otp')}
+                    </button>
+                  </form>
+                ) : (
+                  <form onSubmit={handleVerifyOtp} style={styles.form} data-testid="verify-otp-form">
+                    <div style={styles.inputGroup}>
+                      <label style={styles.label}>{t('label_otp')}</label>
+                      <input
+                        type="text"
+                        maxLength={6}
+                        placeholder="e.g. 123456"
+                        value={otpCode}
+                        onChange={(e) => setOtpCode(e.target.value)}
+                        required
+                        style={styles.input}
+                        data-testid="register-otp"
+                      />
+                    </div>
+                    {simulatedOtpHint && (
+                      <div style={styles.simulatedOtpHintBox}>
+                        🔔 <strong>{t('simulated_otp_alert')}:</strong> {t('simulated_otp_alert') === 'Mock Server Message' ? 'Your verification code is' : 'आपका सत्यापन कोड है'}: <code>{simulatedOtpHint}</code>
+                      </div>
+                    )}
+                    <button type="submit" style={styles.primaryBtnWidth} data-testid="btn-verify-otp">
+                      {t('btn_verify_otp')}
+                    </button>
+                    <button type="button" onClick={() => setOtpSent(false)} style={styles.backBtn}>
+                      {t('btn_change_phone')}
+                    </button>
+                  </form>
+                )
               )}
             </div>
           </div>

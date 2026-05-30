@@ -182,5 +182,15 @@
   "app_switch_color_theme": "Switch Color Theme",
   "app_all_rights_reserved_proudly_protecting_maithil_heritage_and_lineage_custom_safeties": "All Rights Reserved. Proudly protecting Maithil heritage and lineage custom safeties.",
   "app_developed_with_pure_vanilla_css_react_19": "Developed with Pure Vanilla CSS & React 19",
-  "app_footer_brand_desc": "The premier cultural matrimonial portal tailored for global Maithil families. Designed with heritage aesthetics, secure gotra rules, and high-fidelity compatibility algorithms."
+  "app_footer_brand_desc": "The premier cultural matrimonial portal tailored for global Maithil families. Designed with heritage aesthetics, secure gotra rules, and high-fidelity compatibility algorithms.",
+  "auth_subtitle_login": "Login with your phone and password",
+  "auth_subtitle_register": "Register with a one-time password",
+  "auth_tab_login": "Login",
+  "auth_tab_register": "Register",
+  "auth_title_login": "Welcome Back",
+  "auth_title_register": "Create Account",
+  "label_password": "Password",
+  "bot_set_password": "Please set a secure password for your account (min 6 chars).",
+  "error_short_password": "Password must be at least 6 characters.",
+  "btn_login": "Login"
 }

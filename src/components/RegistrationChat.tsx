@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { BiodataService } from '../api/biodata.service';
+import { AuthService } from '../api/auth.service';
+import { apiClient } from '../api/apiClient';
 import type { Biodata } from '../types';
 
 interface ChatMessage {
@@ -27,6 +29,11 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
   const [inputValue, setInputValue] = useState('');
   const [typing, setTyping] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  // Master Data Options
+  const [optionsGotra, setOptionsGotra] = useState<string[]>(['Kashyap', 'Shandilya', 'Vatsa', 'Bhardwaj', 'Parashar', 'Katyayan']);
+  const [optionsCity, setOptionsCity] = useState<string[]>(['Darbhanga', 'Madhubani', 'Patna', 'Saharsa']);
+  const [optionsProfession, setOptionsProfession] = useState<string[]>(['Software Engineer', 'Doctor', 'Teacher', 'Business']);
 
   // Biodata Form Accumulator State
   const [biodataForm, setBiodataForm] = useState<Omit<Biodata, 'biodataId' | 'userId'>>({
@@ -55,11 +62,37 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, typing]);
 
+  // Fetch Master Data
+  useEffect(() => {
+    const fetchMasterData = async () => {
+      try {
+        const [gotras, cities, professions] = await Promise.all([
+          apiClient.get<any[]>('/api/v1/admin/master-data/gotra'),
+          apiClient.get<any[]>('/api/v1/admin/master-data/city'),
+          apiClient.get<any[]>('/api/v1/admin/master-data/profession')
+        ]);
+        if (gotras?.length) setOptionsGotra(gotras.map(g => g.name));
+        if (cities?.length) setOptionsCity(cities.map(c => c.name));
+        if (professions?.length) setOptionsProfession(professions.map(p => p.name));
+      } catch (e) {
+        console.error('Failed to fetch master data', e);
+      }
+    };
+    fetchMasterData();
+  }, []);
+
   // Initial welcome message from bot
   useEffect(() => {
     if (welcomeTriggered.current) return;
     welcomeTriggered.current = true;
-    triggerBotResponse(t('bot_welcome'), 'text');
+    
+    const user = JSON.parse(localStorage.getItem('active_profile') || '{}');
+    if (user.registrationStep === 'password') {
+      setCurrentStep(-1);
+      triggerBotResponse(t('bot_set_password'), 'text');
+    } else {
+      triggerBotResponse(t('bot_welcome'), 'text');
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -148,6 +181,22 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
 
     // Bot Response Logic based on Next Step
     switch (currentStep) {
+      case -1: // Password entered
+        if (valueToProcess.length < 6) {
+          setErrorMsg(t('error_short_password'));
+          setCurrentStep(-1);
+          setMessages(prev => prev.slice(0, -1));
+          return;
+        }
+        AuthService.setupPassword({ password: valueToProcess }).then(() => {
+          triggerBotResponse(t('bot_welcome'), 'text');
+        }).catch(err => {
+          setErrorMsg('Failed to set password: ' + err.message);
+          setCurrentStep(-1);
+          setMessages(prev => prev.slice(0, -1));
+        });
+        break;
+
       case 0: // Name entered -> Ask Gender
         setBiodataForm(prev => ({ ...prev, fullName: valueToProcess }));
         const defaultPhoto = valueToProcess.toLowerCase() === 'female' 
@@ -169,7 +218,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
         triggerBotResponse(t('bot_age'), 'text');
         break;
 
-      case 2: // Age entered -> Ask Height
+      case 2: { // Age entered -> Ask Height
         const ageNum = parseInt(valueToProcess);
         if (isNaN(ageNum) || ageNum < 18 || ageNum > 70) {
           setErrorMsg(t('chat_error_age'));
@@ -180,6 +229,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
         setBiodataForm(prev => ({ ...prev, age: ageNum }));
         triggerBotResponse(t('bot_height'), 'select', ["5' 0\"", "5' 2\"", "5' 4\"", "5' 6\"", "5' 8\"", "5' 10\"", "6' 0\"+"]);
         break;
+      }
 
       case 3: // Height entered -> Ask Marital Status
         setBiodataForm(prev => ({ ...prev, height: valueToProcess }));
@@ -193,7 +243,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
 
       case 5: // Complexion entered -> Ask Gotra
         setBiodataForm(prev => ({ ...prev, complexion: valueToProcess }));
-        triggerBotResponse(t('bot_gotra'), 'select', ['Kashyap', 'Shandilya', 'Vatsa', 'Bhardwaj', 'Parashar', 'Katyayan']);
+        triggerBotResponse(t('bot_gotra'), 'select', optionsGotra);
         break;
 
       case 6: // Gotra selected -> Ask Diet
@@ -203,7 +253,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
 
       case 7: // Diet entered -> Ask City
         setBiodataForm(prev => ({ ...prev, diet: valueToProcess }));
-        triggerBotResponse(t('bot_city'), 'text');
+        triggerBotResponse(t('bot_city'), 'select', optionsCity);
         break;
 
       case 8: // City entered -> Ask Education
@@ -213,7 +263,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
 
       case 9: // Education entered -> Ask Profession
         setBiodataForm(prev => ({ ...prev, education: valueToProcess }));
-        triggerBotResponse(t('bot_profession'), 'text');
+        triggerBotResponse(t('bot_profession'), 'select', optionsProfession);
         break;
 
       case 10: // Profession entered -> Ask Income
@@ -221,7 +271,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
         triggerBotResponse(t('bot_income'), 'text');
         break;
 
-      case 11: // Income entered -> Ask Hobbies
+      case 11: { // Income entered -> Ask Hobbies
         const incomeNum = parseInt(valueToProcess);
         if (isNaN(incomeNum) || incomeNum <= 0) {
           setErrorMsg(t('chat_error_income'));
@@ -232,6 +282,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
         setBiodataForm(prev => ({ ...prev, annualIncome: incomeNum }));
         triggerBotResponse(t('bot_interests'), 'tags', ['Madhubani Painting', 'Classical Music', 'Cooking', 'Reading', 'Travel', 'Gardening', 'Yoga']);
         break;
+      }
 
       case 12: // Hobbies selected -> Ask Bio
         setBiodataForm(prev => ({ ...prev, interests: tempInterests }));
@@ -434,6 +485,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
                   key={opt}
                   onClick={() => handleUserSubmit(undefined, opt)}
                   style={styles.choiceChip}
+                  data-testid={`chat-option-${opt.replace(/\s+/g, '-').toLowerCase()}`}
                 >
                   {opt}
                 </button>
@@ -457,6 +509,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
                         color: active ? '#ffffff' : 'var(--text-main)',
                         borderColor: active ? 'var(--primary)' : 'var(--border-light)'
                       }}
+                      data-testid={`chat-tag-${tag.replace(/\s+/g, '-').toLowerCase()}`}
                     >
                       {tag}
                     </button>
@@ -473,6 +526,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
                   padding: '0.4rem 1.4rem',
                   fontSize: '0.85rem'
                 }}
+                data-testid="chat-tags-submit"
               >
                 Done Selecting ({tempInterests.length})
               </button>
@@ -504,6 +558,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
               <button
                 onClick={() => handleUserSubmit(undefined, 'skip')}
                 style={styles.skipUploadBtn}
+                data-testid="chat-skip-upload"
               >
                 ⏩ {locale === 'en' ? 'Skip & Keep Default Avatar' : 'छोड़ें और डिफ़ॉल्ट अवतार रखें'}
               </button>
@@ -516,14 +571,15 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
       {(!messages.length || messages[messages.length - 1].sender === 'user' || messages[messages.length - 1].inputType === 'text') && (
         <form onSubmit={handleUserSubmit} className="chat-input-bar">
           <input
-            type={currentStep === 2 || currentStep === 11 ? 'number' : 'text'}
-            placeholder={t('chat_placeholder')}
+            type={currentStep === -1 ? 'password' : (currentStep === 2 || currentStep === 11 ? 'number' : 'text')}
+            placeholder={currentStep === -1 ? '••••••••' : t('chat_placeholder')}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             disabled={typing}
             style={styles.inputBox}
+            data-testid="chat-input"
           />
-          <button type="submit" disabled={typing} style={styles.primarySendBtn}>
+          <button type="submit" disabled={typing} style={styles.primarySendBtn} data-testid="chat-send">
             {t('chat_btn_send')}
           </button>
         </form>
