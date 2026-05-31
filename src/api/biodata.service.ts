@@ -12,5 +12,9 @@ export const BiodataService = {
 
   complete: async (): Promise<{ status: string }> => {
     return apiClient.post<{ status: string }>('/api/v1/biodata/me/complete');
+  },
+
+  getPublic: async (userId: string): Promise<Partial<BiodataResponse>> => {
+    return apiClient.get<Partial<BiodataResponse>>(`/api/v1/biodata/public/${userId}`);
   }
 };

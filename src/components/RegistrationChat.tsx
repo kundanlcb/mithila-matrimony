@@ -376,7 +376,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
         ...biodataForm,
         photoUrl: primary,
         additionalPhotos: additional,
-        addresses: [{ addressType: 'CURRENT', city: biodataForm.location }]
+        addresses: [{ addressType: 'CURRENT', city: biodataForm.location, state: 'N/A', country: 'India' }]
       };
       await BiodataService.updateMine(payload as any);
       await BiodataService.complete();

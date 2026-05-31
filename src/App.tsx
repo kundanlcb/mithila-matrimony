@@ -16,6 +16,7 @@ import FilterPanel from './components/FilterPanel';
 import ProfileDetail from './components/ProfileDetail';
 import MatchInbox from './components/MatchInbox';
 import PremiumPaywall from './components/PremiumPaywall';
+import { PublicProfileView } from './components/PublicProfileView';
 
 function App() {
   // Localization & Theme Hooks
@@ -26,7 +27,8 @@ function App() {
   const [activeUser, setActiveUser] = useState<UserProfile | null>(null);
   const [activeBiodata, setActiveBiodata] = useState<Biodata | null>(null);
   const [matchingProfiles, setMatchingProfiles] = useState<MatchingProfile[]>([]);
-  const [activeView, setActiveView] = useState<'home' | 'auth' | 'register' | 'browse' | 'inbox' | 'my-profile'>('home');
+  const [activeView, setActiveView] = useState<'home' | 'auth' | 'register' | 'browse' | 'inbox' | 'my-profile' | 'public-profile'>('home');
+  const [publicProfileId, setPublicProfileId] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'score' | 'age_asc' | 'age_desc' | 'income'>('score');
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
@@ -99,6 +101,16 @@ function App() {
             setMatchingProfiles(matches.content as any);
           } catch (e) {
             console.error('Failed to load profile data', e);
+          }
+        }
+      } else {
+        // If not logged in, check for public profile URL
+        const path = window.location.pathname;
+        if (path.startsWith('/p/')) {
+          const id = path.replace('/p/', '');
+          if (id) {
+            setPublicProfileId(id);
+            setActiveView('public-profile');
           }
         }
       }
@@ -1240,6 +1252,17 @@ function App() {
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                         {t('app_edit_profile')}
                       </button>
+
+                      <button 
+                        onClick={() => {
+                          const url = `${window.location.origin}/p/${activeUser?.id}`;
+                          navigator.clipboard.writeText(url).then(() => alert(locale === 'en' ? 'Profile link copied to clipboard!' : 'प्रोफ़ाइल लिंक कॉपी हो गया!'));
+                        }} 
+                        style={{ width: '100%', padding: '0.9rem', background: 'var(--primary-light)', color: 'var(--primary-dark)', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                        {locale === 'en' ? 'Share Profile' : 'प्रोफ़ाइल शेयर करें'}
+                      </button>
                       
                       <div style={{ display: 'flex', gap: '0.8rem' }}>
                         <button 
@@ -1605,6 +1628,19 @@ function App() {
             }}
           />
         )}
+        {/* VIEW 7: PUBLIC PROFILE */}
+        {activeView === 'public-profile' && publicProfileId && (
+          <div className="animate-fade" style={{ flex: 1, padding: '2rem 1rem', display: 'flex', justifyContent: 'center', width: '100%' }}>
+            <PublicProfileView 
+              userId={publicProfileId} 
+              onLoginClick={() => {
+                setAuthMode('login');
+                setActiveView('auth');
+              }} 
+            />
+          </div>
+        )}
+
       </main>
 
       {/* Visual Premium Footer (Stretches 100% full screen width) */}
