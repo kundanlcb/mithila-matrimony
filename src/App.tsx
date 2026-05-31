@@ -983,8 +983,13 @@ function App() {
             <div style={{ width: '100%', maxWidth: '800px' }}>
               <RegistrationChat 
                 onComplete={() => {
-                  const user = JSON.parse(localStorage.getItem('active_profile') || 'null');
-                  setActiveUser(user);
+                  const userStr = localStorage.getItem('active_profile');
+                  if (userStr) {
+                    const user = JSON.parse(userStr);
+                    user.registrationStep = 'completed';
+                    localStorage.setItem('active_profile', JSON.stringify(user));
+                    setActiveUser(user);
+                  }
                   BiodataService.getMine().then(res => setActiveBiodata(res as any)).catch(console.error);
                   setActiveView('browse');
                 }}
