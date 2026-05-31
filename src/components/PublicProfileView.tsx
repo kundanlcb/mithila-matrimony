@@ -165,24 +165,3 @@ export const PublicProfileView = ({ userId, onLoginClick }: PublicProfileViewPro
     </div>
   );
 };
-
-const styles = {
-  detailRow: {
-    display: 'flex',
-    padding: '0.8rem 0',
-    borderBottom: '1px solid var(--border-light)',
-    alignItems: 'center'
-  },
-  detailRowLabel: {
-    width: '140px',
-    fontSize: '0.9rem',
-    color: 'var(--text-muted)',
-    fontWeight: '600'
-  },
-  detailRowValue: {
-    flex: 1,
-    fontSize: '1rem',
-    color: 'var(--text-main)',
-    fontWeight: '500'
-  }
-};
