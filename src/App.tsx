@@ -1024,46 +1024,51 @@ function App() {
                         <h1 className="display" style={{fontSize: '2rem'}}>{t('browse_title')}</h1>
                         <p>{t('browse_subtitle')}</p>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
-                        <div className="browse-alert-badge" style={styles.quickFiltersContainer}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap', width: '100%', justifyContent: 'space-between' }}>
+                        <div className="browse-alert-badge" style={{ ...styles.quickFiltersContainer, whiteSpace: 'nowrap', flexShrink: 0 }}>
                           <span className="browse-alert-icon" style={styles.quickFiltersIcon}>✦</span>
                           <span>{matchingProfiles.length} {t('app_matches_found')}</span>
                         </div>
-                        <select
-                          value={sortBy}
-                          onChange={(e) => setSortBy(e.target.value as any)}
-                          style={{
-                            padding: '0.5rem 2.5rem 0.5rem 1rem',
-                            borderRadius: 'var(--radius-full)',
-                            border: '1px solid var(--border-light)',
-                            backgroundColor: 'var(--bg-card)',
-                            backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6 9 12 15 18 9\'%3e%3c/polyline%3e%3c/svg%3e")',
-                            backgroundRepeat: 'no-repeat',
-                            backgroundPosition: 'right 1rem center',
-                            backgroundSize: '1rem',
-                            color: 'var(--text-main)',
-                            fontSize: '1rem',
-                            fontWeight: '600',
-                            outline: 'none',
-                            cursor: 'pointer',
-                            boxShadow: 'var(--shadow-sm)',
-                            WebkitAppearance: 'none' as const,
-                            MozAppearance: 'none' as const,
-                            appearance: 'none' as const
-                          }}
-                        >
-                          <option value="score">{t('app_sort_best_match')}</option>
-                          <option value="age_asc">{t('app_sort_age_low_to_high')}</option>
-                          <option value="age_desc">{t('app_sort_age_high_to_low')}</option>
-                          <option value="income">{t('app_sort_income_high_to_low')}</option>
-                        </select>
-                        <button 
-                          className="mobile-filter-toggle" 
-                          onClick={() => setIsMobileFilterOpen(true)}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
-                          {t('app_filters')}
-                        </button>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flex: '1 1 auto', justifyContent: 'flex-end', minWidth: '240px' }}>
+                          <select
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value as any)}
+                            style={{
+                              flex: '1 1 150px',
+                              maxWidth: '300px',
+                              padding: '0.5rem 2.5rem 0.5rem 1rem',
+                              borderRadius: 'var(--radius-full)',
+                              border: '1px solid var(--border-light)',
+                              backgroundColor: 'var(--bg-card)',
+                              backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6 9 12 15 18 9\'%3e%3c/polyline%3e%3c/svg%3e")',
+                              backgroundRepeat: 'no-repeat',
+                              backgroundPosition: 'right 1rem center',
+                              backgroundSize: '1rem',
+                              color: 'var(--text-main)',
+                              fontSize: '0.95rem',
+                              fontWeight: '600',
+                              outline: 'none',
+                              cursor: 'pointer',
+                              boxShadow: 'var(--shadow-sm)',
+                              WebkitAppearance: 'none' as const,
+                              MozAppearance: 'none' as const,
+                              appearance: 'none' as const
+                            }}
+                          >
+                            <option value="score">{t('app_sort_best_match')}</option>
+                            <option value="age_asc">{t('app_sort_age_low_to_high')}</option>
+                            <option value="age_desc">{t('app_sort_age_high_to_low')}</option>
+                            <option value="income">{t('app_sort_income_high_to_low')}</option>
+                          </select>
+                          <button 
+                            className="mobile-filter-toggle" 
+                            onClick={() => setIsMobileFilterOpen(true)}
+                            style={{ margin: 0, flexShrink: 0, whiteSpace: 'nowrap' }}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                            {t('app_filters')}
+                          </button>
+                        </div>
                       </div>
                     </div>
 
@@ -1197,6 +1202,16 @@ function App() {
                 <div style={{ maxWidth: '600px', margin: '0 auto', background: 'var(--bg-card)', borderRadius: '16px', border: '1px solid var(--border-light)', overflow: 'hidden', boxShadow: 'var(--shadow-md)' }}>
                   <div style={{ position: 'relative', width: '100%', height: '320px' }}>
                     <img src={activeBiodata.photoUrl} alt="My Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <button 
+                      onClick={() => {
+                        const url = `${window.location.origin}/p/${activeUser?.id}`;
+                        navigator.clipboard.writeText(url).then(() => alert(locale === 'en' ? 'Profile link copied to clipboard!' : 'प्रोफ़ाइल लिंक कॉपी हो गया!'));
+                      }}
+                      style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 10, boxShadow: 'var(--shadow-md)' }}
+                      title={locale === 'en' ? 'Share Profile' : 'प्रोफ़ाइल शेयर करें'}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                    </button>
                     <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '2rem 1.5rem 1.5rem', background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%)', color: '#fff' }}>
                       <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.2rem', margin: '0 0 0.2rem 0', color: '#fff' }}>{activeBiodata.fullName}</h2>
                       <p style={{ margin: 0, fontSize: '1rem', color: '#f0f0f0', opacity: 0.9 }}>{activeBiodata.age} {t('app_yrs')} • {activeBiodata.location}</p>
