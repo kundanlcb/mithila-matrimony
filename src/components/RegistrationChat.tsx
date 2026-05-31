@@ -375,7 +375,8 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
       const payload = {
         ...biodataForm,
         photoUrl: primary,
-        additionalPhotos: additional
+        additionalPhotos: additional,
+        addresses: [{ addressType: 'CURRENT', city: biodataForm.location }]
       };
       await BiodataService.updateMine(payload as any);
       await BiodataService.complete();
@@ -810,6 +811,7 @@ const styles = {
     borderRadius: 'var(--radius-sm)',
     width: '100%',
     marginTop: '0.5rem',
+    marginBottom: '2.5rem',
     boxShadow: 'var(--shadow-md)'
   },
   chatHeader: {
