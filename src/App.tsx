@@ -1033,12 +1033,13 @@ function App() {
                           <span className="browse-alert-icon" style={styles.quickFiltersIcon}>✦</span>
                           <span>{matchingProfiles.length} {t('app_matches_found')}</span>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flex: '1 1 auto', justifyContent: 'flex-end', minWidth: '240px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexShrink: 0, justifyContent: 'flex-end' }}>
                           <select
+                            className="hide-on-mobile"
                             value={sortBy}
                             onChange={(e) => setSortBy(e.target.value as any)}
                             style={{
-                              flex: '1 1 150px',
+                              flex: '1 1 auto',
                               maxWidth: '300px',
                               padding: '0.5rem 2.5rem 0.5rem 1rem',
                               borderRadius: 'var(--radius-full)',
@@ -1064,6 +1065,32 @@ function App() {
                             <option value="age_desc">{t('app_sort_age_high_to_low')}</option>
                             <option value="income">{t('app_sort_income_high_to_low')}</option>
                           </select>
+
+                          {/* Mobile Sort Icon Button with Hidden Native Select */}
+                          <div className="show-on-mobile" style={{ position: 'relative', width: '40px', height: '40px' }}>
+                            <button className="mobile-filter-toggle" style={{ margin: 0, width: '100%', height: '100%', padding: 0 }} title={t('app_sort_best_match')}>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                            </button>
+                            <select
+                              value={sortBy}
+                              onChange={(e) => setSortBy(e.target.value as any)}
+                              style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100%',
+                                opacity: 0,
+                                cursor: 'pointer',
+                                zIndex: 2
+                              }}
+                            >
+                              <option value="score">{t('app_sort_best_match')}</option>
+                              <option value="age_asc">{t('app_sort_age_low_to_high')}</option>
+                              <option value="age_desc">{t('app_sort_age_high_to_low')}</option>
+                              <option value="income">{t('app_sort_income_high_to_low')}</option>
+                            </select>
+                          </div>
                           <button 
                             className="mobile-filter-toggle" 
                             onClick={() => setIsMobileFilterOpen(true)}

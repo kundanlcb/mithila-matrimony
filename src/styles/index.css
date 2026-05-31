@@ -1793,9 +1793,16 @@ button {
   display: block;
 }
 
+.show-on-mobile {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .hide-on-mobile {
     display: none !important;
+  }
+  .show-on-mobile {
+    display: flex !important;
   }
 
   .header-action-btn {
