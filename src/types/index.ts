@@ -4,6 +4,7 @@
  */
 
 export interface UserProfile {
+  id?: string;             // Added for API compatibility where response uses 'id' instead of 'userId'
   userId: string;          // UUID v4 format
   mobileNumber: string;    // E.164 formatted telephone number (e.g. +91XXXXXXXXXX)
   isVerified: boolean;     // True if OTP verification succeeded
