@@ -1209,7 +1209,7 @@ function App() {
                     <img src={activeBiodata.photoUrl} alt="My Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     <button 
                       onClick={() => {
-                        const url = `${window.location.origin}/p/${activeUser?.id}`;
+                        const url = `${window.location.origin}/p/${activeUser?.userId}`;
                         navigator.clipboard.writeText(url).then(() => alert(locale === 'en' ? 'Profile link copied to clipboard!' : 'प्रोफ़ाइल लिंक कॉपी हो गया!'));
                       }}
                       style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 10, boxShadow: 'var(--shadow-md)' }}
@@ -1280,7 +1280,7 @@ function App() {
 
                       <button 
                         onClick={() => {
-                          const url = `${window.location.origin}/p/${activeUser?.id}`;
+                          const url = `${window.location.origin}/p/${activeUser?.userId}`;
                           navigator.clipboard.writeText(url).then(() => alert(locale === 'en' ? 'Profile link copied to clipboard!' : 'प्रोफ़ाइल लिंक कॉपी हो गया!'));
                         }} 
                         style={{ width: '100%', padding: '0.9rem', background: 'var(--primary-light)', color: 'var(--primary-dark)', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem' }}
