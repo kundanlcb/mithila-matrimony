@@ -389,16 +389,17 @@ function App() {
                       position: 'relative',
                       display: 'flex', 
                       alignItems: 'center', 
-                      gap: '0.4rem',
-                      marginRight: '1.2rem', 
-                      padding: '0.35rem 0.8rem',
+                      gap: '0.5rem',
+                      marginRight: '0.5rem', 
+                      padding: '0.55rem 1.1rem',
                       backgroundColor: 'var(--bg-card)',
                       border: '1px solid var(--border-light)',
                       borderRadius: 'var(--radius-full)',
                       color: 'var(--primary-dark)',
                       cursor: 'pointer',
                       fontWeight: '600',
-                      fontSize: '0.9rem',
+                      fontSize: '0.95rem',
+                      whiteSpace: 'nowrap',
                       boxShadow: 'var(--shadow-sm)'
                     }}
                     onClick={() => setActiveView('inbox')}
@@ -410,21 +411,21 @@ function App() {
                     {/* Notification Badge */}
                     <span style={{
                       position: 'absolute',
-                      top: '-6px',
-                      right: '-6px',
-                      minWidth: '18px',
-                      height: '18px',
-                      padding: '0 4px',
+                      top: '-4px',
+                      right: '-4px',
+                      minWidth: '20px',
+                      height: '20px',
+                      padding: '0 5px',
                       backgroundColor: 'var(--primary)',
                       color: '#ffffff',
-                      fontSize: '0.7rem',
+                      fontSize: '0.75rem',
                       fontWeight: '800',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       borderRadius: '10px',
                       border: '2px solid var(--bg-header)',
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.15)'
                     }}>
                       {interactions.length > 0 ? interactions.length : 2}
                     </span>
@@ -441,9 +442,9 @@ function App() {
                     style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '0.35rem',
+                      gap: '0.5rem',
                       marginRight: '0.75rem',
-                      padding: '0.35rem 0.75rem',
+                      padding: '0.55rem 1.1rem',
                       backgroundColor: subscriptionStatus?.planType === 'monthly'
                         ? 'rgba(212, 175, 55, 0.15)'
                         : subscriptionStatus?.planType === 'pay_per_contact'
@@ -454,14 +455,15 @@ function App() {
                         : subscriptionStatus?.planType === 'pay_per_contact'
                           ? '1px solid var(--primary)'
                           : '1px dashed var(--border-light)',
-                      borderRadius: '12px',
+                      borderRadius: 'var(--radius-full)',
                       color: subscriptionStatus?.planType === 'monthly'
                         ? '#B8860B'
                         : subscriptionStatus?.planType === 'pay_per_contact'
                           ? 'var(--primary)'
                           : 'var(--text-muted)',
                       fontWeight: 'bold',
-                      fontSize: '0.8rem',
+                      fontSize: '0.9rem',
+                      whiteSpace: 'nowrap',
                       cursor: 'pointer',
                       boxShadow: 'var(--shadow-sm)',
                       transition: 'all 0.2s'
