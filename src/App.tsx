@@ -7,6 +7,7 @@ import { InteractionsService } from './api/interactions.service';
 import { SubscriptionService } from './api/subscription.service';
 import { UserService } from './api/user.service';
 import { apiClient } from './api/apiClient';
+import { UploadService } from './api/upload.service';
 import type { Biodata, MatchingProfile, UserProfile, ProfileInteraction, InteractionType } from './types';
 import { useLanguage } from './context/LanguageContext';
 import { useTheme } from './context/ThemeContext';
@@ -108,12 +109,13 @@ function App() {
   // Load Master Data and Subscription Status
   useEffect(() => {
     const fetchMasterData = async () => {
+      if (!activeUser) return; // Do not call master data API before login/register
       try {
         const [gotrasList, professionsList, religionsList, castesList] = await Promise.all([
-          apiClient.get<any[]>('/api/v1/admin/master-data/gotra'),
-          apiClient.get<any[]>('/api/v1/admin/master-data/profession'),
-          apiClient.get<any[]>('/api/v1/admin/master-data/religion'),
-          apiClient.get<any[]>('/api/v1/admin/master-data/caste')
+          apiClient.get<any[]>('/api/v1/master-data/gotra'),
+          apiClient.get<any[]>('/api/v1/master-data/profession'),
+          apiClient.get<any[]>('/api/v1/master-data/religion'),
+          apiClient.get<any[]>('/api/v1/master-data/caste')
         ]);
         if (gotrasList?.length) setMasterGotras(gotrasList.map(g => g.name));
         if (professionsList?.length) setMasterProfessions(professionsList.map(p => p.name));
@@ -130,7 +132,7 @@ function App() {
     };
 
     fetchMasterData();
-  }, []);
+  }, [activeUser]);
 
   // Fetch subscription status whenever logged in user is available
   useEffect(() => {
@@ -171,22 +173,23 @@ function App() {
   }, [isAccountMenuOpen]);
 
   // Photo upload for Profile Edit modal
-  const handleEditPhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEditPhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
         alert(locale === 'en' ? 'File size exceeds 2MB limit.' : 'फ़ाइल का आकार 2MB सीमा से अधिक है।');
         return;
       }
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const base64Url = event.target?.result as string;
+      
+      try {
+        const fileUrl = await UploadService.uploadFile(file);
         setEditForm(prev => ({
           ...prev,
-          additionalPhotos: [...(prev.additionalPhotos || []), base64Url]
+          additionalPhotos: [...(prev.additionalPhotos || []), fileUrl]
         }));
-      };
-      reader.readAsDataURL(file);
+      } catch (err: any) {
+        alert(`Upload failed: ${err.message}`);
+      }
     }
   };
 
@@ -500,7 +503,7 @@ function App() {
                 )}
               </div>
             ) : (
-              <button className="btn-auth" onClick={() => setActiveView('auth')} style={styles.authLinkBtn}>
+              <button className="btn-auth" onClick={() => { setAuthMode('login'); setActiveView('auth'); }} style={styles.authLinkBtn}>
                 {t('btn_auth')}
               </button>
             )}
@@ -544,7 +547,7 @@ function App() {
                     {/* HERO CTA BUTTONS */}
                     <div className="hero-cta-group animate-fade" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                       <button 
-                        onClick={() => setActiveView('auth')} 
+                        onClick={() => { setAuthMode('register'); setActiveView('auth'); }} 
                         style={{ 
                           padding: '1rem 2rem', 
                           fontSize: '1.1rem', 
@@ -563,7 +566,7 @@ function App() {
                         {t('app_get_started_register_free')}
                       </button>
                       <button 
-                        onClick={() => setActiveView('auth')} 
+                        onClick={() => { setAuthMode('login'); setActiveView('auth'); }} 
                         style={{ 
                           padding: '1rem 2rem', 
                           fontSize: '1.1rem', 
@@ -760,7 +763,7 @@ function App() {
                     </div>
 
                     <div style={{ marginTop: '1rem' }}>
-                      <button onClick={() => setActiveView('auth')} className="cta-button-landing">
+                      <button onClick={() => { setAuthMode('register'); setActiveView('auth'); }} className="cta-button-landing">
                         {t('app_get_started_now')}
                       </button>
                     </div>
@@ -1633,7 +1636,7 @@ function App() {
                   {t('app_home')}
                 </li>
                 {!activeUser ? (
-                  <li className="footer-link-item" onClick={() => setActiveView('auth')}>
+                  <li className="footer-link-item" onClick={() => { setAuthMode('login'); setActiveView('auth'); }}>
                     {t('btn_auth')}
                   </li>
                 ) : (

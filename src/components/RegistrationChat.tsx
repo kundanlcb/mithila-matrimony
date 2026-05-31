@@ -3,6 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { BiodataService } from '../api/biodata.service';
 import { AuthService } from '../api/auth.service';
 import { apiClient } from '../api/apiClient';
+import { UploadService } from '../api/upload.service';
 import type { Biodata } from '../types';
 
 interface ChatMessage {
@@ -79,11 +80,11 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
     const fetchMasterData = async () => {
       try {
         const [gotras, cities, professions, religions, castes] = await Promise.all([
-          apiClient.get<any[]>('/api/v1/admin/master-data/gotra'),
-          apiClient.get<any[]>('/api/v1/admin/master-data/city'),
-          apiClient.get<any[]>('/api/v1/admin/master-data/profession'),
-          apiClient.get<any[]>('/api/v1/admin/master-data/religion'),
-          apiClient.get<any[]>('/api/v1/admin/master-data/caste')
+          apiClient.get<any[]>('/api/v1/master-data/gotra'),
+          apiClient.get<any[]>('/api/v1/master-data/city'),
+          apiClient.get<any[]>('/api/v1/master-data/profession'),
+          apiClient.get<any[]>('/api/v1/master-data/religion'),
+          apiClient.get<any[]>('/api/v1/master-data/caste')
         ]);
         if (gotras?.length) setOptionsGotra(gotras.map(g => g.name));
         if (cities?.length) setOptionsCity(cities.map(c => c.name));
@@ -348,8 +349,8 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
     });
   };
 
-  // Photo Upload Handler for Base64 conversion
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Photo Upload Handler for Signed URL upload
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
@@ -357,12 +358,12 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
         return;
       }
       
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const base64Url = event.target?.result as string;
-        setUploadedPhotos(prev => [...prev, base64Url]);
-      };
-      reader.readAsDataURL(file);
+      try {
+        const fileUrl = await UploadService.uploadFile(file);
+        setUploadedPhotos(prev => [...prev, fileUrl]);
+      } catch (err: any) {
+        setErrorMsg(`Upload failed: ${err.message}`);
+      }
     }
   };
 
@@ -469,7 +470,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
                   </button>
                 </div>
               </div>
-            ) : msg.text.startsWith('data:image/') ? (
+            ) : (msg.text.startsWith('data:image/') || msg.text.startsWith('http')) && msg.sender === 'user' && currentStep > 14 ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                 <span style={{ fontSize: '0.8rem', opacity: 0.9 }}>📷 {locale === 'en' ? 'Uploaded Profile Photo:' : 'प्रोफ़ाइल फ़ोटो अपलोड की गई:'}</span>
                 <img 

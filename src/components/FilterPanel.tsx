@@ -35,11 +35,11 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onApplyFilters, onClose, isMo
     const fetchMasterData = async () => {
       try {
         const [gotrasList, citiesList, professionsList, religionsList, castesList] = await Promise.all([
-          apiClient.get<any[]>('/api/v1/admin/master-data/gotra'),
-          apiClient.get<any[]>('/api/v1/admin/master-data/city'),
-          apiClient.get<any[]>('/api/v1/admin/master-data/profession'),
-          apiClient.get<any[]>('/api/v1/admin/master-data/religion'),
-          apiClient.get<any[]>('/api/v1/admin/master-data/caste')
+          apiClient.get<any[]>('/api/v1/master-data/gotra'),
+          apiClient.get<any[]>('/api/v1/master-data/city'),
+          apiClient.get<any[]>('/api/v1/master-data/profession'),
+          apiClient.get<any[]>('/api/v1/master-data/religion'),
+          apiClient.get<any[]>('/api/v1/master-data/caste')
         ]);
         if (gotrasList?.length) setGotras(gotrasList.map(g => g.name));
         if (citiesList?.length) setLocations(citiesList.map(c => c.name));
