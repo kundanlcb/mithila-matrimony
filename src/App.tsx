@@ -52,7 +52,7 @@ function App() {
 
 
   // Phase 3 States
-  const [interactions] = useState<ProfileInteraction[]>([]);
+  const [interactions, setInteractions] = useState<ProfileInteraction[]>([]);
   const [selectedProfile, setSelectedProfile] = useState<Biodata | null>(null);
   const [showPaywall, setShowPaywall] = useState<boolean>(false);
   const [profileModalView, setProfileModalView] = useState<'edit' | 'preferences' | 'privacy' | null>(null);
@@ -72,6 +72,78 @@ function App() {
 
   // Blocked users
   const [blockedUsers, setBlockedUsers] = useState<any[]>([]);
+
+  const loadInteractionsAndMatches = async (userParam?: any, bioParam?: any) => {
+    const currentUser = userParam || activeUser;
+    const currentBio = bioParam || activeBiodata;
+    if (!currentUser || currentUser.registrationStep !== 'completed') return;
+    try {
+      const [receivedList, sentList, matchesList] = await Promise.all([
+        InteractionsService.getReceived(),
+        InteractionsService.getSent(),
+        InteractionsService.getMatches()
+      ]);
+
+      const activeId = currentUser.id || currentUser.userId;
+      const activeBioId = currentBio?.biodataId || '';
+
+      const formattedProfiles: any[] = [];
+      const virtualInteractions: ProfileInteraction[] = [];
+
+      receivedList.forEach(p => {
+        const mappedBio = { ...p, biodataId: p.id, userId: p.id };
+        formattedProfiles.push(mappedBio);
+        virtualInteractions.push({
+          interactionId: p.id,
+          fromUserId: p.id,
+          toProfileId: activeBioId,
+          type: 'interest_sent',
+          timestamp: new Date().toISOString()
+        });
+      });
+
+      sentList.forEach(p => {
+        const mappedBio = { ...p, biodataId: p.id, userId: p.id };
+        formattedProfiles.push(mappedBio);
+        virtualInteractions.push({
+          interactionId: p.id,
+          fromUserId: activeId,
+          toProfileId: p.id,
+          type: 'interest_sent',
+          timestamp: new Date().toISOString()
+        });
+      });
+
+      matchesList.forEach(p => {
+        const mappedBio = { ...p, biodataId: p.id, userId: p.id };
+        formattedProfiles.push(mappedBio);
+        virtualInteractions.push({
+          interactionId: p.id,
+          fromUserId: p.id,
+          toProfileId: activeBioId,
+          type: 'match_accepted',
+          timestamp: new Date().toISOString()
+        });
+      });
+
+      // Update matchingProfiles to ensure MatchInbox can resolve detail objects
+      setMatchingProfiles(prev => {
+        const existingIds = new Set(prev.map(p => p.biodataId));
+        const newProfiles = formattedProfiles.filter(p => !existingIds.has(p.biodataId));
+        return [...prev, ...newProfiles];
+      });
+
+      setInteractions(virtualInteractions);
+    } catch (e) {
+      console.error('Failed to load interactions and matches', e);
+    }
+  };
+
+  useEffect(() => {
+    if (activeView === 'inbox') {
+      loadInteractionsAndMatches();
+    }
+  }, [activeView]);
 
   // Reset edit form when opening edit modal
   useEffect(() => {
@@ -112,6 +184,7 @@ function App() {
             ]);
             setActiveBiodata(bio as any);
             setMatchingProfiles(matches.content as any);
+            loadInteractionsAndMatches(user, bio);
           } catch (e) {
             console.error('Failed to load profile data', e);
           }
@@ -343,6 +416,7 @@ function App() {
       if (type === 'passed') {
         setMatchingProfiles(prev => prev.filter(p => p.biodataId !== targetProfileId) as any);
       }
+      loadInteractionsAndMatches();
     } catch (e) {
       console.error('Failed to send interaction', e);
     }
@@ -353,9 +427,17 @@ function App() {
     console.warn('Remove interaction not implemented on backend yet');
   };
 
-  const handleInboxAction = async (_interactionId: string, _type: 'match_accepted' | 'match_declined') => {
-    // Usually would accept/decline via an API
-    console.warn('Inbox action not implemented on backend yet');
+  const handleInboxAction = async (targetUserId: string, type: 'match_accepted' | 'match_declined') => {
+    try {
+      if (type === 'match_accepted') {
+        await InteractionsService.send({ toUserId: targetUserId, type: 'interest_sent' });
+      } else {
+        await InteractionsService.send({ toUserId: targetUserId, type: 'match_declined' });
+      }
+      loadInteractionsAndMatches();
+    } catch (e) {
+      console.error('Failed to handle inbox action', e);
+    }
   };
 
   const handleApplyFilters = async (filters: any) => {
@@ -414,26 +496,28 @@ function App() {
                     <span className="hide-on-mobile">{t('app_inbox')}</span>
                     
                     {/* Notification Badge */}
-                    <span style={{
-                      position: 'absolute',
-                      top: '-4px',
-                      right: '-4px',
-                      minWidth: '20px',
-                      height: '20px',
-                      padding: '0 5px',
-                      backgroundColor: 'var(--primary)',
-                      color: '#ffffff',
-                      fontSize: '0.75rem',
-                      fontWeight: '800',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRadius: '10px',
-                      border: '2px solid var(--bg-header)',
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.15)'
-                    }}>
-                      {interactions.length > 0 ? interactions.length : 2}
-                    </span>
+                    {interactions.length > 0 && (
+                      <span style={{
+                        position: 'absolute',
+                        top: '-4px',
+                        right: '-4px',
+                        minWidth: '20px',
+                        height: '20px',
+                        padding: '0 5px',
+                        backgroundColor: 'var(--primary)',
+                        color: '#ffffff',
+                        fontSize: '0.75rem',
+                        fontWeight: '800',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: '10px',
+                        border: '2px solid var(--bg-header)',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.15)'
+                      }}>
+                        {interactions.length}
+                      </span>
+                    )}
                   </button>
                 )}
 

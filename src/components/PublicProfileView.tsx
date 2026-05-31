@@ -47,7 +47,7 @@ export const PublicProfileView = ({ userId, onLoginClick }: PublicProfileViewPro
 
   return (
     <div className="animate-fade" style={{ width: '100%', padding: '2rem 1rem' }}>
-      <div style={{ maxWidth: '600px', margin: '0 auto', background: 'var(--bg-card)', borderRadius: '16px', border: '1px solid var(--border-light)', overflow: 'hidden', boxShadow: 'var(--shadow-md)' }}>
+      <div style={{ maxWidth: '500px', margin: '0 auto', background: 'var(--bg-card)', borderRadius: '24px', border: '1px solid var(--border-light)', overflow: 'hidden', boxShadow: 'var(--shadow-md)' }}>
         
         {/* Full Width Image Header */}
         <div style={{ position: 'relative', width: '100%', height: '320px' }}>
@@ -63,7 +63,7 @@ export const PublicProfileView = ({ userId, onLoginClick }: PublicProfileViewPro
           </div>
         </div>
         
-        <div style={{ padding: '2rem' }}>
+        <div style={{ padding: '1.5rem' }}>
           {/* Bio & Details */}
           <div style={{ marginBottom: '2rem' }}>
             <h3 style={{ fontSize: '1.1rem', color: 'var(--primary-dark)', marginBottom: '1rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.5rem' }}>
@@ -116,7 +116,7 @@ export const PublicProfileView = ({ userId, onLoginClick }: PublicProfileViewPro
           {/* Locked Section Overlay directly under details */}
           <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '12px', border: '1px solid var(--border-light)' }}>
             <div style={{ filter: 'blur(8px)', opacity: 0.6, pointerEvents: 'none', userSelect: 'none' }}>
-              <div style={{ backgroundColor: 'var(--bg-app)', padding: '2rem', minHeight: '200px' }}>
+              <div style={{ backgroundColor: 'var(--bg-app)', padding: '1.5rem', minHeight: '200px' }}>
                 <h3 style={{ color: 'var(--text-headers)', marginBottom: '1rem', fontSize: '1.1rem' }}>Full Details</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div><strong style={{ color: 'var(--text-muted)' }}>Contact Number:</strong> +91 9876543210</div>
@@ -132,7 +132,7 @@ export const PublicProfileView = ({ userId, onLoginClick }: PublicProfileViewPro
             </div>
             
             {/* Lock Overlay */}
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.5)', padding: '2rem', textAlign: 'center' }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.5)', padding: '1.5rem', textAlign: 'center' }}>
               <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🔒</div>
               <h2 style={{ color: 'white', marginBottom: '0.5rem', fontSize: '1.4rem', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
                 {locale === 'en' ? 'Unlock Full Profile' : 'पूरी प्रोफ़ाइल अनलॉक करें'}
