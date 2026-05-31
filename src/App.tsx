@@ -89,7 +89,7 @@ function App() {
       let profileId = '';
       
       if (isPublicProfile) {
-        profileId = path.replace('/p/', '');
+        profileId = path.replace('/p/', '').replace(/\/$/, '');
         if (profileId) {
           setPublicProfileId(profileId);
           setActiveView('public-profile');
