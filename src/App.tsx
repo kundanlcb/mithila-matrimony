@@ -385,6 +385,7 @@ function App() {
               <div className="account-menu" ref={accountMenuRef} style={styles.accountMenuWrapper}>
                 {activeUser.registrationStep === 'completed' && (
                   <button 
+                    className="header-action-btn"
                     style={{ 
                       position: 'relative',
                       display: 'flex', 
@@ -400,7 +401,8 @@ function App() {
                       fontWeight: '600',
                       fontSize: '0.95rem',
                       whiteSpace: 'nowrap',
-                      boxShadow: 'var(--shadow-sm)'
+                      boxShadow: 'var(--shadow-sm)',
+                      transition: 'all 0.2s'
                     }}
                     onClick={() => setActiveView('inbox')}
                     title={t('app_inbox')}
@@ -439,6 +441,7 @@ function App() {
                         setShowPaywall(true);
                       }
                     }}
+                    className="header-action-btn"
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -468,14 +471,13 @@ function App() {
                       boxShadow: 'var(--shadow-sm)',
                       transition: 'all 0.2s'
                     }}
-                    className="hide-on-mobile"
                   >
                     {subscriptionStatus?.planType === 'monthly' ? (
-                      <>👑 {locale === 'en' ? 'Premium' : 'प्रीमियम'}</>
+                      <>👑 <span className="hide-on-mobile">{locale === 'en' ? 'Premium' : 'प्रीमियम'}</span></>
                     ) : subscriptionStatus?.planType === 'pay_per_contact' ? (
-                      <>⭐ {subscriptionStatus.creditsRemaining} {locale === 'en' ? 'Credits' : 'क्रेडिट'}</>
+                      <>⭐ <span className="hide-on-mobile">{subscriptionStatus.creditsRemaining} {locale === 'en' ? 'Credits' : 'क्रेडिट'}</span></>
                     ) : (
-                      <>💎 {locale === 'en' ? 'Go Premium' : 'प्रीमियम लें'}</>
+                      <>💎 <span className="hide-on-mobile">{locale === 'en' ? 'Go Premium' : 'प्रीमियम लें'}</span></>
                     )}
                   </div>
                 )}

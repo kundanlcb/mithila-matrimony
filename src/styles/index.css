@@ -1794,6 +1794,19 @@ button {
 }
 
 @media (max-width: 768px) {
+  .hide-on-mobile {
+    display: none !important;
+  }
+
+  .header-action-btn {
+    padding: 0 !important;
+    width: 40px !important;
+    height: 40px !important;
+    justify-content: center !important;
+    margin-right: 0.25rem !important;
+    gap: 0 !important;
+  }
+
   .mobile-filter-toggle {
     display: flex;
     align-items: center;
