@@ -8,5 +8,13 @@ export const InteractionsService = {
 
   getReceived: async (): Promise<BiodataResponse[]> => {
     return apiClient.get<BiodataResponse[]>('/api/v1/interactions/received');
+  },
+
+  getSent: async (): Promise<BiodataResponse[]> => {
+    return apiClient.get<BiodataResponse[]>('/api/v1/interactions/sent');
+  },
+
+  getMatches: async (): Promise<BiodataResponse[]> => {
+    return apiClient.get<BiodataResponse[]>('/api/v1/interactions/matches');
   }
 };
