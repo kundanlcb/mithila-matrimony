@@ -17,6 +17,7 @@ import ProfileDetail from './components/ProfileDetail';
 import MatchInbox from './components/MatchInbox';
 import PremiumPaywall from './components/PremiumPaywall';
 import { PublicProfileView } from './components/PublicProfileView';
+import { ImageSlider } from './components/ImageSlider';
 
 function App() {
   // Localization & Theme Hooks
@@ -1141,7 +1142,7 @@ function App() {
                         {sortedProfiles.map((profile) => (
                           <div key={profile.biodataId} className="animate-scale" style={styles.profileCard}>
                             <div style={{ position: 'relative', height: '300px', width: '100%', cursor: 'pointer' }} onClick={() => setSelectedProfile(profile)}>
-                              <img src={profile.photoUrl} alt={profile.fullName} style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '16px 16px 0 0'}} />
+                              <ImageSlider images={[profile.photoUrl, ...(profile.additionalPhotos || [])]} height="100%" borderRadius="16px 16px 0 0" />
                               <div style={styles.compatibilityBadge}>
                                 <svg style={{ marginRight: '4px', display: 'inline-block', verticalAlign: 'middle' }} xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
                                 {profile.compatibilityScore}% {t('card_match')}
@@ -1235,7 +1236,10 @@ function App() {
               <div className="animate-fade" style={{ width: '100%', padding: '2rem 1rem' }}>
                 <div style={{ maxWidth: '600px', margin: '0 auto', background: 'var(--bg-card)', borderRadius: '16px', border: '1px solid var(--border-light)', overflow: 'hidden', boxShadow: 'var(--shadow-md)' }}>
                   <div style={{ position: 'relative', width: '100%', height: '320px' }}>
-                    <img src={activeBiodata.photoUrl} alt="My Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <ImageSlider 
+                      images={[activeBiodata.photoUrl, ...(activeBiodata.additionalPhotos || [])]} 
+                      height="100%" 
+                    />
                     <button 
                       onClick={() => {
                         const url = `${window.location.origin}/p/${activeUser?.id || activeUser?.userId}`;
@@ -1246,7 +1250,7 @@ function App() {
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
                     </button>
-                    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '2rem 1.5rem 1.5rem', background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%)', color: '#fff' }}>
+                    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '2rem 1.5rem 1.5rem', background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%)', color: '#fff', pointerEvents: 'none' }}>
                       <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.2rem', margin: '0 0 0.2rem 0', color: '#fff' }}>{activeBiodata.fullName}</h2>
                       <p style={{ margin: 0, fontSize: '1rem', color: '#f0f0f0', opacity: 0.9 }}>{activeBiodata.age} {t('app_yrs')} • {activeBiodata.location}</p>
                     </div>
@@ -1296,6 +1300,22 @@ function App() {
                         </div>
                       )}
                     </div>
+
+                    {/* Photo Gallery */}
+                    {(activeBiodata.photoUrl || (activeBiodata.additionalPhotos && activeBiodata.additionalPhotos.length > 0)) && (
+                      <div style={{ marginBottom: '2.5rem' }}>
+                        <h3 style={{ fontSize: '1.1rem', color: 'var(--primary-dark)', marginBottom: '1rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.5rem' }}>
+                          {locale === 'en' ? 'Photo Gallery' : 'फ़ोटो गैलरी'}
+                        </h3>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '0.8rem' }}>
+                          {[activeBiodata.photoUrl, ...(activeBiodata.additionalPhotos || [])].filter(Boolean).map((p, idx) => (
+                            <div key={idx} style={{ aspectRatio: '1/1', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow-sm)' }}>
+                              <img src={p} alt={`Gallery ${idx}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     {/* Action Buttons */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
@@ -1446,7 +1466,7 @@ function App() {
                           </label>
                           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
                             {editForm.photoUrl && (
-                              <div style={{ position: 'relative', width: '60px', height: '60px', borderRadius: '6px', overflow: 'hidden', border: '2px solid var(--primary)' }}>
+                              <div style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '6px', overflow: 'hidden', border: '2px solid var(--primary)' }}>
                                 <img src={editForm.photoUrl} alt="Primary" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                 <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'var(--primary)', color: '#fff', fontSize: '0.5rem', textAlign: 'center', fontWeight: 'bold', padding: '1px 0' }}>
                                   Primary
@@ -1454,7 +1474,7 @@ function App() {
                               </div>
                             )}
                             {editForm.additionalPhotos?.map((p, idx) => (
-                              <div key={idx} style={{ position: 'relative', width: '60px', height: '60px', borderRadius: '6px', overflow: 'hidden', border: '1px solid var(--border-light)' }}>
+                              <div key={idx} style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '6px', overflow: 'hidden', border: '1px solid var(--border-light)' }}>
                                 <img src={p} alt={`Photo ${idx}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                 <button
                                   type="button"
@@ -1462,9 +1482,29 @@ function App() {
                                     ...prev,
                                     additionalPhotos: prev.additionalPhotos?.filter((_, i) => i !== idx)
                                   }))}
-                                  style={{ position: 'absolute', top: 1, right: 1, background: 'rgba(0,0,0,0.7)', color: '#fff', border: 'none', borderRadius: '50%', width: '15px', height: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.6rem', cursor: 'pointer', padding: 0 }}
+                                  style={{ position: 'absolute', top: 2, right: 2, background: 'rgba(0,0,0,0.7)', color: '#fff', border: 'none', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', cursor: 'pointer', padding: 0 }}
                                 >
                                   ✕
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setEditForm(prev => {
+                                    const oldPrimary = prev.photoUrl;
+                                    const newAdditional = prev.additionalPhotos ? [...prev.additionalPhotos] : [];
+                                    if (oldPrimary) {
+                                      newAdditional[idx] = oldPrimary;
+                                    } else {
+                                      newAdditional.splice(idx, 1);
+                                    }
+                                    return {
+                                      ...prev,
+                                      photoUrl: p,
+                                      additionalPhotos: newAdditional
+                                    };
+                                  })}
+                                  style={{ position: 'absolute', bottom: 2, left: 2, right: 2, background: 'rgba(0,0,0,0.7)', color: '#fff', border: 'none', borderRadius: '4px', padding: '2px 4px', fontSize: '0.55rem', cursor: 'pointer', textAlign: 'center' }}
+                                >
+                                  Make Primary
                                 </button>
                               </div>
                             ))}

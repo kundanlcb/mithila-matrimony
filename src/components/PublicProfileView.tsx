@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { BiodataService } from '../api/biodata.service';
 import type { BiodataResponse } from '../types/api.types';
 import { useLanguage } from '../context/LanguageContext';
+import { ImageSlider } from './ImageSlider';
 
 interface PublicProfileViewProps {
   userId: string;
@@ -50,12 +51,11 @@ export const PublicProfileView = ({ userId, onLoginClick }: PublicProfileViewPro
         
         {/* Full Width Image Header */}
         <div style={{ position: 'relative', width: '100%', height: '320px' }}>
-          <img 
-            src={profile.photoUrl || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400&h=400'} 
-            alt="Profile" 
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+          <ImageSlider 
+            images={[profile.photoUrl || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400&h=400', ...(profile.additionalPhotos || [])]} 
+            height="100%" 
           />
-          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '2rem 1.5rem 1.5rem', background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%)', color: '#fff' }}>
+          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '2rem 1.5rem 1.5rem', background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%)', color: '#fff', pointerEvents: 'none' }}>
             <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.2rem', margin: '0 0 0.2rem 0', color: '#fff' }}>{profile.fullName}</h2>
             <p style={{ margin: 0, fontSize: '1rem', color: '#f0f0f0', opacity: 0.9 }}>
               {profile.age} {locale === 'en' ? 'Yrs' : 'वर्ष'} • {profile.height} • {profile.location}

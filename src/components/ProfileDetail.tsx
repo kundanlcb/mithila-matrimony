@@ -2,6 +2,7 @@ import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import type { Biodata } from '../types';
 import { SubscriptionService } from '../api/subscription.service';
+import { ImageSlider } from './ImageSlider';
 
 interface ProfileDetailProps {
   profile: Biodata;
@@ -24,17 +25,6 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({
 
   // Photo Carousel State
   const photos = [profile.photoUrl, ...(profile.additionalPhotos || [])].filter(Boolean);
-  const [currentPhotoIdx, setCurrentPhotoIdx] = React.useState(0);
-
-  const nextPhoto = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCurrentPhotoIdx(prev => (prev + 1) % photos.length);
-  };
-
-  const prevPhoto = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCurrentPhotoIdx(prev => (prev - 1 + photos.length) % photos.length);
-  };
 
   const unlocked = !!(profile.phoneNumber || profile.email);
 
@@ -71,32 +61,14 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({
         <div style={styles.scrollArea}>
           {/* Header Image Carousel Region */}
           <div style={styles.heroSection}>
-            <img src={photos[currentPhotoIdx]} alt={profile.fullName} style={styles.heroImage} />
-            <div style={styles.heroGradient} />
-            <div style={styles.heroInfo}>
+            <ImageSlider images={photos} height="100%" />
+            <div style={{ ...styles.heroGradient, pointerEvents: 'none' }} />
+            <div style={{ ...styles.heroInfo, pointerEvents: 'none' }}>
               <h2 style={styles.name}>{profile.fullName}</h2>
               <p style={styles.basicMeta}>
                 {profile.age} {locale === 'en' ? 'Yrs' : 'वर्ष'} • {profile.location}
               </p>
             </div>
-            
-            {photos.length > 1 && (
-              <>
-                <button type="button" onClick={prevPhoto} style={{ ...styles.carouselBtn, left: '1rem' }} aria-label="Previous image">‹</button>
-                <button type="button" onClick={nextPhoto} style={{ ...styles.carouselBtn, right: '1rem' }} aria-label="Next image">›</button>
-                <div style={styles.carouselDots}>
-                  {photos.map((_, idx) => (
-                    <span 
-                      key={idx} 
-                      style={{ 
-                        ...styles.carouselDot, 
-                        backgroundColor: idx === currentPhotoIdx ? 'var(--primary)' : 'rgba(255,255,255,0.6)' 
-                      }} 
-                    />
-                  ))}
-                </div>
-              </>
-            )}
           </div>
 
           <div style={styles.contentSection}>
@@ -287,7 +259,8 @@ const styles = {
   heroGradient: {
     position: 'absolute' as const,
     inset: 0,
-    background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 40%, transparent 80%)'
+    background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 40%, transparent 80%)',
+    pointerEvents: 'none' as const
   },
   heroInfo: {
     position: 'absolute' as const,
@@ -312,39 +285,7 @@ const styles = {
     color: '#ffffff',
     textShadow: '0 1px 4px rgba(0,0,0,0.8)'
   },
-  carouselBtn: {
-    position: 'absolute' as const,
-    top: '50%',
-    transform: 'translateY(-50%)',
-    background: 'rgba(0,0,0,0.6)',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '50%',
-    width: '36px',
-    height: '36px',
-    fontSize: '1.6rem',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer',
-    zIndex: 10,
-    userSelect: 'none' as const
-  },
-  carouselDots: {
-    position: 'absolute' as const,
-    bottom: '1rem',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    display: 'flex',
-    gap: '0.4rem',
-    zIndex: 10
-  },
-  carouselDot: {
-    width: '8px',
-    height: '8px',
-    borderRadius: '50%',
-    transition: 'background-color 0.2s'
-  },
+
   contentSection: {
     padding: '1.5rem',
     display: 'flex',
