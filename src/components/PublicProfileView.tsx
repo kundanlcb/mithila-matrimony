@@ -58,12 +58,22 @@ export const PublicProfileView = ({ userId, onLoginClick }: PublicProfileViewPro
           {profile.age} {locale === 'en' ? 'Yrs' : 'वर्ष'} • {profile.height} • {profile.location}
         </p>
         
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center', marginBottom: '1.5rem' }}>
-          {profile.religion && <span style={styles.chip}>{profile.religion}</span>}
-          {profile.caste && <span style={styles.chip}>{profile.caste}</span>}
-          {profile.gotra && <span style={styles.chip}>{profile.gotra}</span>}
-          {profile.education && <span style={styles.chip}>{profile.education}</span>}
-          {profile.profession && <span style={styles.chip}>{profile.profession}</span>}
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', 
+          gap: '1.2rem', 
+          textAlign: 'left', 
+          backgroundColor: 'var(--bg-app)', 
+          padding: '1.5rem', 
+          borderRadius: 'var(--radius-md)', 
+          marginBottom: '1.5rem' 
+        }}>
+          {profile.religion && <div style={styles.detailBox}><span style={styles.detailLabel}>{locale === 'en' ? 'Religion' : 'धर्म'}</span><span style={styles.detailValue}>{profile.religion}</span></div>}
+          {profile.caste && <div style={styles.detailBox}><span style={styles.detailLabel}>{locale === 'en' ? 'Caste' : 'जाति'}</span><span style={styles.detailValue}>{profile.caste}</span></div>}
+          {profile.gotra && <div style={styles.detailBox}><span style={styles.detailLabel}>{locale === 'en' ? 'Gotra' : 'गोत्र'}</span><span style={styles.detailValue}>{profile.gotra}</span></div>}
+          {profile.education && <div style={styles.detailBox}><span style={styles.detailLabel}>{locale === 'en' ? 'Education' : 'शिक्षा'}</span><span style={styles.detailValue}>{profile.education}</span></div>}
+          {profile.profession && <div style={styles.detailBox}><span style={styles.detailLabel}>{locale === 'en' ? 'Profession' : 'पेशा'}</span><span style={styles.detailValue}>{profile.profession}</span></div>}
+          {profile.annualIncome != null && <div style={styles.detailBox}><span style={styles.detailLabel}>{locale === 'en' ? 'Income' : 'आय'}</span><span style={styles.detailValue}>₹{(profile.annualIncome / 100000).toFixed(1)} LPA</span></div>}
         </div>
 
         {profile.aboutMe && (
@@ -125,13 +135,22 @@ export const PublicProfileView = ({ userId, onLoginClick }: PublicProfileViewPro
 };
 
 const styles = {
-  chip: {
-    padding: '0.4rem 1rem',
-    backgroundColor: 'var(--primary-light)',
-    color: 'var(--primary-dark)',
-    borderRadius: 'var(--radius-full)',
+  detailBox: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '0.4rem',
+    padding: '0.5rem 0'
+  },
+  detailLabel: {
     fontSize: '0.85rem',
-    fontWeight: '600',
-    border: '1px solid var(--border-glass)'
+    color: 'var(--text-muted)',
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.5px',
+    fontWeight: '600'
+  },
+  detailValue: {
+    fontSize: '1.05rem',
+    color: 'var(--text-main)',
+    fontWeight: '700'
   }
 };
