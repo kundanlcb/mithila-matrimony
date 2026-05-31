@@ -967,8 +967,8 @@ function App() {
 
         {/* VIEW 3: MULTI-STEP CONVERSATIONAL REGISTRATION WIZARD */}
         {activeView === 'register' && (
-          <div className="animate-fade" style={{ width: '100%', padding: '3rem 2rem' }}>
-            <div style={{ maxWidth: '650px', margin: '0 auto' }}>
+          <div className="animate-fade" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <div style={{ width: '100%', maxWidth: '800px' }}>
               <RegistrationChat 
                 onComplete={() => {
                   const user = JSON.parse(localStorage.getItem('active_profile') || 'null');

@@ -387,20 +387,6 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
 
   return (
     <div className="chat-container">
-      {/* Bot Chat Premium Header */}
-      <div style={styles.chatHeader}>
-        <div style={{ position: 'relative' }}>
-          <div style={styles.botAvatarIcon}>🤵</div>
-          <div style={styles.activePulseIndicator}></div>
-        </div>
-        <div>
-          <h4 style={styles.chatHeaderTitle}>{locale === 'en' ? 'Mithila Assistant' : 'मैथिल सहायक'}</h4>
-          <span style={styles.chatHeaderSubtitle}>
-            {locale === 'en' ? 'Gotra-Safe Match Onboarding' : 'गोत्र-सुरक्षित ऑनबोर्डिंग सहायक'}
-          </span>
-        </div>
-      </div>
-
       {/* Bot Chat stream scroller */}
       <div className="chat-scroller">
         {messages.map((msg) => (

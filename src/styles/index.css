@@ -660,11 +660,10 @@ button {
 .chat-container {
   display: flex;
   flex-direction: column;
-  height: 540px;
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
+  height: calc(100vh - 80px); /* Full height minus app header */
+  background-color: transparent; /* Use app background */
+  border: none;
+  box-shadow: none;
   overflow: hidden;
 }
 
