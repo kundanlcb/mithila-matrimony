@@ -59,21 +59,19 @@ export const PublicProfileView = ({ userId, onLoginClick }: PublicProfileViewPro
         </p>
         
         <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', 
-          gap: '1.2rem', 
-          textAlign: 'left', 
+          display: 'flex', 
+          flexDirection: 'column',
           backgroundColor: 'var(--bg-app)', 
           padding: '1.5rem', 
           borderRadius: 'var(--radius-md)', 
           marginBottom: '1.5rem' 
         }}>
-          {profile.religion && <div style={styles.detailBox}><span style={styles.detailLabel}>{locale === 'en' ? 'Religion' : 'धर्म'}</span><span style={styles.detailValue}>{profile.religion}</span></div>}
-          {profile.caste && <div style={styles.detailBox}><span style={styles.detailLabel}>{locale === 'en' ? 'Caste' : 'जाति'}</span><span style={styles.detailValue}>{profile.caste}</span></div>}
-          {profile.gotra && <div style={styles.detailBox}><span style={styles.detailLabel}>{locale === 'en' ? 'Gotra' : 'गोत्र'}</span><span style={styles.detailValue}>{profile.gotra}</span></div>}
-          {profile.education && <div style={styles.detailBox}><span style={styles.detailLabel}>{locale === 'en' ? 'Education' : 'शिक्षा'}</span><span style={styles.detailValue}>{profile.education}</span></div>}
-          {profile.profession && <div style={styles.detailBox}><span style={styles.detailLabel}>{locale === 'en' ? 'Profession' : 'पेशा'}</span><span style={styles.detailValue}>{profile.profession}</span></div>}
-          {profile.annualIncome != null && <div style={styles.detailBox}><span style={styles.detailLabel}>{locale === 'en' ? 'Income' : 'आय'}</span><span style={styles.detailValue}>₹{(profile.annualIncome / 100000).toFixed(1)} LPA</span></div>}
+          {profile.religion && <div style={styles.detailRow}><span style={styles.detailRowLabel}>{locale === 'en' ? 'Religion' : 'धर्म'}</span><span style={styles.detailRowValue}>{profile.religion}</span></div>}
+          {profile.caste && <div style={styles.detailRow}><span style={styles.detailRowLabel}>{locale === 'en' ? 'Caste' : 'जाति'}</span><span style={styles.detailRowValue}>{profile.caste}</span></div>}
+          {profile.gotra && <div style={styles.detailRow}><span style={styles.detailRowLabel}>{locale === 'en' ? 'Gotra' : 'गोत्र'}</span><span style={styles.detailRowValue}>{profile.gotra}</span></div>}
+          {profile.education && <div style={styles.detailRow}><span style={styles.detailRowLabel}>{locale === 'en' ? 'Education' : 'शिक्षा'}</span><span style={styles.detailRowValue}>{profile.education}</span></div>}
+          {profile.profession && <div style={styles.detailRow}><span style={styles.detailRowLabel}>{locale === 'en' ? 'Profession' : 'पेशा'}</span><span style={styles.detailRowValue}>{profile.profession}</span></div>}
+          {profile.annualIncome != null && <div style={styles.detailRow}><span style={styles.detailRowLabel}>{locale === 'en' ? 'Income' : 'आय'}</span><span style={styles.detailRowValue}>₹{(profile.annualIncome / 100000).toFixed(1)} LPA</span></div>}
         </div>
 
         {profile.aboutMe && (
@@ -135,22 +133,22 @@ export const PublicProfileView = ({ userId, onLoginClick }: PublicProfileViewPro
 };
 
 const styles = {
-  detailBox: {
+  detailRow: {
     display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '0.4rem',
-    padding: '0.5rem 0'
+    padding: '0.8rem 0',
+    borderBottom: '1px solid var(--border-light)',
+    alignItems: 'center'
   },
-  detailLabel: {
-    fontSize: '0.85rem',
+  detailRowLabel: {
+    width: '140px',
+    fontSize: '0.9rem',
     color: 'var(--text-muted)',
-    textTransform: 'uppercase' as const,
-    letterSpacing: '0.5px',
     fontWeight: '600'
   },
-  detailValue: {
-    fontSize: '1.05rem',
+  detailRowValue: {
+    flex: 1,
+    fontSize: '1rem',
     color: 'var(--text-main)',
-    fontWeight: '700'
+    fontWeight: '500'
   }
 };
