@@ -84,14 +84,26 @@ function App() {
     const checkSession = async () => {
       const token = localStorage.getItem('auth_token');
       const savedProfile = localStorage.getItem('active_profile');
+      const path = window.location.pathname;
+      const isPublicProfile = path.startsWith('/p/');
+      let profileId = '';
+      
+      if (isPublicProfile) {
+        profileId = path.replace('/p/', '');
+        if (profileId) {
+          setPublicProfileId(profileId);
+          setActiveView('public-profile');
+        }
+      }
+
       if (token && savedProfile) {
         const user = JSON.parse(savedProfile);
         setActiveUser(user);
         
         if (user.registrationStep === 'biodata') {
-          setActiveView('register');
+          if (!isPublicProfile) setActiveView('register');
         } else if (user.registrationStep === 'completed') {
-          setActiveView('browse');
+          if (!isPublicProfile) setActiveView('browse');
           try {
             const [bio, matches] = await Promise.all([
               BiodataService.getMine(),
@@ -101,16 +113,6 @@ function App() {
             setMatchingProfiles(matches.content as any);
           } catch (e) {
             console.error('Failed to load profile data', e);
-          }
-        }
-      } else {
-        // If not logged in, check for public profile URL
-        const path = window.location.pathname;
-        if (path.startsWith('/p/')) {
-          const id = path.replace('/p/', '');
-          if (id) {
-            setPublicProfileId(id);
-            setActiveView('public-profile');
           }
         }
       }
