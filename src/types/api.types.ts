@@ -2,13 +2,13 @@
 
 export interface AuthUserResponse {
   id: string; // uuid
-  mobileNumber: string;
   registrationStep: string;
+  email: string;
   preferredLanguage?: string;
 }
 
 export interface VerifyOtpRequest {
-  mobileNumber: string;
+  email: string;
   otp: string;
 }
 
@@ -23,12 +23,12 @@ export interface SetupPasswordRequest {
 }
 
 export interface LoginRequest {
-  mobileNumber?: string;
+  email: string;
   password?: string;
 }
 
 export interface RequestOtpRequest {
-  mobileNumber: string;
+  email: string;
 }
 
 export interface RequestOtpResponse {

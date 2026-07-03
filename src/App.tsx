@@ -37,7 +37,7 @@ function App() {
 
   // Interactive Form States
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
-  const [mobileNumber, setMobileNumber] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otpCode, setOtpCode] = useState('');
   const [simulatedOtpHint, setSimulatedOtpHint] = useState<string | null>(null);
@@ -336,9 +336,9 @@ function App() {
     e.preventDefault();
     setAuthError(null);
     try {
-      await AuthService.requestOtp({ mobileNumber });
+      await AuthService.requestOtp({ email });
       setOtpSent(true);
-      setSimulatedOtpHint("OTP sent via API! (Check logs/SMS)");
+      setSimulatedOtpHint("OTP sent via API! (Check logs/SMS/Email)");
     } catch (e: any) {
       setAuthError(e.message || 'Failed to send OTP');
     }
@@ -349,7 +349,7 @@ function App() {
     e.preventDefault();
     setAuthError(null);
     try {
-      const res = await AuthService.verifyOtp({ mobileNumber, otp: otpCode });
+      const res = await AuthService.verifyOtp({ email, otp: otpCode });
       if (res.user) {
         setActiveUser(res.user as any);
         setSimulatedOtpHint(null);
@@ -374,7 +374,7 @@ function App() {
     e.preventDefault();
     setAuthError(null);
     try {
-      const res = await AuthService.login({ mobileNumber, password });
+      const res = await AuthService.login({ email, password });
       if (res.user) {
         setActiveUser(res.user as any);
         setPassword('');
@@ -398,7 +398,7 @@ function App() {
     setActiveBiodata(null);
     setMatchingProfiles([]);
     setActiveView('home');
-    setMobileNumber('');
+    setEmail('');
     setIsAccountMenuOpen(false);
   };
 
@@ -989,12 +989,12 @@ function App() {
               {authMode === 'login' ? (
                 <form onSubmit={handleLogin} style={styles.form} data-testid="login-form">
                   <div style={styles.inputGroup}>
-                    <label style={styles.label}>{t('label_phone')}</label>
+                    <label style={styles.label}>{t('label_email')}</label>
                     <input
-                      type="tel"
-                      placeholder="e.g. +919876543210"
-                      value={mobileNumber}
-                      onChange={(e) => setMobileNumber(e.target.value)}
+                      type="email"
+                      placeholder="e.g. user@email.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       required
                       style={styles.input}
                       data-testid="login-phone"
@@ -1020,12 +1020,12 @@ function App() {
                 !otpSent ? (
                   <form onSubmit={handleSendOtp} style={styles.form} data-testid="register-form">
                     <div style={styles.inputGroup}>
-                      <label style={styles.label}>{t('label_phone')}</label>
+                      <label style={styles.label}>{t('label_email')}</label>
                       <input
-                        type="tel"
-                        placeholder="e.g. +919876543210"
-                        value={mobileNumber}
-                        onChange={(e) => setMobileNumber(e.target.value)}
+                        type="email"
+                        placeholder="e.g. user@email.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         required
                         style={styles.input}
                         data-testid="register-phone"
