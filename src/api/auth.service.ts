@@ -1,5 +1,5 @@
 import { apiClient } from './apiClient';
-import type { RequestOtpRequest, RequestOtpResponse, VerifyOtpRequest, VerifyOtpResponse, SetupPasswordRequest, LoginRequest } from '../types/api.types';
+import type { RequestOtpRequest, RequestOtpResponse, VerifyOtpRequest, VerifyOtpResponse, SetupPasswordRequest, LoginRequest, ForgotPasswordRequest, ResetPasswordRequest } from '../types/api.types';
 
 export const AuthService = {
   requestOtp: async (data: RequestOtpRequest): Promise<RequestOtpResponse> => {
@@ -26,6 +26,19 @@ export const AuthService = {
 
   login: async (data: LoginRequest): Promise<VerifyOtpResponse> => {
     const response = await apiClient.post<VerifyOtpResponse>('/api/v1/auth/login', data);
+    if (response.token) {
+      localStorage.setItem('auth_token', response.token);
+      localStorage.setItem('active_profile', JSON.stringify(response.user));
+    }
+    return response;
+  },
+
+  forgotPassword: async (data: ForgotPasswordRequest): Promise<RequestOtpResponse> => {
+    return apiClient.post<RequestOtpResponse>('/api/v1/auth/forgot-password', data);
+  },
+
+  resetPassword: async (data: ResetPasswordRequest): Promise<VerifyOtpResponse> => {
+    const response = await apiClient.post<VerifyOtpResponse>('/api/v1/auth/reset-password', data);
     if (response.token) {
       localStorage.setItem('auth_token', response.token);
       localStorage.setItem('active_profile', JSON.stringify(response.user));

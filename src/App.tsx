@@ -36,7 +36,7 @@ function App() {
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
 
   // Interactive Form States
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [authMode, setAuthMode] = useState<'login' | 'register' | 'forgot-password' | 'reset-password'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otpCode, setOtpCode] = useState('');
@@ -388,6 +388,41 @@ function App() {
       }
     } catch (e: any) {
       setAuthError(e.message || 'Invalid email or password');
+    }
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError(null);
+    try {
+      await AuthService.forgotPassword({ email });
+      setOtpSent(true);
+      setAuthMode('reset-password');
+      setSimulatedOtpHint('Check your email for the OTP');
+    } catch (e: any) {
+      setAuthError(e.message || 'Failed to request password reset');
+    }
+  };
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError(null);
+    try {
+      const res = await AuthService.resetPassword({ email, otp: otpCode, newPassword: password });
+      if (res.user) {
+        setActiveUser(res.user as any);
+        setPassword('');
+        setOtpCode('');
+        if (res.user.registrationStep === 'completed') {
+          const bio = await BiodataService.getMine();
+          setActiveBiodata(bio as any);
+          setActiveView('browse');
+        } else {
+          setActiveView('register');
+        }
+      }
+    } catch (e: any) {
+      setAuthError(e.message || 'Failed to reset password');
     }
   };
 
@@ -948,9 +983,9 @@ function App() {
                   style={{ 
                     flex: 1, 
                     padding: '0.8rem', 
-                    background: authMode === 'login' ? 'var(--primary)' : 'transparent',
-                    color: authMode === 'login' ? 'white' : 'var(--text-main)',
-                    border: authMode === 'login' ? 'none' : '1px solid var(--border-light)',
+                    background: (authMode === 'login' || authMode === 'forgot-password' || authMode === 'reset-password') ? 'var(--primary)' : 'transparent',
+                    color: (authMode === 'login' || authMode === 'forgot-password' || authMode === 'reset-password') ? 'white' : 'var(--text-main)',
+                    border: (authMode === 'login' || authMode === 'forgot-password' || authMode === 'reset-password') ? 'none' : '1px solid var(--border-light)',
                     borderRadius: 'var(--radius-full)',
                     cursor: 'pointer',
                     fontWeight: 600
@@ -978,10 +1013,14 @@ function App() {
               </div>
 
               <h2 className="display" style={styles.authTitle}>
-                {authMode === 'login' ? t('auth_title_login') : t('auth_title_register')}
+                {authMode === 'login' ? t('auth_title_login') : 
+                 authMode === 'register' ? t('auth_title_register') : 
+                 authMode === 'forgot-password' ? 'Forgot Password' : 'Reset Password'}
               </h2>
               <p style={styles.authSubtitle}>
-                {authMode === 'login' ? t('auth_subtitle_login') : t('auth_subtitle_register')}
+                {authMode === 'login' ? t('auth_subtitle_login') : 
+                 authMode === 'register' ? t('auth_subtitle_register') : 
+                 authMode === 'forgot-password' ? 'Enter your email to receive an OTP' : 'Enter the OTP and your new password'}
               </p>
 
               {authError && <div style={styles.errorBanner} data-testid="auth-error">{authError}</div>}
@@ -1014,6 +1053,72 @@ function App() {
                   </div>
                   <button type="submit" style={styles.primaryBtnWidth} data-testid="btn-login">
                     {t('btn_login')}
+                  </button>
+                  <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+                    <button
+                      type="button"
+                      onClick={() => setAuthMode('forgot-password')}
+                      style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', textDecoration: 'underline' }}
+                    >
+                      Forgot Password?
+                    </button>
+                  </div>
+                </form>
+              ) : authMode === 'forgot-password' ? (
+                <form onSubmit={handleForgotPassword} style={styles.form} data-testid="forgot-password-form">
+                  <div style={styles.inputGroup}>
+                    <label style={styles.label}>{t('label_email')}</label>
+                    <input
+                      type="email"
+                      placeholder="e.g. user@email.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      style={styles.input}
+                    />
+                  </div>
+                  <button type="submit" style={styles.primaryBtnWidth}>
+                    Send Reset OTP
+                  </button>
+                  <button type="button" onClick={() => setAuthMode('login')} style={styles.backBtn}>
+                    Back to Login
+                  </button>
+                </form>
+              ) : authMode === 'reset-password' ? (
+                <form onSubmit={handleResetPassword} style={styles.form} data-testid="reset-password-form">
+                  <div style={styles.inputGroup}>
+                    <label style={styles.label}>{t('label_otp')}</label>
+                    <input
+                      type="text"
+                      maxLength={6}
+                      placeholder="e.g. 123456"
+                      value={otpCode}
+                      onChange={(e) => setOtpCode(e.target.value)}
+                      required
+                      style={styles.input}
+                    />
+                  </div>
+                  <div style={styles.inputGroup}>
+                    <label style={styles.label}>New Password</label>
+                    <input
+                      type="password"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      style={styles.input}
+                    />
+                  </div>
+                  {simulatedOtpHint && (
+                    <div style={styles.simulatedOtpHintBox}>
+                      🔔 <strong>Notification:</strong> {simulatedOtpHint}
+                    </div>
+                  )}
+                  <button type="submit" style={styles.primaryBtnWidth}>
+                    Reset Password
+                  </button>
+                  <button type="button" onClick={() => { setAuthMode('login'); setOtpSent(false); }} style={styles.backBtn}>
+                    Back to Login
                   </button>
                 </form>
               ) : (
@@ -1052,7 +1157,7 @@ function App() {
                     </div>
                     {simulatedOtpHint && (
                       <div style={styles.simulatedOtpHintBox}>
-                        🔔 <strong>{t('simulated_otp_alert')}:</strong> {t('simulated_otp_alert') === 'Mock Server Message' ? 'Your verification code is' : 'आपका सत्यापन कोड है'}: <code>{simulatedOtpHint}</code>
+                        🔔 <strong>{t('simulated_otp_alert')}:</strong> <code>{simulatedOtpHint}</code>
                       </div>
                     )}
                     <button type="submit" style={styles.primaryBtnWidth} data-testid="btn-verify-otp">

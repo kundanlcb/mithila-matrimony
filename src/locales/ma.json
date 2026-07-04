@@ -47,7 +47,7 @@
   "auth_subtitle": "सत्यापन कोड (ओटीपी) पाओबाक लेल अपन ईमेल दर्ज करू",
   "label_email": "ईमेल पता",
   "label_otp": "6-अंकक ओटीपी दर्ज करू",
-  "simulated_otp_alert": "मॉड सर्वर संदेश",
+  "simulated_otp_alert": "डेमो सत्यापन कोड",
   "btn_request_otp": "ओटीपी कोडक अनुरोध करू",
   "btn_verify_otp": "सत्यापित करू",
   "btn_change_email": "ईमेल पता बदलू",
