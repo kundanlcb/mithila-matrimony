@@ -1,8 +1,6 @@
 # Mithila Matrimony 🌸
 
-Mithila Matrimony is a modern, culturally-aware matrimonial platform custom-built for the Maithil community. It blends ultra-modern web aesthetics with deeply rooted traditional requirements—specifically highlighting **Gotra compatibility** and lineage-safe matching. 
-
-The application is completely fully functional in a mock environment using `localStorage`, requiring no active backend to demonstrate its capabilities!
+Mithila Matrimony is a modern, culturally-aware matrimonial platform custom-built for the Maithil community. It blends ultra-modern web aesthetics with deeply rooted traditional requirements—specifically highlighting **Gotra compatibility** and lineage-safe matching. The application is completely functional in a mock environment using `localStorage`, requiring no active backend to demonstrate its capabilities!
 
 ---
 
