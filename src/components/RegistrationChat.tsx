@@ -643,7 +643,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
           type={currentStep === -1 ? 'password' : (currentStep === 2 || currentStep === 13 ? 'number' : 'text')}
           placeholder={
             typing
-              ? (locale === 'en' ? 'Mithila Assistant is typing...' : 'मैथिल सहायक टाइप कर रहा है...')
+              ? (locale === 'en' ? 'Maithil Assistant is typing...' : 'मैथिल सहायक टाइप कर रहा है...')
               : messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType !== 'text'
                 ? (locale === 'en' ? 'Please choose an option above...' : 'कृपया ऊपर एक विकल्प चुनें...')
                 : currentStep === -1 ? '••••••••' : t('chat_placeholder')

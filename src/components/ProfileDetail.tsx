@@ -26,7 +26,7 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({
   // Photo Carousel State
   const photos = [profile.photoUrl, ...(profile.additionalPhotos || [])].filter(Boolean);
 
-  const unlocked = !!(profile.phoneNumber || profile.email);
+  const unlocked = !!(profile.email);
 
   const handleReveal = async () => {
     if (!subscriptionStatus || subscriptionStatus.planType === 'free') {
@@ -106,13 +106,12 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({
               <h3 style={styles.sectionTitle}>📞 {locale === 'en' ? 'Contact Details' : 'संपर्क विवरण'}</h3>
               {unlocked ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  <p style={styles.text}><strong>📱 {locale === 'en' ? 'Phone' : 'फ़ोन'}:</strong> {profile.phoneNumber}</p>
                   <p style={styles.text}><strong>📧 {locale === 'en' ? 'Email' : 'ईमेल'}:</strong> {profile.email || 'N/A'}</p>
                 </div>
               ) : (
                 <div>
                   <p style={{ ...styles.text, color: 'var(--text-muted)', marginBottom: '0.8rem', fontStyle: 'italic' }}>
-                    🔒 {locale === 'en' ? 'Unlock with Premium to view phone, email, and exact addresses.' : 'फोन, ईमेल और सटीक पता देखने के लिए प्रीमियम के साथ ऑनलॉक करें।'}
+                    🔒 {locale === 'en' ? 'Unlock with Premium to view email and exact addresses.' : 'ईमेल और सटीक पता देखने के लिए प्रीमियम के साथ अनलॉक करें।'}
                   </p>
                   <button 
                     type="button" 

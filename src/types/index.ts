@@ -6,7 +6,7 @@
 export interface UserProfile {
   id?: string;             // Added for API compatibility where response uses 'id' instead of 'userId'
   userId: string;          // UUID v4 format
-  mobileNumber: string;    // E.164 formatted telephone number (e.g. +91XXXXXXXXXX)
+
   isVerified: boolean;     // True if OTP verification succeeded
   registrationStep: 'auth' | 'biodata' | 'completed'; // Active step in onboarding wizard
   registeredAt: string;    // ISO-8601 Timestamp
@@ -45,7 +45,7 @@ export interface Biodata {
   maritalStatus?: string;  // Never Married, Divorced, etc.
   diet?: string;           // Vegetarian, Non-Vegetarian, etc.
   complexion?: string;     // Fair, Wheatish, etc.
-  phoneNumber?: string;
+
   email?: string;
   addresses?: AddressResponse[];
   additionalPhotos?: string[];
