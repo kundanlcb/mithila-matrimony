@@ -187,7 +187,7 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({
             <div style={styles.detailCard}>
               <h3 style={styles.sectionTitle}>🎨 {locale === 'en' ? 'Interests & Hobbies' : 'रुचियाँ और शौक'}</h3>
               <div style={styles.pillRow}>
-                {profile.interests.map((interest, i) => (
+                {profile.interests?.map((interest, i) => (
                   <span key={i} style={styles.pill}>{interest}</span>
                 ))}
               </div>
