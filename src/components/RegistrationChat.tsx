@@ -56,7 +56,8 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
     education: 'B.Tech',
     interests: [],
     photoUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400&h=400',
-    aboutMe: ''
+    aboutMe: '',
+    phoneNumber: ''
   });
 
   // Hobbies temporary accumulator (Step 8)
@@ -124,6 +125,8 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
       let text = msg.text;
       if (msg.text.includes(t('bot_welcome').substring(0, 10)) || msg.id === 'welcome') {
         text = t('bot_welcome');
+      } else if (msg.text.includes(t('bot_phone').substring(0, 10))) {
+        text = t('bot_phone', { name: biodataForm.fullName });
       } else if (msg.text.includes(t('bot_gender').substring(0, 10)) || (msg.inputType === 'select' && msg.options && (msg.options.includes('Female') || msg.options.includes('Male')))) {
         text = t('bot_gender', { name: biodataForm.fullName });
       } else if (msg.text.includes(t('bot_age').substring(0, 10))) {
@@ -181,7 +184,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
     setErrorMsg(null);
     
     const valueToProcess = directValue !== undefined ? directValue : inputValue.trim();
-    if (!valueToProcess && currentStep !== 14) { // Hobbies selection done via button
+    if (!valueToProcess && currentStep !== 15) { // Hobbies selection done via button
       setErrorMsg(t('chat_error_empty'));
       return;
     }
@@ -190,7 +193,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
     setMessages(prev => [...prev, {
       id: 'user-' + Math.random().toString(36).substr(2, 9),
       sender: 'user',
-      text: currentStep === 14 ? tempInterests.join(', ') : valueToProcess,
+      text: currentStep === 15 ? tempInterests.join(', ') : valueToProcess,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }]);
 
@@ -218,17 +221,26 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
         });
         break;
 
-      case 0: // Name entered -> Ask Gender
+      case 0: // Name entered -> Ask Phone
         setBiodataForm(prev => ({ ...prev, fullName: valueToProcess }));
-        const defaultPhoto = valueToProcess.toLowerCase() === 'female' 
-          ? 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400&h=400'
-          : 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=400&h=400';
-        setBiodataForm(prev => ({ ...prev, photoUrl: defaultPhoto }));
-        
-        triggerBotResponse(t('bot_gender', { name: valueToProcess }), 'select', ['Female', 'Male']);
+        triggerBotResponse(t('bot_phone', { name: valueToProcess }), 'text');
         break;
 
-      case 1: // Gender selected -> Ask Age
+      case 1: // Phone entered -> Ask Gender
+        if (!/^\+?[0-9\s-]{10,15}$/.test(valueToProcess)) {
+          setErrorMsg(locale === 'en' ? 'Please enter a valid phone number.' : 'कृपया एक वैध फ़ोन नंबर दर्ज करें।');
+          setCurrentStep(1);
+          setMessages(prev => prev.slice(0, -1));
+          return;
+        }
+        setBiodataForm(prev => ({ ...prev, phoneNumber: valueToProcess }));
+        const defaultPhoto = 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400&h=400';
+        setBiodataForm(prev => ({ ...prev, photoUrl: defaultPhoto }));
+        
+        triggerBotResponse(t('bot_gender', { name: biodataForm.fullName || valueToProcess }), 'select', ['Female', 'Male']);
+        break;
+
+      case 2: // Gender selected -> Ask Age
         setBiodataForm(prev => ({ 
           ...prev, 
           gender: valueToProcess as 'Male' | 'Female',
@@ -239,11 +251,11 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
         triggerBotResponse(t('bot_age'), 'text');
         break;
 
-      case 2: { // Age entered -> Ask Height
+      case 3: { // Age entered -> Ask Height
         const ageNum = parseInt(valueToProcess);
         if (isNaN(ageNum) || ageNum < 18 || ageNum > 70) {
           setErrorMsg(t('chat_error_age'));
-          setCurrentStep(2);
+          setCurrentStep(3);
           setMessages(prev => prev.slice(0, -1));
           return;
         }
@@ -252,61 +264,61 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
         break;
       }
 
-      case 3: // Height entered -> Ask Marital Status
+      case 4: // Height entered -> Ask Marital Status
         setBiodataForm(prev => ({ ...prev, height: valueToProcess }));
         triggerBotResponse(t('bot_marital'), 'select', ['Never Married', 'Divorced', 'Widowed', 'Awaiting Divorce']);
         break;
 
-      case 4: // Marital Status entered -> Ask Complexion
+      case 5: // Marital Status entered -> Ask Complexion
         setBiodataForm(prev => ({ ...prev, maritalStatus: valueToProcess }));
         triggerBotResponse(t('bot_complexion'), 'select', ['Very Fair', 'Fair', 'Wheatish', 'Dark']);
         break;
 
-      case 5: // Complexion entered -> Ask Religion
+      case 6: // Complexion entered -> Ask Religion
         setBiodataForm(prev => ({ ...prev, complexion: valueToProcess }));
         triggerBotResponse(t('bot_religion'), 'select', optionsReligion);
         break;
 
-      case 6: // Religion entered -> Ask Caste
+      case 7: // Religion entered -> Ask Caste
         setBiodataForm(prev => ({ ...prev, religion: valueToProcess }));
         triggerBotResponse(t('bot_caste'), 'select', optionsCaste);
         break;
 
-      case 7: // Caste selected -> Ask Gotra
+      case 8: // Caste selected -> Ask Gotra
         setBiodataForm(prev => ({ ...prev, caste: valueToProcess }));
         triggerBotResponse(t('bot_gotra'), 'select', optionsGotra);
         break;
 
-      case 8: // Gotra selected -> Ask Diet
+      case 9: // Gotra selected -> Ask Diet
         setBiodataForm(prev => ({ ...prev, gotra: valueToProcess }));
         triggerBotResponse(t('bot_diet'), 'select', ['Vegetarian', 'Non-Vegetarian', 'Eggetarian', 'Vegan']);
         break;
 
-      case 9: // Diet entered -> Ask City
+      case 10: // Diet entered -> Ask City
         setBiodataForm(prev => ({ ...prev, diet: valueToProcess }));
         triggerBotResponse(t('bot_city'), 'select', optionsCity);
         break;
 
-      case 10: // City entered -> Ask Education
+      case 11: // City entered -> Ask Education
         setBiodataForm(prev => ({ ...prev, location: valueToProcess }));
         triggerBotResponse(t('bot_education'), 'text');
         break;
 
-      case 11: // Education entered -> Ask Profession
+      case 12: // Education entered -> Ask Profession
         setBiodataForm(prev => ({ ...prev, education: valueToProcess }));
         triggerBotResponse(t('bot_profession'), 'select', optionsProfession);
         break;
 
-      case 12: // Profession entered -> Ask Income
+      case 13: // Profession entered -> Ask Income
         setBiodataForm(prev => ({ ...prev, profession: valueToProcess }));
         triggerBotResponse(t('bot_income'), 'text');
         break;
 
-      case 13: { // Income entered -> Ask Hobbies
+      case 14: { // Income entered -> Ask Hobbies
         const incomeNum = parseInt(valueToProcess);
         if (isNaN(incomeNum) || incomeNum <= 0) {
           setErrorMsg(t('chat_error_income'));
-          setCurrentStep(13);
+          setCurrentStep(14);
           setMessages(prev => prev.slice(0, -1));
           return;
         }
@@ -315,17 +327,17 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
         break;
       }
 
-      case 14: // Hobbies selected -> Ask Bio
+      case 15: // Hobbies selected -> Ask Bio
         setBiodataForm(prev => ({ ...prev, interests: tempInterests }));
         triggerBotResponse(t('bot_bio'), 'text');
         break;
 
-      case 15: // Bio entered -> Ask Photo Upload
+      case 16: // Bio entered -> Ask Photo Upload
         setBiodataForm(prev => ({ ...prev, aboutMe: valueToProcess }));
         triggerBotResponse(t('bot_photo'), 'file');
         break;
 
-      case 16: // Photo Uploaded -> Summary Review
+      case 17: // Photo Uploaded -> Summary Review
         if (valueToProcess && valueToProcess !== 'skip') {
           setBiodataForm(prev => ({ ...prev, photoUrl: valueToProcess }));
         }
@@ -457,7 +469,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
                   </button>
                 </div>
               </div>
-            ) : (msg.text.startsWith('data:image/') || msg.text.startsWith('http')) && msg.sender === 'user' && currentStep > 14 ? (
+            ) : (msg.text.startsWith('data:image/') || msg.text.startsWith('http')) && msg.sender === 'user' && currentStep > 15 ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                 <span style={{ fontSize: '0.8rem', opacity: 0.9 }}>📷 {locale === 'en' ? 'Uploaded Profile Photo:' : 'प्रोफ़ाइल फ़ोटो अपलोड की गई:'}</span>
                 <img 
@@ -640,7 +652,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
       {/* Chat bottom input text prompt panel */}
       <form onSubmit={handleUserSubmit} className="chat-input-bar">
         <input
-          type={currentStep === -1 ? 'password' : (currentStep === 2 || currentStep === 13 ? 'number' : 'text')}
+          type={currentStep === -1 ? 'password' : (currentStep === 3 || currentStep === 14 ? 'number' : currentStep === 1 ? 'tel' : 'text')}
           placeholder={
             typing
               ? (locale === 'en' ? 'Maithil Assistant is typing...' : 'मैथिल सहायक टाइप कर रहा है...')

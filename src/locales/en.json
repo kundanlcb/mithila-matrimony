@@ -55,6 +55,7 @@
   "error_invalid_email": "Invalid email address.",
   "error_invalid_otp": "Incorrect or expired OTP verification code.",
   "bot_welcome": "Namaste! Welcome to Maithil Match. Let's create your matrimonial biodata in an engaging way. First, what is your full name?",
+  "bot_phone": "Thank you, {name}! Please enter your mobile number.",
   "bot_gender": "Pleasure to meet you, {name}! Please select your gender.",
   "bot_age": "Great. Now, how old are you? (Must be 18 to 70 years)",
   "bot_height": "What is your height? (e.g. 5'8\")",

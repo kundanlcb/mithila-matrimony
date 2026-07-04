@@ -1595,6 +1595,11 @@ function App() {
                         </div>
 
                         <div>
+                          <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.9rem', fontWeight: 600 }}>{locale === 'en' ? 'Mobile Number' : 'मोबाइल नंबर'}</label>
+                          <input type="tel" value={editForm.phoneNumber || ''} onChange={(e) => setEditForm({...editForm, phoneNumber: e.target.value})} style={styles.input} required />
+                        </div>
+
+                        <div>
                           <label style={{ display: 'block', marginBottom: '0.4rem', fontSize: '0.9rem', fontWeight: 600 }}>{locale === 'en' ? 'Gotra' : 'गोत्र'}</label>
                           <select value={editForm.gotra || ''} onChange={(e) => setEditForm({...editForm, gotra: e.target.value})} style={styles.input} required>
                             <option value="">-- Select Gotra --</option>
