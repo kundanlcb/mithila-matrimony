@@ -1336,13 +1336,14 @@ function App() {
                       });
 
                       if (selectedProfile) {
-                        const isShortlisted = interactions.some(i => i.toProfileId === selectedProfile.biodataId && i.type === 'shortlisted');
-                        const isInterestSent = interactions.some(i => i.toProfileId === selectedProfile.biodataId && i.type === 'interest_sent');
+                        const actualId = (selectedProfile as any).id || (selectedProfile as any).biodataId || (selectedProfile as any).userId;
+                        const isShortlisted = interactions.some(i => i.toProfileId === actualId && i.type === 'shortlisted');
+                        const isInterestSent = interactions.some(i => i.toProfileId === actualId && i.type === 'interest_sent');
                         return (
                           <MatchProfileDetail 
-                            userId={(selectedProfile as any).userId} 
+                            userId={actualId} 
                             onBack={() => setSelectedProfile(null)} 
-                            onAction={(type) => handleInteraction((selectedProfile as any).biodataId, type)}
+                            onAction={(type) => handleInteraction(actualId, type)}
                             isShortlisted={isShortlisted}
                             isInterestSent={isInterestSent}
                           />
@@ -1360,7 +1361,7 @@ function App() {
                     ) : (
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
                         {sortedProfiles.map((profile) => (
-                          <div key={profile.biodataId} className="animate-scale" style={styles.profileCard}>
+                          <div key={(profile as any).id || profile.biodataId || profile.userId} className="animate-scale" style={styles.profileCard}>
                             <div style={{ position: 'relative', height: '300px', width: '100%', cursor: 'pointer' }} onClick={() => setSelectedProfile(profile)}>
                               <ImageSlider images={[profile.photoUrl, ...(profile.additionalPhotos || [])]} height="100%" borderRadius="16px 16px 0 0" />
                               <div style={styles.compatibilityBadge}>
