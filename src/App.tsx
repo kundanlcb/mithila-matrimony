@@ -1111,7 +1111,7 @@ function App() {
                   </div>
                   {simulatedOtpHint && (
                     <div style={styles.simulatedOtpHintBox}>
-                      🔔 <strong>Notification:</strong> {simulatedOtpHint}
+                      🔔 <strong>{t('simulated_otp_alert')}:</strong> {simulatedOtpHint}
                     </div>
                   )}
                   <button type="submit" style={styles.primaryBtnWidth}>

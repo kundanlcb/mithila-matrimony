@@ -47,7 +47,7 @@
   "auth_subtitle": "Enter your email address to receive a verification OTP",
   "label_email": "Email Address",
   "label_otp": "Enter 6-Digit OTP Code",
-  "simulated_otp_alert": "Demo Verification Code",
+  "simulated_otp_alert": "OTP Sent",
   "btn_request_otp": "Request Verification OTP",
   "btn_verify_otp": "Verify & Authenticate",
   "btn_change_email": "Change Email Address",
