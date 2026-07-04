@@ -14,3 +14,47 @@ html, body {
   box-sizing: border-box;
 }
 
+
+
+/* Button Loading State */
+.loader-dots {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+  color: currentColor;
+  animation: dot-pulse 1s infinite alternate;
+  animation-delay: 0.3s;
+  position: relative;
+  display: inline-block;
+  margin: 0 12px;
+}
+
+.loader-dots::before, .loader-dots::after {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+  color: currentColor;
+}
+
+.loader-dots::before {
+  left: -12px;
+  animation: dot-pulse 1s infinite alternate;
+  animation-delay: 0s;
+}
+
+.loader-dots::after {
+  left: 12px;
+  animation: dot-pulse 1s infinite alternate;
+  animation-delay: 0.6s;
+}
+
+@keyframes dot-pulse {
+  0% { opacity: 1; }
+  100% { opacity: 0.2; }
+}

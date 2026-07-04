@@ -43,6 +43,7 @@ function App() {
   const [simulatedOtpHint, setSimulatedOtpHint] = useState<string | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
   const [otpSent, setOtpSent] = useState(false);
+  const [isAuthLoading, setIsAuthLoading] = useState(false);
 
   // Quick-Match Form States
   // const [searchGender, setSearchGender] = useState<'Male' | 'Female'>('Male');
@@ -335,12 +336,15 @@ function App() {
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
+    setIsAuthLoading(true);
     try {
       await AuthService.requestOtp({ email });
       setOtpSent(true);
       setSimulatedOtpHint("OTP sent via API! (Check logs/SMS/Email)");
     } catch (e: any) {
       setAuthError(e.message || 'Failed to send OTP');
+    } finally {
+      setIsAuthLoading(false);
     }
   };
 
@@ -348,6 +352,7 @@ function App() {
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
+    setIsAuthLoading(true);
     try {
       const res = await AuthService.verifyOtp({ email, otp: otpCode });
       if (res.user) {
@@ -366,6 +371,8 @@ function App() {
       }
     } catch (e: any) {
       setAuthError(e.message || t('error_invalid_otp'));
+    } finally {
+      setIsAuthLoading(false);
     }
   };
 
@@ -373,6 +380,7 @@ function App() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
+    setIsAuthLoading(true);
     try {
       const res = await AuthService.login({ email, password });
       if (res.user) {
@@ -388,12 +396,15 @@ function App() {
       }
     } catch (e: any) {
       setAuthError(e.message || 'Invalid email or password');
+    } finally {
+      setIsAuthLoading(false);
     }
   };
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
+    setIsAuthLoading(true);
     try {
       await AuthService.forgotPassword({ email });
       setOtpSent(true);
@@ -401,12 +412,15 @@ function App() {
       setSimulatedOtpHint('Check your email for the OTP');
     } catch (e: any) {
       setAuthError(e.message || 'Failed to request password reset');
+    } finally {
+      setIsAuthLoading(false);
     }
   };
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
+    setIsAuthLoading(true);
     try {
       const res = await AuthService.resetPassword({ email, otp: otpCode, newPassword: password });
       if (res.user) {
@@ -423,6 +437,8 @@ function App() {
       }
     } catch (e: any) {
       setAuthError(e.message || 'Failed to reset password');
+    } finally {
+      setIsAuthLoading(false);
     }
   };
 
@@ -1051,8 +1067,8 @@ function App() {
                       data-testid="login-password"
                     />
                   </div>
-                  <button type="submit" style={styles.primaryBtnWidth} data-testid="btn-login">
-                    {t('btn_login')}
+                  <button type="submit" style={styles.primaryBtnWidth} data-testid="btn-login" disabled={isAuthLoading}>
+                    {isAuthLoading ? <span className="loader-dots"></span> : t('btn_login')}
                   </button>
                   <div style={{ marginTop: '1rem', textAlign: 'center' }}>
                     <button
@@ -1077,8 +1093,8 @@ function App() {
                       style={styles.input}
                     />
                   </div>
-                  <button type="submit" style={styles.primaryBtnWidth}>
-                    Send Reset OTP
+                  <button type="submit" style={styles.primaryBtnWidth} disabled={isAuthLoading}>
+                    {isAuthLoading ? <span className="loader-dots"></span> : 'Send Reset OTP'}
                   </button>
                   <button type="button" onClick={() => setAuthMode('login')} style={styles.backBtn}>
                     Back to Login
@@ -1114,8 +1130,8 @@ function App() {
                       🔔 <strong>{t('simulated_otp_alert')}:</strong> {simulatedOtpHint}
                     </div>
                   )}
-                  <button type="submit" style={styles.primaryBtnWidth}>
-                    Reset Password
+                  <button type="submit" style={styles.primaryBtnWidth} disabled={isAuthLoading}>
+                    {isAuthLoading ? <span className="loader-dots"></span> : 'Reset Password'}
                   </button>
                   <button type="button" onClick={() => { setAuthMode('login'); setOtpSent(false); }} style={styles.backBtn}>
                     Back to Login
@@ -1136,8 +1152,8 @@ function App() {
                         data-testid="register-email"
                       />
                     </div>
-                    <button type="submit" style={styles.primaryBtnWidth} data-testid="btn-request-otp">
-                      {t('btn_request_otp')}
+                    <button type="submit" style={styles.primaryBtnWidth} data-testid="btn-request-otp" disabled={isAuthLoading}>
+                      {isAuthLoading ? <span className="loader-dots"></span> : t('btn_request_otp')}
                     </button>
                   </form>
                 ) : (
@@ -1160,8 +1176,8 @@ function App() {
                         🔔 <strong>{t('simulated_otp_alert')}:</strong> <code>{simulatedOtpHint}</code>
                       </div>
                     )}
-                    <button type="submit" style={styles.primaryBtnWidth} data-testid="btn-verify-otp">
-                      {t('btn_verify_otp')}
+                    <button type="submit" style={styles.primaryBtnWidth} data-testid="btn-verify-otp" disabled={isAuthLoading}>
+                      {isAuthLoading ? <span className="loader-dots"></span> : t('btn_verify_otp')}
                     </button>
                     <button type="button" onClick={() => setOtpSent(false)} style={styles.backBtn}>
                       {t('btn_change_email')}
