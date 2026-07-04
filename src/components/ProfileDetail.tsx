@@ -26,7 +26,7 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({
   // Photo Carousel State
   const photos = [profile.photoUrl, ...(profile.additionalPhotos || [])].filter(Boolean);
 
-  const unlocked = !!(profile.email);
+  const unlocked = !!(profile.phoneNumber || (profile.addresses?.some(a => !!a.pincode)));
 
   const handleReveal = async () => {
     if (!subscriptionStatus || subscriptionStatus.planType === 'free') {
@@ -101,17 +101,23 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({
               <span style={styles.badge}>💰 ₹{(profile.annualIncome / 100000).toFixed(1)} {t('summary_lakh')}</span>
             </div>
 
+            {/* Always visible Contact Info */}
+            <div style={styles.detailCard}>
+              <h3 style={styles.sectionTitle}>📧 {locale === 'en' ? 'Email' : 'ईमेल'}</h3>
+              <p style={styles.text}>{profile.email || 'N/A'}</p>
+            </div>
+
             {/* Contact Gated Block */}
             <div style={styles.detailCard}>
-              <h3 style={styles.sectionTitle}>📞 {locale === 'en' ? 'Contact Details' : 'संपर्क विवरण'}</h3>
+              <h3 style={styles.sectionTitle}>📞 {locale === 'en' ? 'Phone Number & Address' : 'फोन नंबर और पता'}</h3>
               {unlocked ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  <p style={styles.text}><strong>📧 {locale === 'en' ? 'Email' : 'ईमेल'}:</strong> {profile.email || 'N/A'}</p>
+                  <p style={styles.text}><strong>📱 {locale === 'en' ? 'Phone' : 'फ़ोन'}:</strong> {profile.phoneNumber || 'N/A'}</p>
                 </div>
               ) : (
                 <div>
                   <p style={{ ...styles.text, color: 'var(--text-muted)', marginBottom: '0.8rem', fontStyle: 'italic' }}>
-                    🔒 {locale === 'en' ? 'Unlock with Premium to view email and exact addresses.' : 'ईमेल और सटीक पता देखने के लिए प्रीमियम के साथ अनलॉक करें।'}
+                    🔒 {locale === 'en' ? 'Unlock with Premium to view phone number and exact addresses.' : 'फ़ोन नंबर और सटीक पता देखने के लिए प्रीमियम के साथ अनलॉक करें।'}
                   </p>
                   <button 
                     type="button" 
@@ -134,7 +140,7 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({
                       transition: 'background 0.2s'
                     }}
                   >
-                    🔓 {locale === 'en' ? 'Reveal Contact Details' : 'संपर्क विवरण प्रकट करें'}
+                    🔓 {locale === 'en' ? 'Reveal Phone Number & Address' : 'फ़ोन नंबर और पता प्रकट करें'}
                   </button>
                 </div>
               )}

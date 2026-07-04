@@ -12,6 +12,7 @@ export interface UserProfile {
   registeredAt: string;    // ISO-8601 Timestamp
   hidden?: boolean;
   active?: boolean;
+  phoneNumber?: string;
   email?: string;
 }
 
@@ -46,6 +47,7 @@ export interface Biodata {
   diet?: string;           // Vegetarian, Non-Vegetarian, etc.
   complexion?: string;     // Fair, Wheatish, etc.
 
+  phoneNumber?: string;
   email?: string;
   addresses?: AddressResponse[];
   additionalPhotos?: string[];
