@@ -369,7 +369,7 @@ function App() {
     }
   };
 
-  // Auth: Trigger Login (Phone + Password)
+  // Auth: Trigger Login (Email + Password)
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
@@ -387,7 +387,7 @@ function App() {
         }
       }
     } catch (e: any) {
-      setAuthError(e.message || 'Invalid phone number or password');
+      setAuthError(e.message || 'Invalid email or password');
     }
   };
 
@@ -997,7 +997,7 @@ function App() {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       style={styles.input}
-                      data-testid="login-phone"
+                      data-testid="login-email"
                     />
                   </div>
                   <div style={styles.inputGroup}>
@@ -1028,7 +1028,7 @@ function App() {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                         style={styles.input}
-                        data-testid="register-phone"
+                        data-testid="register-email"
                       />
                     </div>
                     <button type="submit" style={styles.primaryBtnWidth} data-testid="btn-request-otp">
@@ -1059,7 +1059,7 @@ function App() {
                       {t('btn_verify_otp')}
                     </button>
                     <button type="button" onClick={() => setOtpSent(false)} style={styles.backBtn}>
-                      {t('btn_change_phone')}
+                      {t('btn_change_email')}
                     </button>
                   </form>
                 )
