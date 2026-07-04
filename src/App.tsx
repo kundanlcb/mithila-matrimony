@@ -14,6 +14,7 @@ import { useTheme } from './context/ThemeContext';
 import { RegistrationChat } from './components/RegistrationChat';
 import FilterPanel from './components/FilterPanel';
 import ProfileDetail from './components/ProfileDetail';
+import MatchProfileDetail from './components/MatchProfileDetail';
 import MatchInbox from './components/MatchInbox';
 import PremiumPaywall from './components/PremiumPaywall';
 import { PublicProfileView } from './components/PublicProfileView';
@@ -1334,6 +1335,20 @@ function App() {
                         return 0;
                       });
 
+                      if (selectedProfile) {
+                        const isShortlisted = interactions.some(i => i.toProfileId === selectedProfile.biodataId && i.type === 'shortlisted');
+                        const isInterestSent = interactions.some(i => i.toProfileId === selectedProfile.biodataId && i.type === 'interest_sent');
+                        return (
+                          <MatchProfileDetail 
+                            userId={(selectedProfile as any).userId} 
+                            onBack={() => setSelectedProfile(null)} 
+                            onAction={(type) => handleInteraction((selectedProfile as any).biodataId, type)}
+                            isShortlisted={isShortlisted}
+                            isInterestSent={isInterestSent}
+                          />
+                        );
+                      }
+
                       return sortedProfiles.length === 0 ? (
                       <div style={styles.noMatchesBox}>
                         <div style={{ fontSize: '3rem', marginBottom: '1rem', opacity: 0.5 }}>🔍</div>
@@ -1892,7 +1907,7 @@ function App() {
         )}
 
         {/* MODALS */}
-        {selectedProfile && (
+        {selectedProfile && activeView !== 'browse' && (
           <ProfileDetail 
             profile={selectedProfile} 
             onClose={() => setSelectedProfile(null)} 
