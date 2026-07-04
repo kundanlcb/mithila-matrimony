@@ -340,7 +340,7 @@ function App() {
     try {
       await AuthService.requestOtp({ email });
       setOtpSent(true);
-      setSimulatedOtpHint("OTP sent via API! (Check logs/SMS/Email)");
+      setSimulatedOtpHint(t('msg_check_email_otp'));
     } catch (e: any) {
       setAuthError(e.message || 'Failed to send OTP');
     } finally {
@@ -409,7 +409,7 @@ function App() {
       await AuthService.forgotPassword({ email });
       setOtpSent(true);
       setAuthMode('reset-password');
-      setSimulatedOtpHint('Check your email for the OTP');
+      setSimulatedOtpHint(t('msg_check_email_otp'));
     } catch (e: any) {
       setAuthError(e.message || 'Failed to request password reset');
     } finally {
