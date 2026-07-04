@@ -178,7 +178,13 @@ function App() {
         if (user.registrationStep === 'biodata') {
           if (!isPublicProfile) setActiveView('register');
         } else if (user.registrationStep === 'completed') {
-          if (!isPublicProfile) setActiveView('browse');
+          if (!isPublicProfile) {
+            setActiveView('browse');
+          } else if (isPublicProfile && profileId) {
+            window.history.replaceState({}, '', '/');
+            setActiveView('browse');
+            setSelectedProfile({ id: profileId } as any);
+          }
           try {
             const [bio, matches] = await Promise.all([
               BiodataService.getMine(),

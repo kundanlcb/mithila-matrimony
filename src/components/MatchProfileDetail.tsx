@@ -59,24 +59,46 @@ const MatchProfileDetail: React.FC<MatchProfileDetailProps> = ({
 
   return (
     <div className="animate-fade" style={{ width: '100%', paddingBottom: '2rem' }}>
-      <button 
-        onClick={onBack} 
-        style={{ 
-          background: 'none', 
-          border: 'none', 
-          color: 'var(--text-muted)', 
-          cursor: 'pointer', 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '0.5rem',
-          marginBottom: '1rem',
-          fontSize: '1rem',
-          fontWeight: 600
-        }}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-        {locale === 'en' ? 'Back to Matches' : 'मैच सूची पर वापस जाएं'}
-      </button>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <button 
+          onClick={onBack} 
+          style={{ 
+            background: 'none', 
+            border: 'none', 
+            color: 'var(--text-muted)', 
+            cursor: 'pointer', 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '0.5rem',
+            fontSize: '1rem',
+            fontWeight: 600
+          }}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          {locale === 'en' ? 'Back to Matches' : 'मैच सूची पर वापस जाएं'}
+        </button>
+
+        <button 
+          onClick={() => {
+            navigator.clipboard.writeText(`${window.location.origin}/p/${userId}`);
+            alert(locale === 'en' ? 'Link copied to clipboard!' : 'लिंक क्लिपबोर्ड पर कॉपी हो गया!');
+          }} 
+          style={{ 
+            background: 'none', 
+            border: '1px solid var(--border-light)', 
+            padding: '0.4rem 1rem', 
+            borderRadius: '50px', 
+            cursor: 'pointer', 
+            color: 'var(--text-main)', 
+            fontSize: '0.9rem', 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '0.4rem' 
+          }}
+        >
+          🔗 {locale === 'en' ? 'Copy Link' : 'लिंक कॉपी करें'}
+        </button>
+      </div>
 
       <div style={{ background: 'var(--bg-card)', borderRadius: '24px', border: '1px solid var(--border-light)', overflow: 'hidden', boxShadow: 'var(--shadow-md)', padding: '2rem' }}>
         
