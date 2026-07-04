@@ -78,50 +78,65 @@ const MatchProfileDetail: React.FC<MatchProfileDetailProps> = ({
         {locale === 'en' ? 'Back to Matches' : 'मैच सूची पर वापस जाएं'}
       </button>
 
-      <div style={{ background: 'var(--bg-card)', borderRadius: '24px', border: '1px solid var(--border-light)', overflow: 'hidden', boxShadow: 'var(--shadow-md)' }}>
+      <div style={{ background: 'var(--bg-card)', borderRadius: '24px', border: '1px solid var(--border-light)', overflow: 'hidden', boxShadow: 'var(--shadow-md)', padding: '2rem' }}>
         
-        {/* Full Width Image Header */}
-        <div style={{ position: 'relative', width: '100%', height: '400px' }}>
-          <ImageSlider 
-            images={photos.length > 0 ? photos : ['https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400&h=400']} 
-            height="100%" 
-          />
-          <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '3rem 2rem 2rem', background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 100%)', color: '#fff', pointerEvents: 'none' }}>
-            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.5rem', margin: '0 0 0.2rem 0', color: '#fff', textShadow: '0 2px 4px rgba(0,0,0,0.8)' }}>
+        {/* Top Profile Header Section (Responsive Side-by-Side) */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2.5rem', alignItems: 'center' }}>
+          
+          {/* Image Slider - Left on Desktop */}
+          <div style={{ width: '100%', maxWidth: '300px', height: '400px', borderRadius: '16px', overflow: 'hidden', flexShrink: 0, boxShadow: 'var(--shadow-md)', alignSelf: 'flex-start' }}>
+            <ImageSlider 
+              images={photos.length > 0 ? photos : ['https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400&h=400']} 
+              height="100%" 
+            />
+          </div>
+
+          {/* Core Details & Actions - Right on Desktop */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: '280px', justifyContent: 'center' }}>
+            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.5rem', margin: '0 0 0.5rem 0', color: 'var(--text-headers)' }}>
               {profile.fullName}
             </h2>
-            <p style={{ margin: 0, fontSize: '1.1rem', color: '#f0f0f0', opacity: 0.9, textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}>
+            <p style={{ margin: '0 0 1.5rem 0', fontSize: '1.1rem', color: 'var(--text-muted)' }}>
               {profile.age && `${profile.age} ${locale === 'en' ? 'Yrs' : 'वर्ष'} • `}{profile.height && `${profile.height} • `}{profile.location}
             </p>
+
+            {/* Quick Pills */}
+            <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
+               {profile.gotra && <span style={styles.pill}>🧬 {profile.gotra}</span>}
+               {profile.profession && <span style={styles.pill}>💼 {profile.profession}</span>}
+               {profile.education && <span style={styles.pill}>🎓 {profile.education}</span>}
+            </div>
+
+            {/* Action Bar */}
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+              <button 
+                onClick={() => onAction('passed')} 
+                style={{ ...styles.actionBtn, background: 'var(--bg-app)', color: 'var(--text-muted)', border: '1px solid var(--border-light)' }}
+              >
+                ✕ {t('action_pass')}
+              </button>
+              <button 
+                onClick={() => onAction('shortlisted')} 
+                style={{ ...styles.actionBtn, background: isShortlisted ? 'var(--gold-primary)' : 'var(--bg-app)', color: isShortlisted ? '#fff' : 'var(--gold-primary)', border: isShortlisted ? 'none' : '1px solid var(--gold-primary)' }}
+              >
+                ⭐ {isShortlisted ? (locale === 'en' ? 'Shortlisted' : 'शॉर्टलिस्ट किया गया') : t('action_shortlist')}
+              </button>
+              <button 
+                onClick={() => onAction('interest_sent')} 
+                style={{ ...styles.actionBtn, background: isInterestSent ? 'var(--neutral-100)' : 'var(--primary)', color: isInterestSent ? 'var(--text-muted)' : '#fff', border: 'none' }}
+              >
+                💖 {isInterestSent ? t('app_sent') : t('action_interest')}
+              </button>
+            </div>
           </div>
         </div>
         
-        <div style={{ padding: '2rem' }}>
-          
-          {/* Action Bar */}
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '-3.5rem', position: 'relative', zIndex: 10, marginBottom: '2rem' }}>
-            <button 
-              onClick={() => onAction('passed')} 
-              style={{ ...styles.actionBtn, background: 'var(--bg-card)', color: 'var(--text-muted)', border: '1px solid var(--border-light)' }}
-            >
-              ✕ {t('action_pass')}
-            </button>
-            <button 
-              onClick={() => onAction('shortlisted')} 
-              style={{ ...styles.actionBtn, background: isShortlisted ? 'var(--gold-primary)' : 'var(--bg-card)', color: isShortlisted ? '#fff' : 'var(--gold-primary)', border: isShortlisted ? 'none' : '1px solid var(--gold-primary)' }}
-            >
-              ⭐ {isShortlisted ? (locale === 'en' ? 'Shortlisted' : 'शॉर्टलिस्ट किया गया') : t('action_shortlist')}
-            </button>
-            <button 
-              onClick={() => onAction('interest_sent')} 
-              style={{ ...styles.actionBtn, background: isInterestSent ? 'var(--neutral-100)' : 'var(--primary)', color: isInterestSent ? 'var(--text-muted)' : '#fff', border: 'none' }}
-            >
-              💖 {isInterestSent ? t('app_sent') : t('action_interest')}
-            </button>
-          </div>
+        <hr style={{ margin: '3rem 0', border: 'none', borderTop: '1px solid var(--border-light)' }} />
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            
+        {/* Details Grid Section */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             {/* About Me */}
             {profile.aboutMe && (
               <div style={styles.detailCard}>
@@ -130,10 +145,31 @@ const MatchProfileDetail: React.FC<MatchProfileDetailProps> = ({
               </div>
             )}
 
+            {/* Education & Career */}
+            <div style={styles.detailCard}>
+              <h3 style={styles.sectionTitle}>🎓 {locale === 'en' ? 'Education & Career' : 'शिक्षा और करियर'}</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                {profile.education && (
+                  <div>
+                    <p style={styles.label}>{locale === 'en' ? 'Education' : 'शिक्षा'}</p>
+                    <p style={styles.value}>{profile.education}</p>
+                  </div>
+                )}
+                {profile.profession && (
+                  <div>
+                    <p style={styles.label}>{locale === 'en' ? 'Profession' : 'पेशा'}</p>
+                    <p style={styles.value}>{profile.profession}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             {/* Basic Info Grid */}
             <div style={styles.detailCard}>
                <h3 style={styles.sectionTitle}>📋 {locale === 'en' ? 'Basic Details' : 'बुनियादी विवरण'}</h3>
-               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.2rem' }}>
+               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1.2rem' }}>
                 {profile.religion && (
                   <div>
                     <p style={styles.label}>{locale === 'en' ? 'Religion' : 'धर्म'}</p>
@@ -160,26 +196,8 @@ const MatchProfileDetail: React.FC<MatchProfileDetailProps> = ({
                 )}
                </div>
             </div>
-
-            {/* Education & Career */}
-            <div style={styles.detailCard}>
-              <h3 style={styles.sectionTitle}>🎓 {locale === 'en' ? 'Education & Career' : 'शिक्षा और करियर'}</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.2rem' }}>
-                {profile.education && (
-                  <div>
-                    <p style={styles.label}>{locale === 'en' ? 'Education' : 'शिक्षा'}</p>
-                    <p style={styles.value}>{profile.education}</p>
-                  </div>
-                )}
-                {profile.profession && (
-                  <div>
-                    <p style={styles.label}>{locale === 'en' ? 'Profession' : 'पेशा'}</p>
-                    <p style={styles.value}>{profile.profession}</p>
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
+
         </div>
       </div>
     </div>
@@ -189,8 +207,8 @@ const MatchProfileDetail: React.FC<MatchProfileDetailProps> = ({
 const styles = {
   actionBtn: {
     flex: 1,
-    padding: '0.9rem 0.5rem',
-    borderRadius: '16px',
+    padding: '0.9rem 1.5rem',
+    borderRadius: '12px',
     fontWeight: '700',
     fontSize: '0.95rem',
     cursor: 'pointer',
@@ -198,13 +216,24 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     gap: '0.5rem',
-    boxShadow: 'var(--shadow-md)',
+    boxShadow: 'var(--shadow-sm)',
     whiteSpace: 'nowrap' as const,
-    transition: 'all 0.2s'
+    transition: 'all 0.2s',
+    minWidth: '150px'
+  },
+  pill: {
+    background: 'var(--bg-app)',
+    color: 'var(--text-main)',
+    padding: '0.5rem 1rem',
+    borderRadius: '100px',
+    fontSize: '0.9rem',
+    fontWeight: '600',
+    border: '1px solid var(--border-light)',
+    boxShadow: 'var(--shadow-sm)'
   },
   detailCard: {
     background: 'var(--bg-app)',
-    padding: '1.5rem',
+    padding: '1.8rem',
     borderRadius: '16px',
     border: '1px solid var(--border-light)'
   },
@@ -212,7 +241,7 @@ const styles = {
     fontSize: '1.2rem',
     fontWeight: '700',
     color: 'var(--text-headers)',
-    margin: '0 0 1rem 0'
+    margin: '0 0 1.2rem 0'
   },
   text: {
     margin: 0,
