@@ -1,4 +1,5 @@
 import React from 'react';
+import { Modal } from './ui/Modal';
 import { useLanguage } from '../context/LanguageContext';
 
 interface PremiumPaywallProps {
@@ -10,8 +11,7 @@ const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ onClose, onUpgrade }) =
   const { t } = useLanguage();
 
   return (
-    <div className="modal-overlay animate-fade" style={styles.overlay}>
-      <div className="modal-content animate-scale" style={styles.modal}>
+    <Modal open={true} onOpenChange={(o) => !o && onClose()} hideCloseButton={true}>
         <button onClick={onClose} style={styles.closeBtn} aria-label="Close">✕</button>
         
         <div style={styles.iconContainer}>
@@ -29,8 +29,7 @@ const PremiumPaywall: React.FC<PremiumPaywallProps> = ({ onClose, onUpgrade }) =
         <button onClick={onUpgrade} style={styles.upgradeBtn}>
           ✨ {t('premium_btn')}
         </button>
-      </div>
-    </div>
+      </Modal>
   );
 };
 

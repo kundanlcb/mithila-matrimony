@@ -1,4 +1,5 @@
 import React from 'react';
+import { Modal } from './ui/Modal';
 import { useLanguage } from '../context/LanguageContext';
 import type { Biodata } from '../types';
 import { SubscriptionService } from '../api/subscription.service';
@@ -196,8 +197,7 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({
             
           </div>
         </div>
-      </div>
-    </div>
+      </Modal>
   );
 };
 

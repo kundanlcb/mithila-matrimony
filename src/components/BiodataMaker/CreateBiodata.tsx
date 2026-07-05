@@ -9,7 +9,8 @@ import { MatchesService } from '../../api/matches.service';
 import { BiodataService } from '../../api/biodata.service';
 import type { MatchProfileResponse } from '../../types/api.types';
 import { useLanguage } from '../../context/LanguageContext';
-import { CustomSelect } from '../CustomSelect';
+import { Select } from '../ui/Select';
+import { Modal } from '../ui/Modal';
 import { 
   type BiodataData, 
   TemplateClassic, 
@@ -258,24 +259,24 @@ export const CreateBiodata: React.FC<{
               <div style={styles.sectionTitle}>{t('biodata_maker_personal_details')}</div>
               <div style={styles.formGrid}>
                 <div style={styles.inputGroup}><label>{t('biodata_maker_full_name')}</label><input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>{t('biodata_maker_gender')}</label><CustomSelect name="gender" value={formData.gender} onChange={handleInputChange} style={styles.input as any} options={[{label: t('biodata_maker_male'), value: 'Male'}, {label: t('biodata_maker_female'), value: 'Female'}]} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_gender')}</label><Select name="gender" value={formData.gender} onValueChange={(v) => handleInputChange({target: {name: 'gender', value: v}} as any)} style={styles.input as any} options={[{label: t('biodata_maker_male'), value: 'Male'}, {label: t('biodata_maker_female'), value: 'Female'}]} /></div>
                 <div style={styles.inputGroup}><label>{t('biodata_maker_dob')}</label><input type="date" name="dob" value={formData.dob} onChange={handleInputChange} style={styles.input} /></div>
                 
                 <div style={styles.inputGroup}><label>{t('biodata_maker_pob')}</label><input type="text" name="birthPlace" value={formData.birthPlace} onChange={handleInputChange} style={styles.input} /></div>
                 <div style={styles.inputGroup}><label>{t('biodata_maker_height')}</label><input type="text" name="height" placeholder="e.g. 5'8&quot;" value={formData.height} onChange={handleInputChange} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>{t('biodata_maker_complexion')}</label><CustomSelect name="complexion" value={formData.complexion} onChange={handleInputChange} style={styles.input as any} options={masterComplexions} placeholder="Select" /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_complexion')}</label><Select name="complexion" value={formData.complexion} onValueChange={(v) => handleInputChange({target: {name: 'complexion', value: v}} as any)} style={styles.input as any} options={masterComplexions} placeholder="Select" /></div>
               </div>
 
               <div style={styles.sectionTitle}>{t('biodata_maker_maithil_specifics')}</div>
               <div style={styles.formGrid}>
-                <div style={styles.inputGroup}><label>{t('biodata_maker_gotra')}</label><CustomSelect name="gotra" value={formData.gotra} onChange={handleInputChange} style={styles.input as any} options={masterGotras} placeholder="Select" /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_gotra')}</label><Select name="gotra" value={formData.gotra} onValueChange={(v) => handleInputChange({target: {name: 'gotra', value: v}} as any)} style={styles.input as any} options={masterGotras} placeholder="Select" /></div>
                 <div style={styles.inputGroup}><label>{t('biodata_maker_mool')}</label><input type="text" name="mool" value={formData.mool} onChange={handleInputChange} style={styles.input} /></div>
               </div>
 
               <div style={styles.sectionTitle}>{t('biodata_maker_edu_prof')}</div>
               <div style={styles.formGrid}>
                 <div style={styles.inputGroup}><label>{t('biodata_maker_education')}</label><input type="text" name="education" value={formData.education} onChange={handleInputChange} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>{t('biodata_maker_profession')}</label><CustomSelect name="profession" value={formData.profession} onChange={handleInputChange} style={styles.input as any} options={masterProfessions} placeholder="Select" /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_profession')}</label><Select name="profession" value={formData.profession} onValueChange={(v) => handleInputChange({target: {name: 'profession', value: v}} as any)} style={styles.input as any} options={masterProfessions} placeholder="Select" /></div>
                 <div style={styles.inputGroup}><label>{t('biodata_maker_income')}</label><input type="text" name="income" value={formData.income} onChange={handleInputChange} style={styles.input} /></div>
               </div>
 
@@ -359,9 +360,7 @@ export const CreateBiodata: React.FC<{
                 <div style={styles.inputGroup}>
                   <label>Email Address</label>
                   <input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} style={styles.input} />
-                </div>
-              </div>
-            </div>
+                </Modal>
           )}
 
           {step === 4 && (

@@ -58,3 +58,10 @@ html, body {
   0% { opacity: 1; }
   100% { opacity: 0.2; }
 }
+
+/* Radix UI Global Styles */
+.SelectItem[data-highlighted] {
+  background-color: var(--primary-light, #fce4ec);
+  color: var(--primary, #d81b60);
+  outline: none;
+}
