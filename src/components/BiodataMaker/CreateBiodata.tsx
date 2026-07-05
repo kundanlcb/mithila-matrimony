@@ -27,20 +27,18 @@ export const CreateBiodata: React.FC<{
   const { t } = useLanguage();
     const [masterGotras, setMasterGotras] = useState<string[]>(['Kashyap', 'Shandilya', 'Vatsa', 'Bhardwaj', 'Parashar', 'Katyayan']);
   const [masterProfessions, setMasterProfessions] = useState<string[]>(['Software Engineer', 'Doctor', 'Teacher', 'Business', 'Government Service']);
-  const [masterComplexions, setMasterComplexions] = useState<string[]>(['Fair', 'Wheatish', 'Dusky', 'Dark', 'Very Fair']);
+  const [masterComplexions] = useState<string[]>(['Fair', 'Wheatish', 'Dusky', 'Dark', 'Very Fair']);
 
   useEffect(() => {
     const fetchMasterData = async () => {
       try {
         const [gotrasList, professionsList] = await Promise.all([
-          apiClient.get('/api/v1/master-data/gotra'),
-          apiClient.get('/api/v1/master-data/profession')
+          apiClient.get<any[]>('/api/v1/master-data/gotra'),
+          apiClient.get<any[]>('/api/v1/master-data/profession')
         ]);
-        if (gotrasList?.data?.length) setMasterGotras(gotrasList.data.map(g => g.name));
-        else if (gotrasList?.length) setMasterGotras(gotrasList.map(g => g.name));
+        if (gotrasList?.length) setMasterGotras(gotrasList.map((g: any) => g.name));
         
-        if (professionsList?.data?.length) setMasterProfessions(professionsList.data.map(p => p.name));
-        else if (professionsList?.length) setMasterProfessions(professionsList.map(p => p.name));
+        if (professionsList?.length) setMasterProfessions(professionsList.map((p: any) => p.name));
       } catch (e) {
         console.error('Failed to fetch master data', e);
       }
