@@ -9,6 +9,7 @@ import { MatchesService } from '../../api/matches.service';
 import { BiodataService } from '../../api/biodata.service';
 import type { MatchProfileResponse } from '../../types/api.types';
 import { useLanguage } from '../../context/LanguageContext';
+import { CustomSelect } from '../CustomSelect';
 import { 
   type BiodataData, 
   TemplateClassic, 
@@ -257,24 +258,24 @@ export const CreateBiodata: React.FC<{
               <div style={styles.sectionTitle}>{t('biodata_maker_personal_details')}</div>
               <div style={styles.formGrid}>
                 <div style={styles.inputGroup}><label>{t('biodata_maker_full_name')}</label><input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>{t('biodata_maker_gender')}</label><select name="gender" value={formData.gender} onChange={handleInputChange} style={styles.input}><option value="Male">{t('biodata_maker_male')}</option><option value="Female">{t('biodata_maker_female')}</option></select></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_gender')}</label><CustomSelect name="gender" value={formData.gender} onChange={handleInputChange} style={styles.input as any} options={[{label: t('biodata_maker_male'), value: 'Male'}, {label: t('biodata_maker_female'), value: 'Female'}]} /></div>
                 <div style={styles.inputGroup}><label>{t('biodata_maker_dob')}</label><input type="date" name="dob" value={formData.dob} onChange={handleInputChange} style={styles.input} /></div>
                 
                 <div style={styles.inputGroup}><label>{t('biodata_maker_pob')}</label><input type="text" name="birthPlace" value={formData.birthPlace} onChange={handleInputChange} style={styles.input} /></div>
                 <div style={styles.inputGroup}><label>{t('biodata_maker_height')}</label><input type="text" name="height" placeholder="e.g. 5'8&quot;" value={formData.height} onChange={handleInputChange} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>{t('biodata_maker_complexion')}</label><select name="complexion" value={formData.complexion} onChange={handleInputChange} style={styles.input}><option value="">Select</option>{masterComplexions.map(c => <option key={c} value={c}>{c}</option>)}</select></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_complexion')}</label><CustomSelect name="complexion" value={formData.complexion} onChange={handleInputChange} style={styles.input as any} options={masterComplexions} placeholder="Select" /></div>
               </div>
 
               <div style={styles.sectionTitle}>{t('biodata_maker_maithil_specifics')}</div>
               <div style={styles.formGrid}>
-                <div style={styles.inputGroup}><label>{t('biodata_maker_gotra')}</label><select name="gotra" value={formData.gotra} onChange={handleInputChange} style={styles.input}><option value="">Select</option>{masterGotras.map(g => <option key={g} value={g}>{g}</option>)}</select></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_gotra')}</label><CustomSelect name="gotra" value={formData.gotra} onChange={handleInputChange} style={styles.input as any} options={masterGotras} placeholder="Select" /></div>
                 <div style={styles.inputGroup}><label>{t('biodata_maker_mool')}</label><input type="text" name="mool" value={formData.mool} onChange={handleInputChange} style={styles.input} /></div>
               </div>
 
               <div style={styles.sectionTitle}>{t('biodata_maker_edu_prof')}</div>
               <div style={styles.formGrid}>
                 <div style={styles.inputGroup}><label>{t('biodata_maker_education')}</label><input type="text" name="education" value={formData.education} onChange={handleInputChange} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>{t('biodata_maker_profession')}</label><select name="profession" value={formData.profession} onChange={handleInputChange} style={styles.input}><option value="">Select</option>{masterProfessions.map(p => <option key={p} value={p}>{p}</option>)}</select></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_profession')}</label><CustomSelect name="profession" value={formData.profession} onChange={handleInputChange} style={styles.input as any} options={masterProfessions} placeholder="Select" /></div>
                 <div style={styles.inputGroup}><label>{t('biodata_maker_income')}</label><input type="text" name="income" value={formData.income} onChange={handleInputChange} style={styles.input} /></div>
               </div>
 
