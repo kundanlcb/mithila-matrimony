@@ -11,15 +11,17 @@ interface ChatMessage {
   sender: 'bot' | 'user';
   text: string;
   timestamp: string;
-  inputType?: 'text' | 'select' | 'tags' | 'file' | 'summary';
+  inputType?: 'text' | 'select' | 'tags' | 'file' | 'summary' | 'template';
   options?: string[];
 }
 
 interface RegistrationChatProps {
+  mode?: 'registration' | 'biodata';
   onComplete: () => void;
+  onDownloadBiodata?: (template: string, data: any) => void;
 }
 
-export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
+export const RegistrationChat = ({ mode = 'registration', onComplete, onDownloadBiodata }: RegistrationChatProps) => {
   const { t, locale } = useLanguage();
   const chatEndRef = useRef<HTMLDivElement>(null);
   const welcomeTriggered = useRef(false);
@@ -30,6 +32,10 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
   const [inputValue, setInputValue] = useState('');
   const [typing, setTyping] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  
+  // Biodata Mode specific states
+  const [email, setEmail] = useState('');
+  const [template, setTemplate] = useState('TemplateClassic');
 
   // Master Data Options
   const [optionsGotra, setOptionsGotra] = useState<string[]>(['Kashyap', 'Shandilya', 'Vatsa', 'Bhardwaj', 'Parashar', 'Katyayan']);
@@ -179,7 +185,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
   };
 
   // Submit User Message & trigger next bot flow state
-  const handleUserSubmit = (e?: React.FormEvent, directValue?: string) => {
+  const handleUserSubmit = async (e?: React.FormEvent, directValue?: string) => {
     if (e) e.preventDefault();
     setErrorMsg(null);
     
@@ -344,7 +350,51 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
         triggerBotResponse(t('bot_summary'), 'summary');
         break;
 
-      default:
+      case 18: // Email entered in Biodata Mode
+        if (!/^\S+@\S+\.\S+$/.test(valueToProcess)) {
+          setErrorMsg(locale === 'en' ? 'Please enter a valid email.' : 'कृपया एक वैध ईमेल दर्ज करें।');
+          setCurrentStep(18);
+          setMessages(prev => prev.slice(0, -1));
+          return;
+        }
+        setEmail(valueToProcess);
+        setTyping(true);
+        try {
+          await AuthService.requestOtp({ email: valueToProcess });
+          setTyping(false);
+          triggerBotResponse(locale === 'en' ? 'OTP sent! Please enter the 4-digit code.' : 'OTP भेजा गया! कृपया 4-अंकीय कोड दर्ज करें।', 'text');
+        } catch (err) {
+          setTyping(false);
+          setErrorMsg(locale === 'en' ? 'Failed to send OTP. Try again.' : 'OTP भेजने में विफल। पुनः प्रयास करें।');
+          setCurrentStep(18);
+          setMessages(prev => prev.slice(0, -1));
+        }
+        break;
+
+      case 19: // OTP entered in Biodata Mode
+        if (valueToProcess.length !== 4) {
+          setErrorMsg(locale === 'en' ? 'OTP must be 4 digits.' : 'OTP 4 अंकों का होना चाहिए।');
+          setCurrentStep(19);
+          setMessages(prev => prev.slice(0, -1));
+          return;
+        }
+        setTyping(true);
+        try {
+          await AuthService.verifyOtp({ email, otp: valueToProcess });
+          setTyping(false);
+          // Save the profile seamlessly
+          await handleFinalRegister(true); 
+          triggerBotResponse(locale === 'en' ? 'Profile saved successfully! Select a template to download your Biodata.' : 'प्रोफ़ाइल सहेजी गई! अपना बायोडेटा डाउनलोड करने के लिए एक टेम्पलेट चुनें।', 'template');
+        } catch (err) {
+          setTyping(false);
+          setErrorMsg(locale === 'en' ? 'Invalid OTP. Please try again.' : 'अमान्य OTP। कृपया पुनः प्रयास करें।');
+          setCurrentStep(19);
+          setMessages(prev => prev.slice(0, -1));
+        }
+        break;
+
+      case 20: // Template selection / download action (handled mostly by UI buttons)
+        break;
         break;
     }
   };
@@ -379,8 +429,17 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
     }
   };
 
+  const handleConfirmSummary = () => {
+    if (mode === 'biodata') {
+      setCurrentStep(18);
+      triggerBotResponse(locale === 'en' ? 'Please provide your email to save and download your Biodata.' : 'अपना बायोडेटा सहेजने और डाउनलोड करने के लिए कृपया अपना ईमेल प्रदान करें।', 'text');
+    } else {
+      handleFinalRegister();
+    }
+  };
+
   // Save profile and trigger complete redirection callback
-  const handleFinalRegister = async () => {
+  const handleFinalRegister = async (isBiodataBackgroundSave = false) => {
     try {
       const primary = uploadedPhotos[0] || biodataForm.photoUrl;
       const additional = uploadedPhotos.slice(1);
@@ -392,9 +451,12 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
       };
       await BiodataService.updateMine(payload as any);
       await BiodataService.complete();
-      onComplete();
+      if (!isBiodataBackgroundSave) {
+        onComplete();
+      }
     } catch (e) {
       setErrorMsg('Failed to complete registration. Please try again.');
+      throw e; // Throw so that step 19 catch block catches it!
     }
   };
 
@@ -409,7 +471,75 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
             style={{ position: 'relative' }}
           >
             {/* Visual Chat Content rendering */}
-            {msg.inputType === 'summary' ? (
+            {msg.inputType === 'template' ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%' }}>
+                <p style={{ color: 'var(--primary)', fontWeight: '600' }}>{msg.text}</p>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  {['TemplateClassic', 'TemplateModern', 'TemplateElegant'].map(tpl => (
+                    <button
+                      key={tpl}
+                      onClick={() => setTemplate(tpl)}
+                      style={{
+                        flex: 1,
+                        padding: '1rem',
+                        border: template === tpl ? '2px solid var(--primary)' : '2px solid transparent',
+                        borderRadius: 'var(--radius-md)',
+                        backgroundColor: 'var(--bg-card)',
+                        cursor: 'pointer',
+                        fontWeight: '600',
+                        color: 'var(--text-main)',
+                        boxShadow: 'var(--shadow-sm)',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      {tpl.replace('Template', '')}
+                    </button>
+                  ))}
+                </div>
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+                  <button
+                    onClick={() => {
+                      if (onDownloadBiodata) {
+                        onDownloadBiodata(template, biodataForm);
+                      }
+                    }}
+                    style={{
+                      flex: 1,
+                      padding: '1rem',
+                      backgroundColor: 'var(--primary)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: 'var(--radius-md)',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                      boxShadow: 'var(--shadow-md)',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}
+                  >
+                    📄 {locale === 'en' ? 'Download PDF' : 'PDF डाउनलोड करें'}
+                  </button>
+                  <button
+                    onClick={onComplete}
+                    style={{
+                      flex: 1,
+                      padding: '1rem',
+                      backgroundColor: 'var(--secondary)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: 'var(--radius-md)',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                      boxShadow: 'var(--shadow-md)'
+                    }}
+                  >
+                    🔍 {locale === 'en' ? 'View Matches' : 'मैच देखें'}
+                  </button>
+                </div>
+              </div>
+            ) : msg.inputType === 'summary' ? (
               <div style={styles.summaryWrapper}>
                 <p style={{ color: 'var(--primary)', fontWeight: '600', marginBottom: '0.8rem' }}>{msg.text}</p>
                 
@@ -464,7 +594,7 @@ export const RegistrationChat = ({ onComplete }: RegistrationChatProps) => {
                     ))}
                   </div>
                   
-                  <button onClick={handleFinalRegister} style={styles.cardSubmitBtn}>
+                  <button onClick={handleConfirmSummary} style={styles.cardSubmitBtn}>
                     {t('btn_confirm_submit')}
                   </button>
                 </div>

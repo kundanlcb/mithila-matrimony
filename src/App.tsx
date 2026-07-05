@@ -1984,14 +1984,22 @@ function App() {
           </div>
         )}
         {activeView === 'create-biodata' && (
-          <CreateBiodata 
-            onClose={() => setActiveView('home')} 
-            onSuccess={(email) => {
-              // TODO: Implement matches fetch and success view
-              console.log('Biodata generated and verified for:', email);
-              setActiveView('home');
-            }} 
-          />
+          <div className="animate-fade" style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '20px' }}>
+            <CreateBiodata 
+              onClose={() => setActiveView('home')} 
+              onSuccess={() => {
+                const userStr = localStorage.getItem('active_profile');
+                if (userStr) {
+                  const user = JSON.parse(userStr);
+                  user.registrationStep = 'completed';
+                  localStorage.setItem('active_profile', JSON.stringify(user));
+                  setActiveUser(user);
+                }
+                BiodataService.getMine().then(res => setActiveBiodata(res as any)).catch(console.error);
+                setActiveView('browse');
+              }} 
+            />
+          </div>
         )}
 
       </main>

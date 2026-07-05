@@ -35,7 +35,7 @@ type TemplateProps = {
 
 // --- Template 1: Classic ---
 export const TemplateClassic: React.FC<TemplateProps> = ({ data, id }) => (
-  <div id={id} style={{ fontFamily: 'serif', padding: '40px', backgroundColor: '#fff', color: '#333', border: '2px solid #8B0000', margin: '0 auto', maxWidth: '800px' }}>
+  <div id={id} style={{ boxSizing: 'border-box', width: '794px', height: '1123px', fontFamily: 'serif', padding: '40px', backgroundColor: '#fff', color: '#333', border: '2px solid #8B0000', margin: '0 auto', overflow: 'hidden' }}>
     <div style={{ textAlign: 'center', marginBottom: '30px', borderBottom: '2px solid #8B0000', paddingBottom: '20px' }}>
       <h1 style={{ color: '#8B0000', fontSize: '32px', margin: '0 0 10px 0', textTransform: 'uppercase' }}>Biodata</h1>
       <h2 style={{ fontSize: '24px', margin: 0 }}>{data.fullName}</h2>
@@ -88,7 +88,7 @@ export const TemplateClassic: React.FC<TemplateProps> = ({ data, id }) => (
 
 // --- Template 2: Modern ---
 export const TemplateModern: React.FC<TemplateProps> = ({ data, id }) => (
-  <div id={id} style={{ fontFamily: 'sans-serif', padding: '0', backgroundColor: '#f9f9f9', color: '#222', margin: '0 auto', maxWidth: '800px', display: 'flex', minHeight: '600px' }}>
+  <div id={id} style={{ boxSizing: 'border-box', width: '794px', height: '1123px', fontFamily: 'sans-serif', padding: '0', backgroundColor: '#f9f9f9', color: '#222', margin: '0 auto', display: 'flex', overflow: 'hidden' }}>
     <div style={{ backgroundColor: '#2C3E50', color: 'white', width: '250px', padding: '30px' }}>
       {data.photoUrl && (
         <img src={data.photoUrl} alt="Profile" style={{ width: '100%', height: 'auto', borderRadius: '50%', marginBottom: '20px', border: '4px solid #fff' }} crossOrigin="anonymous" />
@@ -130,7 +130,7 @@ export const TemplateModern: React.FC<TemplateProps> = ({ data, id }) => (
 
 // --- Template 3: Elegant ---
 export const TemplateElegant: React.FC<TemplateProps> = ({ data, id }) => (
-  <div id={id} style={{ fontFamily: 'Georgia, serif', padding: '40px', backgroundColor: '#FFF5EE', color: '#4A4A4A', margin: '0 auto', maxWidth: '800px' }}>
+  <div id={id} style={{ boxSizing: 'border-box', width: '794px', height: '1123px', fontFamily: 'Georgia, serif', padding: '40px', backgroundColor: '#FFF5EE', color: '#4A4A4A', margin: '0 auto', overflow: 'hidden' }}>
     <div style={{ textAlign: 'center', marginBottom: '40px' }}>
       <h1 style={{ color: '#CD5C5C', fontSize: '36px', fontStyle: 'italic', margin: '0 0 10px 0' }}>{data.fullName}</h1>
       <p style={{ letterSpacing: '2px', textTransform: 'uppercase', fontSize: '14px', margin: 0, color: '#888' }}>Matrimonial Biodata</p>
@@ -170,7 +170,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({ data, id }) => (
 
 // --- Template 4: Minimalist ---
 export const TemplateMinimal: React.FC<TemplateProps> = ({ data, id }) => (
-  <div id={id} style={{ fontFamily: 'Helvetica, Arial, sans-serif', padding: '50px', backgroundColor: '#FFFFFF', color: '#333', margin: '0 auto', maxWidth: '800px', border: '1px solid #eee' }}>
+  <div id={id} style={{ boxSizing: 'border-box', width: '794px', height: '1123px', fontFamily: 'Helvetica, Arial, sans-serif', padding: '50px', backgroundColor: '#FFFFFF', color: '#333', margin: '0 auto', border: '1px solid #eee', overflow: 'hidden' }}>
     <h1 style={{ fontSize: '40px', fontWeight: 'bold', margin: '0 0 50px 0', letterSpacing: '-1px' }}>{data.fullName}</h1>
     
     <div style={{ display: 'flex', gap: '50px' }}>
@@ -211,7 +211,7 @@ export const TemplateMinimal: React.FC<TemplateProps> = ({ data, id }) => (
 
 // --- Template 5: Traditional ---
 export const TemplateTraditional: React.FC<TemplateProps> = ({ data, id }) => (
-  <div id={id} style={{ fontFamily: 'Palatino, serif', padding: '40px', backgroundColor: '#FFFDF0', color: '#5A0000', margin: '0 auto', maxWidth: '800px', border: '10px solid #D4AF37', borderRadius: '15px' }}>
+  <div id={id} style={{ boxSizing: 'border-box', width: '794px', height: '1123px', fontFamily: 'Palatino, serif', padding: '40px', backgroundColor: '#FFFDF0', color: '#5A0000', margin: '0 auto', border: '10px solid #D4AF37', borderRadius: '15px', overflow: 'hidden' }}>
     <div style={{ textAlign: 'center', marginBottom: '30px' }}>
       <div style={{ fontSize: '40px', color: '#D4AF37', marginBottom: '10px' }}>ॐ</div>
       <h1 style={{ fontSize: '32px', margin: '0 0 5px 0' }}>{data.fullName}</h1>
