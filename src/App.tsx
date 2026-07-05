@@ -19,6 +19,7 @@ import MatchInbox from './components/MatchInbox';
 import PremiumPaywall from './components/PremiumPaywall';
 import { PublicProfileView } from './components/PublicProfileView';
 import { ImageSlider } from './components/ImageSlider';
+import { CreateBiodata } from './components/BiodataMaker/CreateBiodata';
 
 function App() {
   // Localization & Theme Hooks
@@ -29,7 +30,7 @@ function App() {
   const [activeUser, setActiveUser] = useState<UserProfile | null>(null);
   const [activeBiodata, setActiveBiodata] = useState<Biodata | null>(null);
   const [matchingProfiles, setMatchingProfiles] = useState<MatchingProfile[]>([]);
-  const [activeView, setActiveView] = useState<'home' | 'auth' | 'register' | 'browse' | 'inbox' | 'my-profile' | 'public-profile'>('home');
+  const [activeView, setActiveView] = useState<'home' | 'auth' | 'register' | 'browse' | 'inbox' | 'my-profile' | 'public-profile' | 'create-biodata'>('home');
   const [publicProfileId, setPublicProfileId] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'score' | 'age_asc' | 'age_desc' | 'income'>('score');
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
@@ -707,6 +708,25 @@ function App() {
 
                     {/* HERO CTA BUTTONS */}
                     <div className="hero-cta-group animate-fade" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                      <button 
+                        onClick={() => setActiveView('create-biodata')}
+                        style={{ 
+                          padding: '1rem 2rem', 
+                          fontSize: '1.1rem', 
+                          fontWeight: '700',
+                          borderRadius: '50px', 
+                          background: 'linear-gradient(135deg, #FF6B6B, #D81B60)', 
+                          color: 'white',
+                          border: 'none',
+                          boxShadow: '0 8px 20px rgba(216, 27, 96, 0.4)',
+                          cursor: 'pointer',
+                          transition: 'transform 0.2s'
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                        onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                      >
+                        📄 Create Free Biodata
+                      </button>
                       <button 
                         onClick={() => { setAuthMode('register'); setActiveView('auth'); }} 
                         style={{ 
@@ -1965,6 +1985,16 @@ function App() {
               }} 
             />
           </div>
+        )}
+        {activeView === 'create-biodata' && (
+          <CreateBiodata 
+            onClose={() => setActiveView('home')} 
+            onSuccess={(email) => {
+              // TODO: Implement matches fetch and success view
+              console.log('Biodata generated and verified for:', email);
+              setActiveView('home');
+            }} 
+          />
         )}
 
       </main>
