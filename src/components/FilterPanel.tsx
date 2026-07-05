@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Select } from './ui/Select';
 import { useLanguage } from '../context/LanguageContext';
 import { apiClient } from '../api/apiClient';
 
@@ -118,37 +117,86 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onApplyFilters, onClose, isMo
 
       <div style={styles.filterGroup}>
         <label style={styles.label}>{locale === 'en' ? 'Gotra' : 'गोत्र'}</label>
-        <Select value={gotra} onValueChange={(v) => setGotra(v)} style={styles.select as any} options={[{label: t('filter_all'), value: ''}, ...gotras]} placeholder={t('filter_all')} />
+        <select 
+          value={gotra} 
+          onChange={e => setGotra(e.target.value)}
+          style={styles.select}
+        >
+          <option value="">{t('filter_all')}</option>
+          {gotras.map(g => <option key={g} value={g}>{g}</option>)}
+        </select>
       </div>
 
       <div style={styles.filterGroup}>
         <label style={styles.label}>{locale === 'en' ? 'Religion' : locale === 'hi' ? 'धर्म' : 'धर्म'}</label>
-        <Select value={religion} onValueChange={(v) => setReligion(v)} style={styles.select as any} options={[{label: t('filter_all'), value: ''}, ...religions]} placeholder={t('filter_all')} />
+        <select 
+          value={religion} 
+          onChange={e => setReligion(e.target.value)}
+          style={styles.select}
+        >
+          <option value="">{t('filter_all')}</option>
+          {religions.map(r => <option key={r} value={r}>{r}</option>)}
+        </select>
       </div>
 
       <div style={styles.filterGroup}>
         <label style={styles.label}>{locale === 'en' ? 'Caste' : locale === 'hi' ? 'जाति' : 'जाति'}</label>
-        <Select value={caste} onValueChange={(v) => setCaste(v)} style={styles.select as any} options={[{label: t('filter_all'), value: ''}, ...castes]} placeholder={t('filter_all')} />
+        <select 
+          value={caste} 
+          onChange={e => setCaste(e.target.value)}
+          style={styles.select}
+        >
+          <option value="">{t('filter_all')}</option>
+          {castes.map(c => <option key={c} value={c}>{c}</option>)}
+        </select>
       </div>
 
       <div style={styles.filterGroup}>
         <label style={styles.label}>{t('filter_location')}</label>
-        <Select value={location} onValueChange={(v) => setLocation(v)} style={styles.select as any} options={[{label: t('filter_all'), value: ''}, ...locations]} placeholder={t('filter_all')} />
+        <select 
+          value={location} 
+          onChange={e => setLocation(e.target.value)}
+          style={styles.select}
+        >
+          <option value="">{t('filter_all')}</option>
+          {locations.map(l => <option key={l} value={l}>{l}</option>)}
+        </select>
       </div>
 
       <div style={styles.filterGroup}>
         <label style={styles.label}>{locale === 'en' ? 'Profession' : 'पेशा'}</label>
-        <Select value={profession} onValueChange={(v) => setProfession(v)} style={styles.select as any} options={[{label: t('filter_all'), value: ''}, ...professions]} placeholder={t('filter_all')} />
+        <select 
+          value={profession} 
+          onChange={e => setProfession(e.target.value)}
+          style={styles.select}
+        >
+          <option value="">{t('filter_all')}</option>
+          {professions.map(p => <option key={p} value={p}>{p}</option>)}
+        </select>
       </div>
 
       <div style={styles.filterGroup}>
         <label style={styles.label}>{locale === 'en' ? 'Marital Status' : 'वैवाहिक स्थिति'}</label>
-        <Select value={maritalStatus} onValueChange={(v) => setMaritalStatus(v)} style={styles.select as any} options={[{label: t('filter_all'), value: ''}, ...maritalStatuses]} placeholder={t('filter_all')} />
+        <select 
+          value={maritalStatus} 
+          onChange={e => setMaritalStatus(e.target.value)}
+          style={styles.select}
+        >
+          <option value="">{t('filter_all')}</option>
+          {maritalStatuses.map(m => <option key={m} value={m}>{m}</option>)}
+        </select>
       </div>
 
       <div style={styles.filterGroup}>
         <label style={styles.label}>{locale === 'en' ? 'Diet' : 'आहार'}</label>
-        <Select value={diet} onValueChange={(v) => setDiet(v)} style={styles.select as any} options={[{label: t('filter_all'), value: ''}, ...diets]} placeholder={t('filter_all')} />
+        <select 
+          value={diet} 
+          onChange={e => setDiet(e.target.value)}
+          style={styles.select}
+        >
+          <option value="">{t('filter_all')}</option>
+          {diets.map(d => <option key={d} value={d}>{d}</option>)}
+        </select>
       </div>
 
       <div style={{ display: 'flex', gap: '0.8rem', marginTop: '0.5rem' }}>

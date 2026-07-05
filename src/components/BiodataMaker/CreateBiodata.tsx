@@ -242,16 +242,20 @@ export const CreateBiodata: React.FC<{
   };
 
   return (
-    <div style={styles.overlay}>
-      <div style={styles.modal}>
-        <div style={styles.header}>
-          <h2 style={{ margin: 0, color: 'var(--primary-dark)' }}>
-            {step === 1 ? t('biodata_maker_title_step1') : step === 2 ? t('biodata_maker_title_step2') : step === 3 ? t('biodata_maker_title_step3') : step === 4 ? t('biodata_maker_title_step4') : t('biodata_maker_title_step5')}
-          </h2>
-          <button onClick={onClose} style={styles.closeButton}>&times;</button>
-        </div>
+    <Modal 
+      open={true} 
+      onOpenChange={(o) => !o && onClose()} 
+      hideCloseButton={true} 
+      contentStyle={{maxWidth: '900px', padding: 0}}
+    >
+      <div style={{...styles.header, borderBottom: '1px solid #eee'}}>
+        <h2 style={{ margin: 0, color: 'var(--primary-dark)' }}>
+          {step === 1 ? t('biodata_maker_title_step1') : step === 2 ? t('biodata_maker_title_step2') : step === 3 ? t('biodata_maker_title_step3') : step === 4 ? t('biodata_maker_title_step4') : t('biodata_maker_title_step5')}
+        </h2>
+        <button onClick={onClose} style={styles.closeButton}>&times;</button>
+      </div>
 
-        <div style={styles.body}>
+      <div style={styles.body}>
           {errorMsg && <div style={{ padding: '10px', backgroundColor: '#ffebee', color: '#c62828', marginBottom: '15px', borderRadius: '4px' }}>{errorMsg}</div>}
           
           {step === 1 && (
@@ -360,7 +364,9 @@ export const CreateBiodata: React.FC<{
                 <div style={styles.inputGroup}>
                   <label>Email Address</label>
                   <input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} style={styles.input} />
-                </Modal>
+                </div>
+              </div>
+            </div>
           )}
 
           {step === 4 && (
@@ -437,8 +443,7 @@ export const CreateBiodata: React.FC<{
           {step === 3 && <button onClick={requestOTP} disabled={isLoading || !email} style={styles.primaryButton}>{isLoading ? 'Sending...' : t('biodata_maker_btn_send_otp')}</button>}
           {step === 4 && <button onClick={verifyOTPAndDownload} disabled={isLoading || otpCode.length !== 4} style={styles.primaryButton}>{isLoading ? 'Generating PDF...' : t('biodata_maker_btn_verify_dl')}</button>}
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 };
 

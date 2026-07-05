@@ -1224,8 +1224,9 @@ function App() {
                   </form>
                 )
               )}
-            </Modal>
-            )}
+            </div>
+          </div>
+        )}
 
         {/* VIEW 3: MULTI-STEP CONVERSATIONAL REGISTRATION WIZARD */}
         {activeView === 'register' && (
@@ -1244,8 +1245,9 @@ function App() {
                   setActiveView('browse');
                 }}
               />
-            </Modal>
-            )}
+            </div>
+          </div>
+        )}
 
         {/* --- PHASE 3 LOGGED IN VIEWS --- */}
         {activeUser && activeUser.registrationStep === 'completed' && ['browse', 'inbox', 'my-profile'].includes(activeView) && (
@@ -1468,7 +1470,8 @@ function App() {
                     );
                     })()}
                   </div>
-                </Modal>
+                </div>
+              </div>
             )}
 
             {/* INBOX VIEW */}
@@ -1552,8 +1555,9 @@ function App() {
                                 {interest}
                               </span>
                             ))}
-                          </Modal>
-            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     {/* Photo Gallery */}
@@ -1568,8 +1572,9 @@ function App() {
                               <img src={p} alt={`Gallery ${idx}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             </div>
                           ))}
-                        </Modal>
-            )}
+                        </div>
+                      </div>
+                    )}
 
                     {/* Action Buttons */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
@@ -1615,7 +1620,8 @@ function App() {
                       </button>
                     </div>
                   </div>
-                </Modal>
+                </div>
+              </div>
             )}
 
             {/* PROFILE MODALS */}
@@ -1728,8 +1734,9 @@ function App() {
                                 <img src={editForm.photoUrl} alt="Primary" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                 <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'var(--primary)', color: '#fff', fontSize: '0.5rem', textAlign: 'center', fontWeight: 'bold', padding: '1px 0' }}>
                                   Primary
-                                </Modal>
-            )}
+                                </div>
+                              </div>
+                            )}
                             {editForm.additionalPhotos?.map((p, idx) => (
                               <div key={idx} style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '6px', overflow: 'hidden', border: '1px solid var(--border-light)' }}>
                                 <img src={p} alt={`Photo ${idx}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -1804,8 +1811,9 @@ function App() {
                           <input type="text" defaultValue="Any" style={styles.input} />
                         </div>
                         <button onClick={() => setProfileModalView(null)} style={{ ...styles.primaryBtnWidth, marginTop: '1rem' }}>{t('app_save_preferences')}</button>
-                      </Modal>
-            )}
+                      </div>
+                    </div>
+                  )}
 
                   {profileModalView === 'privacy' && (
                     <div>
@@ -1928,9 +1936,11 @@ function App() {
                         <button onClick={() => setProfileModalView(null)} style={{ ...styles.primaryBtnWidth, marginTop: '0.5rem' }}>
                           {locale === 'en' ? 'Close Settings' : 'सेटिंग्स बंद करें'}
                         </button>
-                      </Modal>
-            )}
-                </Modal>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             )}
           </div>
         )}

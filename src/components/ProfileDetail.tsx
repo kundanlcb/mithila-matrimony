@@ -55,9 +55,7 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({
   };
 
   return (
-    <div className="modal-overlay animate-fade" style={styles.overlay}>
-      <div className="modal-content animate-scale" style={styles.modal}>
-        <button onClick={onClose} style={styles.closeBtn} aria-label="Close">✕</button>
+    <Modal open={true} onOpenChange={(o) => !o && onClose()} contentStyle={{maxWidth: '600px', width: '90%', padding: 0}} hideCloseButton={true}>
         
         <div style={styles.scrollArea}>
           {/* Header Image Carousel Region */}
@@ -197,7 +195,7 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({
             
           </div>
         </div>
-      </Modal>
+    </Modal>
   );
 };
 
