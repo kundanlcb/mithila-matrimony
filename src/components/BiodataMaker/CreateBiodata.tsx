@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 
 import { UploadService } from '../../api/upload.service';
 import { AuthService } from '../../api/auth.service';
-import { apiClient } from '../../api/apiClient';
+
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { MatchesService } from '../../api/matches.service';
@@ -27,26 +27,11 @@ export const CreateBiodata: React.FC<{
   onSuccess: (email: string) => void;
 }> = ({ onClose, onSuccess }) => {
   const { t } = useLanguage();
-    const [masterGotras, setMasterGotras] = useState<string[]>(['Kashyap', 'Shandilya', 'Vatsa', 'Bhardwaj', 'Parashar', 'Katyayan']);
-  const [masterProfessions, setMasterProfessions] = useState<string[]>(['Software Engineer', 'Doctor', 'Teacher', 'Business', 'Government Service']);
+    const [masterGotras] = useState<string[]>(['Kashyap', 'Shandilya', 'Vatsa', 'Bhardwaj', 'Parashar', 'Katyayan']);
+  const [masterProfessions] = useState<string[]>(['Software Engineer', 'Doctor', 'Teacher', 'Business', 'Government Service']);
   const [masterComplexions] = useState<string[]>(['Fair', 'Wheatish', 'Dusky', 'Dark', 'Very Fair']);
 
-  useEffect(() => {
-    const fetchMasterData = async () => {
-      try {
-        const [gotrasList, professionsList] = await Promise.all([
-          apiClient.get<any[]>('/api/v1/master-data/gotra'),
-          apiClient.get<any[]>('/api/v1/master-data/profession')
-        ]);
-        if (gotrasList?.length) setMasterGotras(gotrasList.map((g: any) => g.name));
-        
-        if (professionsList?.length) setMasterProfessions(professionsList.map((p: any) => p.name));
-      } catch (e) {
-        console.error('Failed to fetch master data', e);
-      }
-    };
-    fetchMasterData();
-  }, []);
+
 
   const [step, setStep] = useState<Step>(1); 
   // 1: Form, 2: Template Select, 3: Preview, 4: OTP Verification, 5: Downloading/Success

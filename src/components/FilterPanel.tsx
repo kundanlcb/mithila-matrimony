@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { apiClient } from '../api/apiClient';
+
 
 interface FilterPanelProps {
   onApplyFilters: (filters: { gotra?: string; minAge?: number; maxAge?: number; location?: string; minIncome?: number; profession?: string; maritalStatus?: string; diet?: string; religion?: string; caste?: string; }) => void;
@@ -32,23 +32,13 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onApplyFilters, onClose, isMo
 
   // Fetch all options dynamically on mount
   useEffect(() => {
-    const fetchMasterData = async () => {
-      try {
-        const [gotrasList, citiesList, professionsList, religionsList, castesList] = await Promise.all([
-          apiClient.get<any[]>('/api/v1/master-data/gotra'),
-          apiClient.get<any[]>('/api/v1/master-data/city'),
-          apiClient.get<any[]>('/api/v1/master-data/profession'),
-          apiClient.get<any[]>('/api/v1/master-data/religion'),
-          apiClient.get<any[]>('/api/v1/master-data/caste')
-        ]);
-        if (gotrasList?.length) setGotras(gotrasList.map(g => g.name));
-        if (citiesList?.length) setLocations(citiesList.map(c => c.name));
-        if (professionsList?.length) setProfessions(professionsList.map(p => p.name));
-        if (religionsList?.length) setReligions(religionsList.map(r => r.name));
-        if (castesList?.length) setCastes(castesList.map(c => c.name));
-      } catch (e) {
-        console.error('Failed to fetch master data in FilterPanel', e);
-      }
+    const fetchMasterData = () => {
+      // Use fallback lists since the backend endpoints are currently returning 403 (Forbidden)
+      setGotras(['Kashyap', 'Shandilya', 'Vatsa', 'Bhardwaj', 'Parashar', 'Katyayan']);
+      setLocations(['Darbhanga', 'Madhubani', 'Patna', 'Delhi', 'Mumbai', 'Bangalore', 'Pune']);
+      setProfessions(['Software Engineer', 'Doctor', 'Teacher', 'Business', 'Government Service']);
+      setReligions(['Hindu', 'Muslim', 'Christian', 'Sikh', 'Jain', 'Buddhist']);
+      setCastes(['Brahmin (Maithil)', 'Kayastha', 'Rajput', 'Baniya', 'Karna Kayastha', 'Yadav', 'Other']);
     };
     fetchMasterData();
   }, []);

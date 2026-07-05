@@ -316,6 +316,15 @@ button {
   animation: scaleIn var(--transition-spring) forwards;
 }
 
+@keyframes modalScaleIn {
+  from { transform: translate(-50%, -50%) scale(0.95); opacity: 0; }
+  to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+.animate-modal-scale {
+  animation: modalScaleIn var(--transition-spring) forwards;
+}
+
 /* FULL-BLEED DESIGN LAYOUT SYSTEM */
 .full-bleed-row {
   width: 100%;

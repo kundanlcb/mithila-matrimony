@@ -6,7 +6,7 @@ import { MatchesService } from './api/matches.service';
 import { InteractionsService } from './api/interactions.service';
 import { SubscriptionService } from './api/subscription.service';
 import { UserService } from './api/user.service';
-import { apiClient } from './api/apiClient';
+
 import { UploadService } from './api/upload.service';
 import type { Biodata, MatchingProfile, UserProfile, ProfileInteraction, InteractionType } from './types';
 import { useLanguage } from './context/LanguageContext';
@@ -206,26 +206,11 @@ function App() {
   // Load Master Data and Subscription Status
   useEffect(() => {
     const fetchMasterData = async () => {
-      if (!activeUser) return; // Do not call master data API before login/register
-      try {
-        const [gotrasList, professionsList, religionsList, castesList] = await Promise.all([
-          apiClient.get<any[]>('/api/v1/master-data/gotra'),
-          apiClient.get<any[]>('/api/v1/master-data/profession'),
-          apiClient.get<any[]>('/api/v1/master-data/religion'),
-          apiClient.get<any[]>('/api/v1/master-data/caste')
-        ]);
-        if (gotrasList?.length) setMasterGotras(gotrasList.map(g => g.name));
-        if (professionsList?.length) setMasterProfessions(professionsList.map(p => p.name));
-        if (religionsList?.length) setMasterReligions(religionsList.map(r => r.name));
-        if (castesList?.length) setMasterCastes(castesList.map(c => c.name));
-      } catch (e) {
-        console.error('Failed to fetch master data in App', e);
-        // Premium localized defaults fallback
-        setMasterGotras(['Kashyap', 'Shandilya', 'Vatsa', 'Bhardwaj', 'Parashar', 'Katyayan']);
-        setMasterProfessions(['Software Engineer', 'Doctor', 'Teacher', 'Business']);
-        setMasterReligions(['Hindu', 'Muslim', 'Christian', 'Sikh', 'Jain', 'Buddhist']);
-        setMasterCastes(['Brahmin (Maithil)', 'Kayastha', 'Rajput', 'Baniya', 'Karna Kayastha', 'Yadav', 'Other']);
-      }
+      // Use fallback lists since the backend endpoints are currently returning 403 (Forbidden)
+      setMasterGotras(['Kashyap', 'Shandilya', 'Vatsa', 'Bhardwaj', 'Parashar', 'Katyayan']);
+      setMasterProfessions(['Software Engineer', 'Doctor', 'Teacher', 'Business', 'Government Service']);
+      setMasterReligions(['Hindu', 'Muslim', 'Christian', 'Sikh', 'Jain', 'Buddhist']);
+      setMasterCastes(['Brahmin (Maithil)', 'Kayastha', 'Rajput', 'Baniya', 'Karna Kayastha', 'Yadav', 'Other']);
     };
 
     fetchMasterData();

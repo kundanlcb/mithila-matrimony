@@ -25,7 +25,7 @@ export const Modal: React.FC<ModalProps> = ({
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay style={overlayStyle} className="animate-fade" />
-        <Dialog.Content style={{ ...contentStyleBase, ...contentStyle }} className="animate-scale" aria-describedby={description ? undefined : "dialog-description"}>
+        <Dialog.Content style={{ ...contentStyleBase, ...contentStyle }} className="animate-modal-scale" aria-describedby={description ? undefined : "dialog-description"}>
           {!description && <Dialog.Description id="dialog-description" style={{ display: 'none' }}>Modal Dialog</Dialog.Description>}
           
           {(title || description) && (
