@@ -7,6 +7,7 @@ import { jsPDF } from 'jspdf';
 import { MatchesService } from '../../api/matches.service';
 import { BiodataService } from '../../api/biodata.service';
 import type { MatchProfileResponse } from '../../types/api.types';
+import { useLanguage } from '../../context/LanguageContext';
 import { 
   type BiodataData, 
   TemplateClassic, 
@@ -22,6 +23,7 @@ export const CreateBiodata: React.FC<{
   onClose: () => void;
   onSuccess: (email: string) => void;
 }> = ({ onClose, onSuccess }) => {
+  const { t } = useLanguage();
   const [step, setStep] = useState<Step>(1); 
   // 1: Form, 2: Template Select, 3: Preview, 4: OTP Verification, 5: Downloading/Success
   
@@ -221,7 +223,7 @@ export const CreateBiodata: React.FC<{
       <div style={styles.modal}>
         <div style={styles.header}>
           <h2 style={{ margin: 0, color: 'var(--primary-dark)' }}>
-            {step === 1 ? 'Enter Details' : step === 2 ? 'Select Template' : step === 3 ? 'Preview Biodata' : step === 4 ? 'Verify to Download' : 'Success!'}
+            {step === 1 ? t('biodata_maker_title_step1') : step === 2 ? t('biodata_maker_title_step2') : step === 3 ? t('biodata_maker_title_step3') : step === 4 ? t('biodata_maker_title_step4') : t('biodata_maker_title_step5')}
           </h2>
           <button onClick={onClose} style={styles.closeButton}>&times;</button>
         </div>
@@ -231,55 +233,55 @@ export const CreateBiodata: React.FC<{
           
           {step === 1 && (
             <div style={styles.formContainer}>
-              <div style={styles.sectionTitle}>Personal Details</div>
+              <div style={styles.sectionTitle}>{t('biodata_maker_personal_details')}</div>
               <div style={styles.formGrid}>
-                <div style={styles.inputGroup}><label>Full Name</label><input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>Gender</label><select name="gender" value={formData.gender} onChange={handleInputChange} style={styles.input}><option>Male</option><option>Female</option></select></div>
-                <div style={styles.inputGroup}><label>Date of Birth</label><input type="date" name="dob" value={formData.dob} onChange={handleInputChange} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>Time of Birth</label><input type="time" name="birthTime" value={formData.birthTime} onChange={handleInputChange} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>Place of Birth</label><input type="text" name="birthPlace" value={formData.birthPlace} onChange={handleInputChange} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>Height</label><input type="text" name="height" placeholder="e.g. 5'8&quot;" value={formData.height} onChange={handleInputChange} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>Complexion / Color</label><input type="text" name="complexion" placeholder="e.g. Fair, Wheatish" value={formData.complexion} onChange={handleInputChange} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_full_name')}</label><input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_gender')}</label><select name="gender" value={formData.gender} onChange={handleInputChange} style={styles.input}><option value="Male">{t('biodata_maker_male')}</option><option value="Female">{t('biodata_maker_female')}</option></select></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_dob')}</label><input type="date" name="dob" value={formData.dob} onChange={handleInputChange} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_tob')}</label><input type="time" name="birthTime" value={formData.birthTime} onChange={handleInputChange} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_pob')}</label><input type="text" name="birthPlace" value={formData.birthPlace} onChange={handleInputChange} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_height')}</label><input type="text" name="height" placeholder="e.g. 5'8&quot;" value={formData.height} onChange={handleInputChange} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_complexion')}</label><input type="text" name="complexion" placeholder="e.g. Fair, Wheatish" value={formData.complexion} onChange={handleInputChange} style={styles.input} /></div>
               </div>
 
-              <div style={styles.sectionTitle}>Maithil Specifics</div>
+              <div style={styles.sectionTitle}>{t('biodata_maker_maithil_specifics')}</div>
               <div style={styles.formGrid}>
-                <div style={styles.inputGroup}><label>Gotra</label><input type="text" name="gotra" value={formData.gotra} onChange={handleInputChange} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>Mool</label><input type="text" name="mool" value={formData.mool} onChange={handleInputChange} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_gotra')}</label><input type="text" name="gotra" value={formData.gotra} onChange={handleInputChange} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_mool')}</label><input type="text" name="mool" value={formData.mool} onChange={handleInputChange} style={styles.input} /></div>
               </div>
 
-              <div style={styles.sectionTitle}>Education & Profession</div>
+              <div style={styles.sectionTitle}>{t('biodata_maker_edu_prof')}</div>
               <div style={styles.formGrid}>
-                <div style={styles.inputGroup}><label>Highest Education</label><input type="text" name="education" value={formData.education} onChange={handleInputChange} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>Profession/Job</label><input type="text" name="profession" value={formData.profession} onChange={handleInputChange} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>Annual Income</label><input type="text" name="income" value={formData.income} onChange={handleInputChange} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_education')}</label><input type="text" name="education" value={formData.education} onChange={handleInputChange} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_profession')}</label><input type="text" name="profession" value={formData.profession} onChange={handleInputChange} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_income')}</label><input type="text" name="income" value={formData.income} onChange={handleInputChange} style={styles.input} /></div>
               </div>
 
-              <div style={styles.sectionTitle}>Family Details</div>
+              <div style={styles.sectionTitle}>{t('biodata_maker_family')}</div>
               <div style={styles.formGrid}>
-                <div style={styles.inputGroup}><label>Grandparent's Name</label><input type="text" name="grandparentName" value={formData.grandparentName} onChange={handleInputChange} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>Father's Name</label><input type="text" name="fatherName" value={formData.fatherName} onChange={handleInputChange} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>Mother's Name</label><input type="text" name="motherName" value={formData.motherName} onChange={handleInputChange} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>Siblings Detail</label><input type="text" name="siblingsDetail" value={formData.siblingsDetail} onChange={handleInputChange} style={styles.input} placeholder="e.g. 1 Brother, 1 Sister" /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_grandparent')}</label><input type="text" name="grandparentName" value={formData.grandparentName} onChange={handleInputChange} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_father')}</label><input type="text" name="fatherName" value={formData.fatherName} onChange={handleInputChange} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_mother')}</label><input type="text" name="motherName" value={formData.motherName} onChange={handleInputChange} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_siblings')}</label><input type="text" name="siblingsDetail" value={formData.siblingsDetail} onChange={handleInputChange} style={styles.input} placeholder="e.g. 1 Brother, 1 Sister" /></div>
               </div>
 
-              <div style={styles.sectionTitle}>Native (Rural) Address</div>
+              <div style={styles.sectionTitle}>{t('biodata_maker_rural_address')}</div>
               <div style={styles.formGrid}>
-                <div style={styles.inputGroup}><label>Street / Village</label><input type="text" value={formData.ruralAddress.streetAddress} onChange={e => handleAddressChange('ruralAddress', 'streetAddress', e.target.value)} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>City / District</label><input type="text" value={formData.ruralAddress.city} onChange={e => handleAddressChange('ruralAddress', 'city', e.target.value)} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>State</label><input type="text" value={formData.ruralAddress.state} onChange={e => handleAddressChange('ruralAddress', 'state', e.target.value)} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>Pincode *</label><input type="text" required value={formData.ruralAddress.pincode} onChange={e => handleAddressChange('ruralAddress', 'pincode', e.target.value)} style={{ ...styles.input, borderColor: !formData.ruralAddress.pincode ? 'red' : '#ccc' }} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_street')}</label><input type="text" value={formData.ruralAddress.streetAddress} onChange={e => handleAddressChange('ruralAddress', 'streetAddress', e.target.value)} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_city')}</label><input type="text" value={formData.ruralAddress.city} onChange={e => handleAddressChange('ruralAddress', 'city', e.target.value)} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_state')}</label><input type="text" value={formData.ruralAddress.state} onChange={e => handleAddressChange('ruralAddress', 'state', e.target.value)} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_pincode')}</label><input type="text" required value={formData.ruralAddress.pincode} onChange={e => handleAddressChange('ruralAddress', 'pincode', e.target.value)} style={{ ...styles.input, borderColor: !formData.ruralAddress.pincode ? 'red' : '#ccc' }} /></div>
               </div>
 
-              <div style={styles.sectionTitle}>Current (Urban) Address</div>
+              <div style={styles.sectionTitle}>{t('biodata_maker_urban_address')}</div>
               <div style={styles.formGrid}>
-                <div style={styles.inputGroup}><label>Street / Flat</label><input type="text" value={formData.urbanAddress.streetAddress} onChange={e => handleAddressChange('urbanAddress', 'streetAddress', e.target.value)} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>City</label><input type="text" value={formData.urbanAddress.city} onChange={e => handleAddressChange('urbanAddress', 'city', e.target.value)} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>State</label><input type="text" value={formData.urbanAddress.state} onChange={e => handleAddressChange('urbanAddress', 'state', e.target.value)} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>Pincode *</label><input type="text" required value={formData.urbanAddress.pincode} onChange={e => handleAddressChange('urbanAddress', 'pincode', e.target.value)} style={{ ...styles.input, borderColor: !formData.urbanAddress.pincode ? 'red' : '#ccc' }} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_street')}</label><input type="text" value={formData.urbanAddress.streetAddress} onChange={e => handleAddressChange('urbanAddress', 'streetAddress', e.target.value)} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_city')}</label><input type="text" value={formData.urbanAddress.city} onChange={e => handleAddressChange('urbanAddress', 'city', e.target.value)} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_state')}</label><input type="text" value={formData.urbanAddress.state} onChange={e => handleAddressChange('urbanAddress', 'state', e.target.value)} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_pincode')}</label><input type="text" required value={formData.urbanAddress.pincode} onChange={e => handleAddressChange('urbanAddress', 'pincode', e.target.value)} style={{ ...styles.input, borderColor: !formData.urbanAddress.pincode ? 'red' : '#ccc' }} /></div>
               </div>
 
-              <div style={styles.sectionTitle}>Profile Photo</div>
+              <div style={styles.sectionTitle}>{t('biodata_maker_profile_photo')}</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                 <input type="file" accept="image/*" onChange={handlePhotoUpload} />
                 {isUploading && <span style={{ color: 'var(--primary)' }}>Uploading...</span>}
@@ -408,11 +410,11 @@ export const CreateBiodata: React.FC<{
         )}
 
         <div style={styles.footer}>
-          {step > 1 && step < 5 && <button onClick={() => setStep(step - 1 as Step)} style={styles.secondaryButton}>Back</button>}
-          {step === 1 && <button onClick={() => setStep(2)} disabled={!formData.ruralAddress.pincode || !formData.urbanAddress.pincode} style={{ ...styles.primaryButton, opacity: (!formData.ruralAddress.pincode || !formData.urbanAddress.pincode) ? 0.5 : 1 }}>Choose Template</button>}
-          {step === 2 && <button onClick={() => setStep(3)} style={styles.primaryButton}>Preview</button>}
-          {step === 3 && <button onClick={requestOTP} disabled={isLoading || !email} style={styles.primaryButton}>{isLoading ? 'Sending...' : 'Send OTP & Download'}</button>}
-          {step === 4 && <button onClick={verifyOTPAndDownload} disabled={isLoading || otpCode.length !== 4} style={styles.primaryButton}>{isLoading ? 'Generating PDF...' : 'Verify & Download'}</button>}
+          {step > 1 && step < 5 && <button onClick={() => setStep(step - 1 as Step)} style={styles.secondaryButton}>{t('biodata_maker_btn_back')}</button>}
+          {step === 1 && <button onClick={() => setStep(2)} disabled={!formData.ruralAddress.pincode || !formData.urbanAddress.pincode} style={{ ...styles.primaryButton, opacity: (!formData.ruralAddress.pincode || !formData.urbanAddress.pincode) ? 0.5 : 1 }}>{t('biodata_maker_btn_choose_template')}</button>}
+          {step === 2 && <button onClick={() => setStep(3)} style={styles.primaryButton}>{t('biodata_maker_btn_preview')}</button>}
+          {step === 3 && <button onClick={requestOTP} disabled={isLoading || !email} style={styles.primaryButton}>{isLoading ? 'Sending...' : t('biodata_maker_btn_send_otp')}</button>}
+          {step === 4 && <button onClick={verifyOTPAndDownload} disabled={isLoading || otpCode.length !== 4} style={styles.primaryButton}>{isLoading ? 'Generating PDF...' : t('biodata_maker_btn_verify_dl')}</button>}
         </div>
       </div>
     </div>
