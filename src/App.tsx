@@ -653,6 +653,18 @@ function App() {
                       {t('app_account')}
                     </button>
                     <button
+                      className="account-menu-item"
+                      type="button"
+                      onClick={() => {
+                        setIsAccountMenuOpen(false);
+                        setActiveView('create-biodata');
+                      }}
+                      style={styles.accountMenuItem}
+                      role="menuitem"
+                    >
+                      📄 Create Biodata
+                    </button>
+                    <button
                       className="account-menu-item account-menu-item-danger"
                       type="button"
                       onClick={handleLogout}
