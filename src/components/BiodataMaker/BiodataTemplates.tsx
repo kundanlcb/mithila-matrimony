@@ -14,6 +14,7 @@ export type BiodataData = {
   birthTime: string;
   birthPlace: string;
   height: string;
+  complexion: string;
   education: string;
   profession: string;
   income: string;
@@ -55,6 +56,7 @@ export const TemplateClassic: React.FC<TemplateProps> = ({ data, id }) => (
             <tr><td style={tCell}><strong>Birth Time:</strong></td><td style={tCell}>{data.birthTime}</td></tr>
             <tr><td style={tCell}><strong>Birth Place:</strong></td><td style={tCell}>{data.birthPlace}</td></tr>
             <tr><td style={tCell}><strong>Height:</strong></td><td style={tCell}>{data.height}</td></tr>
+            <tr><td style={tCell}><strong>Complexion:</strong></td><td style={tCell}>{data.complexion}</td></tr>
             <tr><td style={tCell}><strong>Gotra:</strong></td><td style={tCell}>{data.gotra}</td></tr>
             <tr><td style={tCell}><strong>Mool:</strong></td><td style={tCell}>{data.mool}</td></tr>
           </tbody>
@@ -98,6 +100,7 @@ export const TemplateModern: React.FC<TemplateProps> = ({ data, id }) => (
         <div><strong>Time:</strong> {data.birthTime}</div>
         <div><strong>Place:</strong> {data.birthPlace}</div>
         <div><strong>Height:</strong> {data.height}</div>
+        <div><strong>Complexion:</strong> {data.complexion}</div>
       </div>
     </div>
     <div style={{ flex: 1, padding: '40px' }}>
@@ -144,7 +147,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({ data, id }) => (
         <div style={{ marginBottom: '25px' }}>
           <h3 style={{ borderBottom: '1px solid #CD5C5C', color: '#CD5C5C', paddingBottom: '8px', marginTop: 0 }}>Personal Details</h3>
           <p style={{ margin: '5px 0' }}><strong>Born:</strong> {data.dob} at {data.birthTime} in {data.birthPlace}</p>
-          <p style={{ margin: '5px 0' }}><strong>Height:</strong> {data.height}</p>
+          <p style={{ margin: '5px 0' }}><strong>Height:</strong> {data.height} | <strong>Complexion:</strong> {data.complexion}</p>
           <p style={{ margin: '5px 0' }}><strong>Gotra:</strong> {data.gotra} | <strong>Mool:</strong> {data.mool}</p>
         </div>
         
@@ -179,6 +182,7 @@ export const TemplateMinimal: React.FC<TemplateProps> = ({ data, id }) => (
           <div style={minRow}><span>Time</span> <span>{data.birthTime}</span></div>
           <div style={minRow}><span>Place</span> <span>{data.birthPlace}</span></div>
           <div style={minRow}><span>Height</span> <span>{data.height}</span></div>
+          <div style={minRow}><span>Color</span> <span>{data.complexion}</span></div>
           <div style={minRow}><span>Gotra</span> <span>{data.gotra}</span></div>
           <div style={minRow}><span>Mool</span> <span>{data.mool}</span></div>
         </div>
@@ -223,6 +227,7 @@ export const TemplateTraditional: React.FC<TemplateProps> = ({ data, id }) => (
         <p><strong>Gotra:</strong> {data.gotra}</p>
         <p><strong>Mool:</strong> {data.mool}</p>
         <p><strong>Height:</strong> {data.height}</p>
+        <p><strong>Varna:</strong> {data.complexion}</p>
       </div>
 
       {data.photoUrl && (

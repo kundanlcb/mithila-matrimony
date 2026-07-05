@@ -27,7 +27,7 @@ export const CreateBiodata: React.FC<{
   
   const [formData, setFormData] = useState<BiodataData>({
     fullName: '', gender: 'Male', dob: '', birthTime: '', birthPlace: '',
-    height: '', education: '', profession: '', income: '', gotra: '',
+    height: '', complexion: '', education: '', profession: '', income: '', gotra: '',
     mool: '', grandparentName: '', fatherName: '', motherName: '', siblingsDetail: '',
     ruralAddress: { streetAddress: '', city: '', state: '', pincode: '' },
     urbanAddress: { streetAddress: '', city: '', state: '', pincode: '' },
@@ -135,6 +135,7 @@ export const CreateBiodata: React.FC<{
           birthTime: formData.birthTime,
           birthPlace: formData.birthPlace,
           height: formData.height,
+          complexion: formData.complexion,
           education: formData.education,
           profession: formData.profession,
           annualIncome: formData.income ? parseInt(formData.income) : undefined,
@@ -238,6 +239,7 @@ export const CreateBiodata: React.FC<{
                 <div style={styles.inputGroup}><label>Time of Birth</label><input type="time" name="birthTime" value={formData.birthTime} onChange={handleInputChange} style={styles.input} /></div>
                 <div style={styles.inputGroup}><label>Place of Birth</label><input type="text" name="birthPlace" value={formData.birthPlace} onChange={handleInputChange} style={styles.input} /></div>
                 <div style={styles.inputGroup}><label>Height</label><input type="text" name="height" placeholder="e.g. 5'8&quot;" value={formData.height} onChange={handleInputChange} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>Complexion / Color</label><input type="text" name="complexion" placeholder="e.g. Fair, Wheatish" value={formData.complexion} onChange={handleInputChange} style={styles.input} /></div>
               </div>
 
               <div style={styles.sectionTitle}>Maithil Specifics</div>
