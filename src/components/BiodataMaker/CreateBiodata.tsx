@@ -3,7 +3,7 @@ import { RegistrationChat } from '../RegistrationChat';
 
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
-import { Modal } from '../ui/Modal';
+
 import { 
   type BiodataData, 
   TemplateClassic, 
@@ -17,7 +17,7 @@ import {
 export const CreateBiodata: React.FC<{
   onClose: () => void;
   onSuccess: (email: string) => void;
-}> = ({ onClose, onSuccess }) => {
+}> = ({ onSuccess }) => {
 
 
 
@@ -101,12 +101,7 @@ export const CreateBiodata: React.FC<{
   };
 
   return (
-    <Modal 
-      open={true} 
-      onOpenChange={(o) => !o && onClose()} 
-      hideCloseButton={true} 
-      contentStyle={{maxWidth: '900px', padding: 0}}
-    >
+    <div style={{ width: '100%', maxWidth: '800px', margin: '0 auto' }}>
       <div style={{ padding: 0, height: '100%', overflow: 'hidden' }}>
         {errorMsg && <div style={{ padding: '10px', backgroundColor: '#ffebee', color: '#c62828', marginBottom: '15px', borderRadius: '4px' }}>{errorMsg}</div>}
         
@@ -123,7 +118,7 @@ export const CreateBiodata: React.FC<{
           </div>
         </div>
       </div>
-    </Modal>
+    </div>
   );
 };
 
