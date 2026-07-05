@@ -6,9 +6,9 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { MatchesService } from '../../api/matches.service';
 import { BiodataService } from '../../api/biodata.service';
-import type { MatchingProfile } from '../../types';
+import type { MatchProfileResponse } from '../../types/api.types';
 import { 
-  BiodataData, 
+  type BiodataData, 
   TemplateClassic, 
   TemplateModern, 
   TemplateElegant, 
@@ -22,7 +22,6 @@ export const CreateBiodata: React.FC<{
   onClose: () => void;
   onSuccess: (email: string) => void;
 }> = ({ onClose, onSuccess }) => {
-  const { t } = useLanguage();
   const [step, setStep] = useState<Step>(1); 
   // 1: Form, 2: Template Select, 3: Preview, 4: OTP Verification, 5: Downloading/Success
   
@@ -42,7 +41,7 @@ export const CreateBiodata: React.FC<{
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   
-  const [matches, setMatches] = useState<MatchingProfile[]>([]);
+  const [matches, setMatches] = useState<MatchProfileResponse[]>([]);
   const [passwordPromptVisible, setPasswordPromptVisible] = useState(false);
   const [password, setPassword] = useState('');
   
@@ -111,7 +110,7 @@ export const CreateBiodata: React.FC<{
     }
     setIsLoading(true);
     try {
-      await AuthService.requestOtp({ phoneOrEmail: email });
+      await AuthService.requestOtp({ email });
       setStep(4);
       setErrorMsg('');
     } catch (err) {
@@ -125,7 +124,7 @@ export const CreateBiodata: React.FC<{
   const verifyOTPAndDownload = async () => {
     setIsLoading(true);
     try {
-      await AuthService.verifyOtp({ phoneOrEmail: email, otp: otpCode });
+      await AuthService.verifyOtp({ email, otp: otpCode });
       
       // Save the biodata form data to the newly created user profile
       try {
@@ -188,7 +187,7 @@ export const CreateBiodata: React.FC<{
   const completeRegistration = async () => {
     setIsLoading(true);
     try {
-      await AuthService.setupPassword({ phoneOrEmail: email, password });
+      await AuthService.setupPassword({ password });
       onSuccess(email); // Close modal and refresh app state
     } catch (err) {
       setErrorMsg('Failed to set password.');
@@ -306,7 +305,6 @@ export const CreateBiodata: React.FC<{
                   <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
                     {/* Hack to render thumbnail quickly */}
                     {(() => {
-                        const tmp = selectedTemplate;
                         let thumb;
                         if(num === 1) thumb = <TemplateClassic data={formData} />;
                         if(num === 2) thumb = <TemplateModern data={formData} />;
@@ -366,9 +364,9 @@ export const CreateBiodata: React.FC<{
                 <div style={{ display: 'flex', gap: '15px', overflowX: 'auto', padding: '10px' }}>
                   {matches.slice(0, 3).map((match, idx) => (
                     <div key={idx} style={{ minWidth: '200px', border: '1px solid #eee', borderRadius: '12px', padding: '15px', backgroundColor: '#fff', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }}>
-                      <div style={{ width: '80px', height: '80px', borderRadius: '50%', backgroundColor: '#eee', margin: '0 auto 15px auto', backgroundImage: `url(${match.photoUrls?.[0] || 'https://via.placeholder.com/80'})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                      <div style={{ width: '80px', height: '80px', borderRadius: '50%', backgroundColor: '#eee', margin: '0 auto 15px auto', backgroundImage: `url(${match.photoUrl || 'https://via.placeholder.com/80'})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
                       <h4 style={{ margin: '0 0 5px 0' }}>{match.fullName}</h4>
-                      <p style={{ margin: '0 0 5px 0', fontSize: '0.85rem', color: '#666' }}>{match.age} yrs • {match.city}</p>
+                      <p style={{ margin: '0 0 5px 0', fontSize: '0.85rem', color: '#666' }}>{match.age} yrs • {match.location}</p>
                       <button 
                         onClick={() => setPasswordPromptVisible(true)}
                         style={{ width: '100%', padding: '8px', marginTop: '10px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', border: 'none', borderRadius: '20px', cursor: 'pointer', fontWeight: 'bold' }}

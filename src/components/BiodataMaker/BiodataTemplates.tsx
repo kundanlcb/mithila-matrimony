@@ -120,7 +120,7 @@ export const TemplateModern: React.FC<TemplateProps> = ({ data, id }) => (
         <h3 style={mHeading}>Family Background</h3>
         <div style={mRow}><span style={mLabel}>Father:</span> <span>{data.fatherName}</span></div>
         <div style={mRow}><span style={mLabel}>Mother:</span> <span>{data.motherName}</span></div>
-        <div style={mRow}><span style={mLabel}>Location:</span> <span>{data.familyLocation}</span></div>
+        <div style={mRow}><span style={mLabel}>Location:</span> <span>{data.urbanAddress?.city || ''}, {data.urbanAddress?.state || ''}</span></div>
       </div>
     </div>
   </div>
@@ -159,7 +159,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({ data, id }) => (
           <h3 style={{ borderBottom: '1px solid #CD5C5C', color: '#CD5C5C', paddingBottom: '8px' }}>Family Details</h3>
           <p style={{ margin: '5px 0' }}><strong>Father:</strong> {data.fatherName}</p>
           <p style={{ margin: '5px 0' }}><strong>Mother:</strong> {data.motherName}</p>
-          <p style={{ margin: '5px 0' }}><strong>Residence:</strong> {data.familyLocation}</p>
+          <p style={{ margin: '5px 0' }}><strong>Residence:</strong> {data.urbanAddress?.city || ''}, {data.urbanAddress?.state || ''}</p>
         </div>
       </div>
     </div>
@@ -193,7 +193,7 @@ export const TemplateMinimal: React.FC<TemplateProps> = ({ data, id }) => (
           <h4 style={{ textTransform: 'uppercase', color: '#999', fontSize: '12px', letterSpacing: '1px', marginBottom: '15px' }}>Family</h4>
           <div style={minRow}><span>Father</span> <span>{data.fatherName}</span></div>
           <div style={minRow}><span>Mother</span> <span>{data.motherName}</span></div>
-          <div style={minRow}><span>Location</span> <span>{data.familyLocation}</span></div>
+          <div style={minRow}><span>Location</span> <span>{data.urbanAddress?.city || ''}, {data.urbanAddress?.state || ''}</span></div>
         </div>
       </div>
       
@@ -243,7 +243,7 @@ export const TemplateTraditional: React.FC<TemplateProps> = ({ data, id }) => (
       <h3 style={{ borderBottom: '2px solid #D4AF37', paddingBottom: '10px', marginTop: 0 }}>Parivar Details</h3>
       <p><strong>Pita Ji:</strong> {data.fatherName}</p>
       <p><strong>Mata Ji:</strong> {data.motherName}</p>
-      <p><strong>Niwas:</strong> {data.familyLocation}</p>
+      <p><strong>Niwas:</strong> {data.urbanAddress?.city || ''}, {data.urbanAddress?.state || ''}</p>
     </div>
   </div>
 );
