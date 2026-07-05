@@ -11,7 +11,6 @@ export type BiodataData = {
   fullName: string;
   gender: 'Male' | 'Female';
   dob: string;
-  birthTime: string;
   birthPlace: string;
   height: string;
   complexion: string;
@@ -53,7 +52,7 @@ export const TemplateClassic: React.FC<TemplateProps> = ({ data, id }) => (
         <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
           <tbody>
             <tr><td style={tCell}><strong>Date of Birth:</strong></td><td style={tCell}>{data.dob}</td></tr>
-            <tr><td style={tCell}><strong>Birth Time:</strong></td><td style={tCell}>{data.birthTime}</td></tr>
+            
             <tr><td style={tCell}><strong>Birth Place:</strong></td><td style={tCell}>{data.birthPlace}</td></tr>
             <tr><td style={tCell}><strong>Height:</strong></td><td style={tCell}>{data.height}</td></tr>
             <tr><td style={tCell}><strong>Complexion:</strong></td><td style={tCell}>{data.complexion}</td></tr>
@@ -97,7 +96,7 @@ export const TemplateModern: React.FC<TemplateProps> = ({ data, id }) => (
       <h2 style={{ margin: '0 0 20px 0', fontSize: '22px' }}>{data.fullName}</h2>
       <div style={{ fontSize: '14px', lineHeight: '1.8' }}>
         <div><strong>DOB:</strong> {data.dob}</div>
-        <div><strong>Time:</strong> {data.birthTime}</div>
+        
         <div><strong>Place:</strong> {data.birthPlace}</div>
         <div><strong>Height:</strong> {data.height}</div>
         <div><strong>Complexion:</strong> {data.complexion}</div>
@@ -146,7 +145,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({ data, id }) => (
       <div>
         <div style={{ marginBottom: '25px' }}>
           <h3 style={{ borderBottom: '1px solid #CD5C5C', color: '#CD5C5C', paddingBottom: '8px', marginTop: 0 }}>Personal Details</h3>
-          <p style={{ margin: '5px 0' }}><strong>Born:</strong> {data.dob} at {data.birthTime} in {data.birthPlace}</p>
+          <p style={{ margin: '5px 0' }}><strong>Born:</strong> {data.dob} in {data.birthPlace}</p>
           <p style={{ margin: '5px 0' }}><strong>Height:</strong> {data.height} | <strong>Complexion:</strong> {data.complexion}</p>
           <p style={{ margin: '5px 0' }}><strong>Gotra:</strong> {data.gotra} | <strong>Mool:</strong> {data.mool}</p>
         </div>
@@ -179,7 +178,7 @@ export const TemplateMinimal: React.FC<TemplateProps> = ({ data, id }) => (
         <div style={{ marginBottom: '40px' }}>
           <h4 style={{ textTransform: 'uppercase', color: '#999', fontSize: '12px', letterSpacing: '1px', marginBottom: '15px' }}>Profile</h4>
           <div style={minRow}><span>DOB</span> <span>{data.dob}</span></div>
-          <div style={minRow}><span>Time</span> <span>{data.birthTime}</span></div>
+          
           <div style={minRow}><span>Place</span> <span>{data.birthPlace}</span></div>
           <div style={minRow}><span>Height</span> <span>{data.height}</span></div>
           <div style={minRow}><span>Color</span> <span>{data.complexion}</span></div>
@@ -222,7 +221,7 @@ export const TemplateTraditional: React.FC<TemplateProps> = ({ data, id }) => (
       <div style={{ flex: 1, padding: '20px', border: '1px dashed #D4AF37' }}>
         <h3 style={{ textAlign: 'center', borderBottom: '2px solid #D4AF37', paddingBottom: '10px', marginTop: 0 }}>Janam Kundali Details</h3>
         <p><strong>Date of Birth:</strong> {data.dob}</p>
-        <p><strong>Time of Birth:</strong> {data.birthTime}</p>
+        
         <p><strong>Place of Birth:</strong> {data.birthPlace}</p>
         <p><strong>Gotra:</strong> {data.gotra}</p>
         <p><strong>Mool:</strong> {data.mool}</p>

@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 import { UploadService } from '../../api/upload.service';
 import { AuthService } from '../../api/auth.service';
+import { apiClient } from '../../api/apiClient';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { MatchesService } from '../../api/matches.service';
@@ -24,11 +25,34 @@ export const CreateBiodata: React.FC<{
   onSuccess: (email: string) => void;
 }> = ({ onClose, onSuccess }) => {
   const { t } = useLanguage();
+    const [masterGotras, setMasterGotras] = useState<string[]>(['Kashyap', 'Shandilya', 'Vatsa', 'Bhardwaj', 'Parashar', 'Katyayan']);
+  const [masterProfessions, setMasterProfessions] = useState<string[]>(['Software Engineer', 'Doctor', 'Teacher', 'Business', 'Government Service']);
+  const [masterComplexions, setMasterComplexions] = useState<string[]>(['Fair', 'Wheatish', 'Dusky', 'Dark', 'Very Fair']);
+
+  useEffect(() => {
+    const fetchMasterData = async () => {
+      try {
+        const [gotrasList, professionsList] = await Promise.all([
+          apiClient.get('/api/v1/master-data/gotra'),
+          apiClient.get('/api/v1/master-data/profession')
+        ]);
+        if (gotrasList?.data?.length) setMasterGotras(gotrasList.data.map(g => g.name));
+        else if (gotrasList?.length) setMasterGotras(gotrasList.map(g => g.name));
+        
+        if (professionsList?.data?.length) setMasterProfessions(professionsList.data.map(p => p.name));
+        else if (professionsList?.length) setMasterProfessions(professionsList.map(p => p.name));
+      } catch (e) {
+        console.error('Failed to fetch master data', e);
+      }
+    };
+    fetchMasterData();
+  }, []);
+
   const [step, setStep] = useState<Step>(1); 
   // 1: Form, 2: Template Select, 3: Preview, 4: OTP Verification, 5: Downloading/Success
   
   const [formData, setFormData] = useState<BiodataData>({
-    fullName: '', gender: 'Male', dob: '', birthTime: '', birthPlace: '',
+    fullName: '', gender: 'Male', dob: '', birthPlace: '',
     height: '', complexion: '', education: '', profession: '', income: '', gotra: '',
     mool: '', grandparentName: '', fatherName: '', motherName: '', siblingsDetail: '',
     ruralAddress: { streetAddress: '', city: '', state: '', pincode: '' },
@@ -134,7 +158,6 @@ export const CreateBiodata: React.FC<{
           fullName: formData.fullName,
           gender: formData.gender,
           dateOfBirth: formData.dob,
-          birthTime: formData.birthTime,
           birthPlace: formData.birthPlace,
           height: formData.height,
           complexion: formData.complexion,
@@ -238,22 +261,22 @@ export const CreateBiodata: React.FC<{
                 <div style={styles.inputGroup}><label>{t('biodata_maker_full_name')}</label><input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} style={styles.input} /></div>
                 <div style={styles.inputGroup}><label>{t('biodata_maker_gender')}</label><select name="gender" value={formData.gender} onChange={handleInputChange} style={styles.input}><option value="Male">{t('biodata_maker_male')}</option><option value="Female">{t('biodata_maker_female')}</option></select></div>
                 <div style={styles.inputGroup}><label>{t('biodata_maker_dob')}</label><input type="date" name="dob" value={formData.dob} onChange={handleInputChange} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>{t('biodata_maker_tob')}</label><input type="time" name="birthTime" value={formData.birthTime} onChange={handleInputChange} style={styles.input} /></div>
+                
                 <div style={styles.inputGroup}><label>{t('biodata_maker_pob')}</label><input type="text" name="birthPlace" value={formData.birthPlace} onChange={handleInputChange} style={styles.input} /></div>
                 <div style={styles.inputGroup}><label>{t('biodata_maker_height')}</label><input type="text" name="height" placeholder="e.g. 5'8&quot;" value={formData.height} onChange={handleInputChange} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>{t('biodata_maker_complexion')}</label><input type="text" name="complexion" placeholder="e.g. Fair, Wheatish" value={formData.complexion} onChange={handleInputChange} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_complexion')}</label><select name="complexion" value={formData.complexion} onChange={handleInputChange} style={styles.input}><option value="">Select</option>{masterComplexions.map(c => <option key={c} value={c}>{c}</option>)}</select></div>
               </div>
 
               <div style={styles.sectionTitle}>{t('biodata_maker_maithil_specifics')}</div>
               <div style={styles.formGrid}>
-                <div style={styles.inputGroup}><label>{t('biodata_maker_gotra')}</label><input type="text" name="gotra" value={formData.gotra} onChange={handleInputChange} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_gotra')}</label><select name="gotra" value={formData.gotra} onChange={handleInputChange} style={styles.input}><option value="">Select</option>{masterGotras.map(g => <option key={g} value={g}>{g}</option>)}</select></div>
                 <div style={styles.inputGroup}><label>{t('biodata_maker_mool')}</label><input type="text" name="mool" value={formData.mool} onChange={handleInputChange} style={styles.input} /></div>
               </div>
 
               <div style={styles.sectionTitle}>{t('biodata_maker_edu_prof')}</div>
               <div style={styles.formGrid}>
                 <div style={styles.inputGroup}><label>{t('biodata_maker_education')}</label><input type="text" name="education" value={formData.education} onChange={handleInputChange} style={styles.input} /></div>
-                <div style={styles.inputGroup}><label>{t('biodata_maker_profession')}</label><input type="text" name="profession" value={formData.profession} onChange={handleInputChange} style={styles.input} /></div>
+                <div style={styles.inputGroup}><label>{t('biodata_maker_profession')}</label><select name="profession" value={formData.profession} onChange={handleInputChange} style={styles.input}><option value="">Select</option>{masterProfessions.map(p => <option key={p} value={p}>{p}</option>)}</select></div>
                 <div style={styles.inputGroup}><label>{t('biodata_maker_income')}</label><input type="text" name="income" value={formData.income} onChange={handleInputChange} style={styles.input} /></div>
               </div>
 
