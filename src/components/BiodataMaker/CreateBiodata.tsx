@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { useLanguage } from '../../context/LanguageContext';
+
 import { UploadService } from '../../api/upload.service';
 import { AuthService } from '../../api/auth.service';
 import html2canvas from 'html2canvas';
