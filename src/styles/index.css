@@ -733,6 +733,14 @@ button {
   z-index: 10;
 }
 
+.chat-input-bar textarea::-webkit-scrollbar {
+  display: none;
+}
+.chat-input-bar textarea {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
 .chat-choices-panel {
   display: flex;
   flex-wrap: wrap;

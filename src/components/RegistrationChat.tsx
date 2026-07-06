@@ -601,7 +601,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
                         transform: template === theme.name ? 'translateY(-4px)' : 'none'
                       }}
                     >
-                      <div style={{ width: '100%', height: '320px', overflow: 'hidden', position: 'relative', borderRadius: '6px', backgroundColor: '#fff', border: '1px solid var(--border-light)' }}>
+                      <div style={{ width: '226px', height: '319px', overflow: 'hidden', position: 'relative', borderRadius: '6px', backgroundColor: '#fff', border: '1px solid var(--border-light)', margin: '0 auto' }}>
                         <div style={{ transform: 'scale(0.284)', transformOrigin: 'top left', width: '794px', height: '1123px', position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
                           <BiodataTemplate data={mappedData} theme={theme} />
                         </div>
