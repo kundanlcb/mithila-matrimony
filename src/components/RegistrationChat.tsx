@@ -11,7 +11,9 @@ import {
   TemplateModern, 
   TemplateElegant,
   TemplateMinimal,
-  TemplateTraditional
+  TemplateTraditional,
+  TemplateSplit,
+  splitThemes
 } from './BiodataMaker/BiodataTemplates';
 
 interface ChatMessage {
@@ -520,7 +522,10 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', minWidth: '320px' }}>
                     <p style={{ color: 'var(--primary)', fontWeight: '600', fontSize: '1.05rem', textAlign: 'center' }}>{msg.text}</p>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.8rem' }}>
-                      {['TemplateClassic', 'TemplateModern', 'TemplateElegant', 'TemplateMinimal', 'TemplateTraditional'].map(tpl => {
+                      {['TemplateClassic', 'TemplateModern', 'TemplateElegant', 'TemplateMinimal', 'TemplateTraditional', 'TemplateSplitYellowLight', 'TemplateSplitYellowDark', 'TemplateSplitTealDark', 'TemplateSplitRoseLight'].map(tpl => {
+                        const isSplit = tpl.startsWith('TemplateSplit');
+                        const themeIndex = tpl.includes('YellowLight') ? 0 : tpl.includes('YellowDark') ? 1 : tpl.includes('TealDark') ? 2 : 3;
+                        const theme = isSplit ? splitThemes[themeIndex] : undefined;
                         const TplComponent = tpl === 'TemplateClassic' ? TemplateClassic : 
                                              tpl === 'TemplateModern' ? TemplateModern : 
                                              tpl === 'TemplateElegant' ? TemplateElegant : 
@@ -548,10 +553,10 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
                           >
                             <div style={{ width: '100%', height: '242px', overflow: 'hidden', position: 'relative', borderRadius: '4px', backgroundColor: '#fff', border: '1px solid var(--border-light)' }}>
                               <div style={{ transform: 'scale(0.215)', transformOrigin: 'top left', width: '794px', height: '1123px', position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
-                                <TplComponent data={mappedData} />
+                                {isSplit ? <TemplateSplit data={mappedData} theme={theme} /> : <TplComponent data={mappedData} />}
                               </div>
                             </div>
-                            <span style={{ fontSize: '0.85rem' }}>{tpl.replace('Template', '')}</span>
+                            <span style={{ fontSize: '0.85rem' }}>{isSplit ? tpl.replace('TemplateSplit', 'Split ') : tpl.replace('Template', '')}</span>
                           </button>
                         );
                       })}

@@ -341,6 +341,174 @@ export const TemplateTraditional: React.FC<TemplateProps> = ({ data, id }) => (
   </div>
 );
 
+// --- Template 6: Split Themed (Modern) ---
+export type SplitTheme = {
+  name: string;
+  primary: string;
+  sidebarBg: string;
+  sidebarText: string;
+  mainBg: string;
+  mainText: string;
+};
+
+export const splitThemes: SplitTheme[] = [
+  {
+    name: 'Yellow & Light',
+    primary: '#EAB308', // Yellow 500
+    sidebarBg: '#F8FAFC', // Slate 50
+    sidebarText: '#334155', // Slate 700
+    mainBg: '#FFFFFF',
+    mainText: '#1E293B'
+  },
+  {
+    name: 'Yellow & Dark',
+    primary: '#FBBF24', // Yellow 400
+    sidebarBg: '#1E293B', // Slate 800
+    sidebarText: '#F8FAFC',
+    mainBg: '#FFFFFF',
+    mainText: '#334155'
+  },
+  {
+    name: 'Teal & Dark',
+    primary: '#14B8A6', // Teal 500
+    sidebarBg: '#0F172A', // Slate 900
+    sidebarText: '#F8FAFC',
+    mainBg: '#FFFFFF',
+    mainText: '#334155'
+  },
+  {
+    name: 'Rose & Light',
+    primary: '#F43F5E', // Rose 500
+    sidebarBg: '#FFF1F2', // Rose 50
+    sidebarText: '#4C1D95', 
+    mainBg: '#FFFFFF',
+    mainText: '#1E293B'
+  }
+];
+
+export type TemplateSplitProps = TemplateProps & {
+  theme?: SplitTheme;
+};
+
+export const TemplateSplit: React.FC<TemplateSplitProps> = ({ data, id, theme = splitThemes[0] }) => {
+  return (
+    <div id={id} style={{ 
+      textAlign: 'left', boxSizing: 'border-box', 
+      width: '794px', minWidth: '794px', maxWidth: '794px', 
+      height: '1123px', minHeight: '1123px', maxHeight: '1123px', 
+      fontFamily: '"Inter", "Helvetica Neue", sans-serif', 
+      padding: '0', backgroundColor: theme.mainBg, color: theme.mainText, 
+      margin: '0 auto', display: 'flex', overflow: 'hidden' 
+    }}>
+      {/* Sidebar */}
+      <div style={{ 
+        backgroundColor: theme.sidebarBg, color: theme.sidebarText, 
+        width: '280px', flexShrink: 0, padding: '40px 30px', 
+        display: 'flex', flexDirection: 'column', gap: '30px' 
+      }}>
+        {/* Photo Container */}
+        {data.photoUrl && (
+          <div style={{ alignSelf: 'center', marginBottom: '10px' }}>
+            <img 
+              src={data.photoUrl} 
+              alt="Profile" 
+              style={{ width: '180px', height: '180px', objectFit: 'cover', borderRadius: '50%', border: `4px solid ${theme.primary}`, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} 
+              crossOrigin="anonymous" 
+            />
+          </div>
+        )}
+
+        {/* Contact section */}
+        <div>
+          <h3 style={{ fontSize: '15px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', borderBottom: `2px solid ${theme.primary}`, paddingBottom: '8px', marginBottom: '15px' }}>Contact</h3>
+          <div style={{ fontSize: '13px', lineHeight: '1.6', opacity: 0.9 }}>
+            {data.urbanAddress?.streetAddress && <div>{data.urbanAddress.streetAddress}</div>}
+            <div>{data.urbanAddress?.city || 'City'}, {data.urbanAddress?.state || 'State'} {data.urbanAddress?.pincode}</div>
+          </div>
+        </div>
+
+        {/* Family Background */}
+        <div>
+          <h3 style={{ fontSize: '15px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', borderBottom: `2px solid ${theme.primary}`, paddingBottom: '8px', marginBottom: '15px' }}>Family</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', fontSize: '13px', opacity: 0.9 }}>
+            <div><strong style={{ display: 'block', color: theme.primary, textTransform: 'uppercase', fontSize: '11px', letterSpacing: '1px' }}>Father</strong> {data.fatherName || 'Not Specified'}</div>
+            <div><strong style={{ display: 'block', color: theme.primary, textTransform: 'uppercase', fontSize: '11px', letterSpacing: '1px' }}>Mother</strong> {data.motherName || 'Not Specified'}</div>
+            <div><strong style={{ display: 'block', color: theme.primary, textTransform: 'uppercase', fontSize: '11px', letterSpacing: '1px' }}>Grandparent</strong> {data.grandparentName || 'Not Specified'}</div>
+          </div>
+        </div>
+        
+        {/* Decorative Element */}
+        <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', opacity: 0.5 }}>
+           <div style={{ width: '40px', height: '4px', backgroundColor: theme.primary, borderRadius: '2px' }}></div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div style={{ flex: 1, padding: '60px 50px', display: 'flex', flexDirection: 'column', gap: '45px' }}>
+        {/* Header */}
+        <div style={{ borderBottom: `3px solid ${theme.primary}`, paddingBottom: '20px' }}>
+          <h1 style={{ fontSize: '42px', fontWeight: '800', margin: '0 0 10px 0', letterSpacing: '-1px', textTransform: 'uppercase', color: theme.mainText, lineHeight: '1.1' }}>
+            {data.fullName}
+          </h1>
+          <h2 style={{ fontSize: '16px', fontWeight: '600', color: theme.primary, margin: 0, textTransform: 'uppercase', letterSpacing: '3px' }}>
+            {data.profession || 'Professional Profile'}
+          </h2>
+        </div>
+
+        {/* Personal Details */}
+        <div>
+          <h3 style={{ fontSize: '18px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 25px 0', color: theme.mainText, display: 'flex', alignItems: 'center', gap: '12px' }}>
+             <span style={{ display: 'inline-block', width: '12px', height: '12px', backgroundColor: theme.primary, borderRadius: '2px' }}></span> Personal Details
+          </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px' }}>
+            <div style={detailBoxStyle(theme)}><span style={labelStyle(theme)}>Date of Birth</span> <strong style={valueStyle}>{data.dob}</strong></div>
+            <div style={detailBoxStyle(theme)}><span style={labelStyle(theme)}>Birth Place</span> <strong style={valueStyle}>{data.birthPlace}</strong></div>
+            <div style={detailBoxStyle(theme)}><span style={labelStyle(theme)}>Height</span> <strong style={valueStyle}>{data.height}</strong></div>
+            <div style={detailBoxStyle(theme)}><span style={labelStyle(theme)}>Complexion</span> <strong style={valueStyle}>{data.complexion}</strong></div>
+            <div style={detailBoxStyle(theme)}><span style={labelStyle(theme)}>Gotra</span> <strong style={valueStyle}>{data.gotra}</strong></div>
+            <div style={detailBoxStyle(theme)}><span style={labelStyle(theme)}>Mool</span> <strong style={valueStyle}>{data.mool || 'Not Specified'}</strong></div>
+          </div>
+        </div>
+
+        {/* Education & Career */}
+        <div>
+          <h3 style={{ fontSize: '18px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 25px 0', color: theme.mainText, display: 'flex', alignItems: 'center', gap: '12px' }}>
+             <span style={{ display: 'inline-block', width: '12px', height: '12px', backgroundColor: theme.primary, borderRadius: '2px' }}></span> Education & Career
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+             <div style={{ ...detailBoxStyle(theme), display: 'block' }}><span style={labelStyle(theme)}>Highest Education</span> <strong style={valueStyle}>{data.education}</strong></div>
+             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px' }}>
+                <div style={detailBoxStyle(theme)}><span style={labelStyle(theme)}>Profession</span> <strong style={valueStyle}>{data.profession}</strong></div>
+                <div style={detailBoxStyle(theme)}><span style={labelStyle(theme)}>Income</span> <strong style={valueStyle}>{data.income}</strong></div>
+             </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  );
+};
+
+const detailBoxStyle = (theme: SplitTheme): React.CSSProperties => ({
+  borderLeft: `3px solid ${theme.primary}`,
+  paddingLeft: '15px'
+});
+const labelStyle = (theme: SplitTheme): React.CSSProperties => ({
+  color: theme.mainText,
+  opacity: 0.5,
+  fontSize: '11px',
+  fontWeight: '600',
+  display: 'block',
+  marginBottom: '6px',
+  textTransform: 'uppercase',
+  letterSpacing: '1.5px'
+});
+const valueStyle: React.CSSProperties = {
+  fontSize: '15px',
+  fontWeight: '600',
+  color: 'inherit'
+};
+
 // --- Shared Styles ---
 const tLabel: React.CSSProperties = { padding: '12px 10px 12px 0', borderBottom: '1px solid #f4f4f4', color: '#718096', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', width: '35%' };
 const tValue: React.CSSProperties = { padding: '12px 0', borderBottom: '1px solid #f4f4f4', color: '#2D3748', fontWeight: 600, fontSize: '15px' };

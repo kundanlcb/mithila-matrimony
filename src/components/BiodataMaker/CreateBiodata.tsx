@@ -10,7 +10,9 @@ import {
   TemplateModern, 
   TemplateElegant, 
   TemplateMinimal, 
-  TemplateTraditional 
+  TemplateTraditional,
+  TemplateSplit,
+  splitThemes
 } from './BiodataTemplates';
 
 
@@ -34,7 +36,11 @@ export const CreateBiodata: React.FC<{
       'TemplateModern': 2,
       'TemplateElegant': 3,
       'TemplateMinimal': 4,
-      'TemplateTraditional': 5
+      'TemplateTraditional': 5,
+      'TemplateSplitYellowLight': 6,
+      'TemplateSplitYellowDark': 7,
+      'TemplateSplitTealDark': 8,
+      'TemplateSplitRoseLight': 9
     };
     setSelectedTemplate(templateMap[templateName] || 1);
     
@@ -92,6 +98,10 @@ export const CreateBiodata: React.FC<{
         case 3: return <TemplateElegant {...props} />;
         case 4: return <TemplateMinimal {...props} />;
         case 5: return <TemplateTraditional {...props} />;
+        case 6: return <TemplateSplit {...props} theme={splitThemes[0]} />;
+        case 7: return <TemplateSplit {...props} theme={splitThemes[1]} />;
+        case 8: return <TemplateSplit {...props} theme={splitThemes[2]} />;
+        case 9: return <TemplateSplit {...props} theme={splitThemes[3]} />;
         default: return <TemplateClassic {...props} />;
       }
     })();
