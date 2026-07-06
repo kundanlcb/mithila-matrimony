@@ -69,7 +69,12 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
     interests: [],
     photoUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400&h=400',
     aboutMe: '',
-    phoneNumber: ''
+    phoneNumber: '',
+    fatherName: '',
+    motherName: '',
+    grandparentName: '',
+    siblingsDetail: '',
+    birthPlace: ''
   });
 
   // Hobbies temporary accumulator (Step 8)
@@ -196,7 +201,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
     setErrorMsg(null);
     
     const valueToProcess = directValue !== undefined ? directValue : inputValue.trim();
-    if (!valueToProcess && currentStep !== 16) { // Hobbies selection done via button
+    if (!valueToProcess && currentStep !== 22) { // Hobbies selection done via button
       setErrorMsg(t('chat_error_empty'));
       return;
     }
@@ -205,7 +210,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
     setMessages(prev => [...prev, {
       id: 'user-' + Math.random().toString(36).substr(2, 9),
       sender: 'user',
-      text: currentStep === 16 ? tempInterests.join(', ') : valueToProcess,
+      text: currentStep === 22 ? tempInterests.join(', ') : valueToProcess,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }]);
 
@@ -216,6 +221,9 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
     setCurrentStep(nextStep);
 
     // Bot Response Logic based on Next Step
+    const isSkip = valueToProcess.toLowerCase() === 'skip';
+    const finalValue = isSkip ? 'Not Specified' : valueToProcess;
+
     switch (currentStep) {
       case -1: // Password entered
         if (valueToProcess.length < 6) {
@@ -233,6 +241,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         });
         break;
 
+      // === SECTION 1: PERSONAL DETAILS ===
       case 0: // Name entered -> Ask Phone
         setBiodataForm(prev => ({ ...prev, fullName: valueToProcess }));
         triggerBotResponse(t('bot_phone', { name: valueToProcess }), 'text');
@@ -248,7 +257,6 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         setBiodataForm(prev => ({ ...prev, phoneNumber: valueToProcess }));
         const defaultPhoto = 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400&h=400';
         setBiodataForm(prev => ({ ...prev, photoUrl: defaultPhoto }));
-        
         triggerBotResponse(t('bot_gender', { name: biodataForm.fullName || valueToProcess }), 'select', ['Female', 'Male']);
         break;
 
@@ -263,7 +271,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         triggerBotResponse(t('bot_age'), 'text');
         break;
 
-      case 3: { // Age entered -> Ask Height
+      case 3: // Age entered -> Ask Height
         const ageNum = parseInt(valueToProcess);
         if (isNaN(ageNum) || ageNum < 18 || ageNum > 70) {
           setErrorMsg(t('chat_error_age'));
@@ -274,7 +282,6 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         setBiodataForm(prev => ({ ...prev, age: ageNum }));
         triggerBotResponse(t('bot_height'), 'select', ["5' 0\"", "5' 2\"", "5' 4\"", "5' 6\"", "5' 8\"", "5' 10\"", "6' 0\"+"]);
         break;
-      }
 
       case 4: // Height entered -> Ask Marital Status
         setBiodataForm(prev => ({ ...prev, height: valueToProcess }));
@@ -288,86 +295,144 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
 
       case 6: // Complexion entered -> Ask Religion
         setBiodataForm(prev => ({ ...prev, complexion: valueToProcess }));
-        triggerBotResponse(t('bot_religion'), 'select', [...optionsReligion, 'Skip']);
+        triggerBotResponse(t('bot_religion'), 'select', [...optionsReligion]);
         break;
 
       case 7: // Religion entered -> Ask Caste
-        setBiodataForm(prev => ({ ...prev, religion: valueToProcess === 'Skip' ? 'Not Specified' : valueToProcess }));
-        triggerBotResponse(t('bot_caste'), 'select', [...optionsCaste, 'Skip']);
+        setBiodataForm(prev => ({ ...prev, religion: finalValue }));
+        triggerBotResponse(t('bot_caste'), 'select', [...optionsCaste]);
         break;
 
       case 8: // Caste selected -> Ask Gotra
-        setBiodataForm(prev => ({ ...prev, caste: valueToProcess === 'Skip' ? 'Not Specified' : valueToProcess }));
-        triggerBotResponse(t('bot_gotra'), 'select', [...optionsGotra, 'Skip']);
+        setBiodataForm(prev => ({ ...prev, caste: finalValue }));
+        triggerBotResponse(t('bot_gotra'), 'select', [...optionsGotra]);
         break;
 
       case 9: // Gotra selected -> Ask Mool
-        setBiodataForm(prev => ({ ...prev, gotra: valueToProcess === 'Skip' ? 'Not Specified' : valueToProcess }));
-        triggerBotResponse(locale === 'en' ? 'What is your Mool?' : 'आपका मूल क्या है?', 'select', ['Skip', 'Mool 1', 'Mool 2']); // Mool is usually text, we can use 'text' but give 'Skip' as an option. Since we can't easily mix text and select, let's just make it a text prompt but let them type Skip. Wait, actually, the user can just type it. If they click skip, we handle it. Let's just use 'text' and tell them to skip by clicking a skip button or typing skip. But we have a skip button for files. Let's use 'text' and add a bot hint.
-        // Wait, if it's 'text', they can't click 'Skip'. Let's give them a select with 'Skip' and some common ones, or maybe just ask for text?
-        // Let's use 'text' for now. We can't use 'select' without options.
-        triggerBotResponse(locale === 'en' ? 'What is your Mool? (Type your Mool or type "Skip")' : 'आपका मूल क्या है? (अपना मूल लिखें या "Skip" लिखें)', 'text');
+        setBiodataForm(prev => ({ ...prev, gotra: finalValue }));
+        triggerBotResponse(locale === 'en' ? 'What is your Mool?' : 'आपका मूल क्या है?', 'text');
         break;
 
       case 10: // Mool entered -> Ask Diet
-        setBiodataForm(prev => ({ ...prev, mool: valueToProcess.toLowerCase() === 'skip' ? 'Not Specified' : valueToProcess }));
+        setBiodataForm(prev => ({ ...prev, mool: finalValue }));
         triggerBotResponse(t('bot_diet'), 'select', ['Vegetarian', 'Non-Vegetarian', 'Eggetarian', 'Vegan']);
         break;
 
-      case 11: // Diet entered -> Ask City
-        setBiodataForm(prev => ({ ...prev, diet: valueToProcess }));
-        triggerBotResponse(t('bot_city'), 'select', optionsCity);
+      case 11: // Diet entered -> Ask Birth Place
+        setBiodataForm(prev => ({ ...prev, diet: finalValue }));
+        triggerBotResponse(locale === 'en' ? 'Where were you born? (Birth Place)' : 'आपका जन्म स्थान क्या है?', 'text');
         break;
 
-      case 12: // City entered -> Ask Education
-        setBiodataForm(prev => ({ ...prev, location: valueToProcess }));
+      // === SECTION 2: EDUCATIONAL & PROFESSIONAL DETAILS ===
+      case 12: // Birth Place entered -> Section Banner + Education
+        setBiodataForm(prev => ({ ...prev, birthPlace: finalValue }));
+        setMessages(prev => [...prev, {
+          id: 'banner-sec2',
+          sender: 'bot',
+          text: locale === 'en' ? '— 🎓 Section 2 of 5: Education & Profession —' : '— 🎓 भाग 2/5: शिक्षा और पेशा —',
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }]);
         triggerBotResponse(t('bot_education'), 'text');
         break;
 
       case 13: // Education entered -> Ask Profession
-        setBiodataForm(prev => ({ ...prev, education: valueToProcess }));
+        setBiodataForm(prev => ({ ...prev, education: finalValue }));
         triggerBotResponse(t('bot_profession'), 'select', optionsProfession);
         break;
 
       case 14: // Profession entered -> Ask Income
-        setBiodataForm(prev => ({ ...prev, profession: valueToProcess }));
+        setBiodataForm(prev => ({ ...prev, profession: finalValue }));
         triggerBotResponse(t('bot_income'), 'text');
         break;
 
-      case 15: { // Income entered -> Ask Hobbies
-        const incomeNum = parseInt(valueToProcess);
-        if (isNaN(incomeNum) || incomeNum <= 0) {
-          setErrorMsg(t('chat_error_income'));
-          setCurrentStep(15);
-          setMessages(prev => prev.slice(0, -1));
-          return;
+      // === SECTION 3: FAMILY DETAILS ===
+      case 15: { // Income entered -> Section Banner + Father's Name
+        if (!isSkip) {
+          const incomeNum = parseInt(valueToProcess);
+          if (isNaN(incomeNum) || incomeNum <= 0) {
+            setErrorMsg(t('chat_error_income'));
+            setCurrentStep(15);
+            setMessages(prev => prev.slice(0, -1));
+            return;
+          }
+          setBiodataForm(prev => ({ ...prev, annualIncome: incomeNum }));
         }
-        setBiodataForm(prev => ({ ...prev, annualIncome: incomeNum }));
-        triggerBotResponse(t('bot_interests'), 'tags', ['Madhubani Painting', 'Classical Music', 'Cooking', 'Reading', 'Travel', 'Gardening', 'Yoga']);
+        
+        setMessages(prev => [...prev, {
+          id: 'banner-sec3',
+          sender: 'bot',
+          text: locale === 'en' ? '— 👨‍👩‍👧‍👦 Section 3 of 5: Family Details —' : '— 👨‍👩‍👧‍👦 भाग 3/5: परिवार का विवरण —',
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }]);
+        triggerBotResponse(locale === 'en' ? 'What is your Father\'s Name?' : 'आपके पिता का क्या नाम है?', 'text');
         break;
       }
 
-      case 16: // Hobbies selected -> Ask Bio
+      case 16: // Father's Name -> Mother's Name
+        setBiodataForm(prev => ({ ...prev, fatherName: finalValue }));
+        triggerBotResponse(locale === 'en' ? 'What is your Mother\'s Name?' : 'आपकी माता का क्या नाम है?', 'text');
+        break;
+
+      case 17: // Mother's Name -> Grandparent's Name
+        setBiodataForm(prev => ({ ...prev, motherName: finalValue }));
+        triggerBotResponse(locale === 'en' ? 'What is your Grandparent\'s Name?' : 'आपके दादा/दादी का क्या नाम है?', 'text');
+        break;
+
+      case 18: // Grandparent's Name -> Siblings Details
+        setBiodataForm(prev => ({ ...prev, grandparentName: finalValue }));
+        triggerBotResponse(locale === 'en' ? 'Any details about your siblings? (e.g. 1 Brother, 1 Sister)' : 'आपके भाई-बहनों के बारे में कोई विवरण? (उदा. 1 भाई, 1 बहन)', 'text');
+        break;
+
+      // === SECTION 4: ADDRESS DETAILS ===
+      case 19: // Siblings Details -> Section Banner + Current City
+        setBiodataForm(prev => ({ ...prev, siblingsDetail: finalValue }));
+        setMessages(prev => [...prev, {
+          id: 'banner-sec4',
+          sender: 'bot',
+          text: locale === 'en' ? '— 🏠 Section 4 of 5: Address Details —' : '— 🏠 भाग 4/5: पते का विवरण —',
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }]);
+        triggerBotResponse(t('bot_city'), 'select', optionsCity);
+        break;
+
+      case 20: // Current City -> Street Address
+        setBiodataForm(prev => ({ ...prev, location: finalValue }));
+        triggerBotResponse(locale === 'en' ? 'What is your street address or neighborhood?' : 'आपका गली का पता या मोहल्ला क्या है?', 'text');
+        break;
+
+      // === SECTION 5: ADDITIONAL INFO & CONTACT ===
+      case 21: // Street Address -> Section Banner + Interests
+        setBiodataForm(prev => ({ ...prev, streetAddress: finalValue } as any));
+        setMessages(prev => [...prev, {
+          id: 'banner-sec5',
+          sender: 'bot',
+          text: locale === 'en' ? '— 🌟 Section 5 of 5: Additional Info —' : '— 🌟 भाग 5/5: अतिरिक्त जानकारी —',
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }]);
+        triggerBotResponse(t('bot_interests'), 'tags', ['Madhubani Painting', 'Classical Music', 'Cooking', 'Reading', 'Travel', 'Gardening', 'Yoga']);
+        break;
+
+      case 22: // Hobbies selected -> Ask Bio
         setBiodataForm(prev => ({ ...prev, interests: tempInterests }));
         triggerBotResponse(t('bot_bio'), 'text');
         break;
 
-      case 17: // Bio entered -> Ask Photo Upload
-        setBiodataForm(prev => ({ ...prev, aboutMe: valueToProcess }));
+      case 23: // Bio entered -> Ask Photo Upload
+        setBiodataForm(prev => ({ ...prev, aboutMe: finalValue }));
         triggerBotResponse(t('bot_photo'), 'file');
         break;
 
-      case 18: // Photo Uploaded -> Summary Review
+      case 24: // Photo Uploaded -> Summary Review
         if (valueToProcess && valueToProcess !== 'skip') {
           setBiodataForm(prev => ({ ...prev, photoUrl: valueToProcess }));
         }
         triggerBotResponse(t('bot_summary'), 'summary');
         break;
 
-      case 20: // Email entered in Biodata Mode
+      case 25: // (Was 20) Email entered in Biodata Mode
         if (!/^\S+@\S+\.\S+$/.test(valueToProcess)) {
           setErrorMsg(locale === 'en' ? 'Please enter a valid email.' : 'कृपया एक वैध ईमेल दर्ज करें।');
-          setCurrentStep(20);
+          setCurrentStep(25);
           setMessages(prev => prev.slice(0, -1));
           return;
         }
@@ -380,15 +445,15 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         } catch (err) {
           setTyping(false);
           setErrorMsg(locale === 'en' ? 'Failed to send OTP. Try again.' : 'OTP भेजने में विफल। पुनः प्रयास करें।');
-          setCurrentStep(20);
+          setCurrentStep(25);
           setMessages(prev => prev.slice(0, -1));
         }
         break;
 
-      case 21: // OTP entered in Biodata Mode
+      case 26: // (Was 21) OTP entered in Biodata Mode
         if (valueToProcess.length !== 6) {
           setErrorMsg(locale === 'en' ? 'OTP must be 6 digits.' : 'OTP 6 अंकों का होना चाहिए।');
-          setCurrentStep(20);
+          setCurrentStep(26);
           setMessages(prev => prev.slice(0, -1));
           return;
         }
@@ -408,12 +473,11 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         } catch (err) {
           setTyping(false);
           setErrorMsg(locale === 'en' ? 'Invalid OTP. Please try again.' : 'अमान्य OTP। कृपया पुनः प्रयास करें।');
-          setCurrentStep(21);
+          setCurrentStep(26);
           setMessages(prev => prev.slice(0, -1));
         }
         break;
-
-      case 22: // Template selection / download action (handled mostly by UI buttons)
+      case 27: // Template selection action handled by buttons
         break;
     }
   };
@@ -450,7 +514,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
 
   const handleConfirmSummary = () => {
     if (mode === 'biodata') {
-      setCurrentStep(19); // shifted from 18 to 19 because step 17 is now 18.
+      setCurrentStep(27); // Template selection step is now 27
       triggerBotResponse(locale === 'en' ? 'Awesome! Now, choose a premium design for your Biodata.' : 'बहुत बढ़िया! अब, अपने बायोडेटा के लिए एक प्रीमियम डिज़ाइन चुनें।', 'template');
     } else {
       handleFinalRegister();
@@ -489,7 +553,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
               fullName: biodataForm.fullName,
               gender: biodataForm.gender,
               dob: biodataForm.age ? `${new Date().getFullYear() - biodataForm.age}-01-01` : '1999-01-01',
-              birthPlace: biodataForm.location || '',
+              birthPlace: biodataForm.birthPlace || '',
               height: biodataForm.height || '',
               complexion: biodataForm.complexion || '',
               education: biodataForm.education,
@@ -497,12 +561,12 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
               income: biodataForm.annualIncome ? biodataForm.annualIncome.toString() : '',
               gotra: biodataForm.gotra,
               mool: (biodataForm as any).mool || '',
-              grandparentName: '',
-              fatherName: '',
-              motherName: '',
-              siblingsDetail: '',
+              grandparentName: biodataForm.grandparentName || '',
+              fatherName: biodataForm.fatherName || '',
+              motherName: biodataForm.motherName || '',
+              siblingsDetail: biodataForm.siblingsDetail || '',
               ruralAddress: { streetAddress: '', city: biodataForm.location || '', state: '', pincode: '' },
-              urbanAddress: { streetAddress: '', city: biodataForm.location || '', state: '', pincode: '' },
+              urbanAddress: { streetAddress: (biodataForm as any).streetAddress || '', city: biodataForm.location || '', state: '', pincode: '' },
               photoUrl: biodataForm.photoUrl || ''
             };
 
@@ -543,7 +607,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
                 <div style={{ display: 'flex', marginTop: '2rem', width: '100%', maxWidth: '400px' }}>
                   <button
                     onClick={() => {
-                      setCurrentStep(19);
+                      setCurrentStep(25);
                       triggerBotResponse(locale === 'en' ? 'Great choice! Please provide your email to save and download your Biodata.' : 'बढ़िया विकल्प! अपना बायोडेटा सहेजने और डाउनलोड करने के लिए कृपया अपना ईमेल प्रदान करें।', 'text');
                     }}
                     style={{
@@ -846,6 +910,22 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         >
           {t('chat_btn_send')}
         </button>
+        {/* Skip Button */}
+        {(() => {
+           const skippableSteps = [9, 10, 11, 13, 14, 15, 16, 17, 18, 20, 21, 23];
+           if (skippableSteps.includes(currentStep) && !typing && (messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType === 'text')) {
+              return (
+                <button
+                  type="button"
+                  onClick={() => handleUserSubmit(undefined, 'Skip')}
+                  style={{...styles.skipUploadBtn, padding: '0.9rem 1.2rem', marginLeft: '0.5rem', whiteSpace: 'nowrap', alignSelf: 'center', marginTop: 0 }}
+                >
+                  ⏭️ {locale === 'en' ? 'Skip' : 'छोड़ें'}
+                </button>
+              );
+           }
+           return null;
+        })()}
       </form>
     </div>
   );

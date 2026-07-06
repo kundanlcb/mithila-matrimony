@@ -47,6 +47,12 @@ export interface Biodata {
   maritalStatus?: string;  // Never Married, Divorced, etc.
   diet?: string;           // Vegetarian, Non-Vegetarian, etc.
   complexion?: string;     // Fair, Wheatish, etc.
+  birthPlace?: string;     // Birth City/Village
+  
+  fatherName?: string;
+  motherName?: string;
+  grandparentName?: string;
+  siblingsDetail?: string;
 
   phoneNumber?: string;
   email?: string;
