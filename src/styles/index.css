@@ -685,7 +685,7 @@ button {
   flex-direction: column;
   gap: var(--space-md);
   scroll-behavior: smooth;
-  padding-bottom: 5rem; /* extra space at bottom */
+  padding-bottom: 8rem; /* clear floating input bar with standard spacing */
 }
 
 .chat-bubble-bot {
