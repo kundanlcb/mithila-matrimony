@@ -908,30 +908,40 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
           style={{ ...styles.inputBox, minWidth: 0, textOverflow: 'ellipsis' }}
           data-testid="chat-input"
         />
-        <button
-          type="submit"
-          disabled={typing || (messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType !== 'text')}
-          style={styles.primarySendBtn}
-          data-testid="chat-send"
-        >
-          {t('chat_btn_send')}
-        </button>
-        {/* Skip Button */}
-        {(() => {
-           const skippableSteps = [9, 10, 11, 13, 14, 15, 16, 17, 18, 20, 21, 23];
-           if (skippableSteps.includes(currentStep) && !typing && (messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType === 'text')) {
-              return (
-                <button
-                  type="button"
-                  onClick={() => handleUserSubmit(undefined, 'Skip')}
-                  style={{...styles.skipUploadBtn, padding: '0.9rem 1.2rem', marginLeft: '0.5rem', whiteSpace: 'nowrap', alignSelf: 'center', marginTop: 0 }}
-                >
-                  ⏭️ {locale === 'en' ? 'Skip' : 'छोड़ें'}
-                </button>
-              );
-           }
-           return null;
-        })()}
+        <div style={{ display: 'flex', gap: '0.8rem', justifyContent: 'flex-end', width: '100%', alignItems: 'center' }}>
+          <button
+            type="submit"
+            disabled={typing || (messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType !== 'text')}
+            style={styles.primarySendBtn}
+            data-testid="chat-send"
+          >
+            {t('chat_btn_send')}
+          </button>
+          {/* Skip Button */}
+          {(() => {
+             const skippableSteps = [9, 10, 11, 13, 14, 15, 16, 17, 18, 20, 21, 23];
+             if (skippableSteps.includes(currentStep) && !typing && (messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType === 'text')) {
+                return (
+                  <button
+                    type="button"
+                    onClick={() => handleUserSubmit(undefined, 'Skip')}
+                    style={{
+                      ...styles.skipUploadBtn, 
+                      width: 'auto',
+                      borderRadius: 'var(--radius-full)',
+                      padding: '0.55rem 1.4rem', 
+                      whiteSpace: 'nowrap', 
+                      alignSelf: 'center', 
+                      marginTop: 0 
+                    }}
+                  >
+                    ⏭️ {locale === 'en' ? 'Skip' : 'छोड़ें'}
+                  </button>
+                );
+             }
+             return null;
+          })()}
+        </div>
       </form>
     </div>
   );
@@ -964,18 +974,19 @@ const styles = {
     gap: '0.5rem'
   },
   inputBox: {
-    flex: 1,
-    padding: '0 1rem',
+    padding: '0.4rem 0.6rem',
     border: 'none',
     backgroundColor: 'transparent',
     color: 'var(--text-main)',
     fontSize: '1.05rem',
     outline: 'none',
     boxShadow: 'none',
-    transition: 'var(--transition-fast)'
+    transition: 'var(--transition-fast)',
+    width: '100%',
+    borderBottom: '1px solid var(--border-light)'
   },
   primarySendBtn: {
-    padding: '0.7rem 1.8rem',
+    padding: '0.55rem 1.6rem',
     backgroundColor: 'var(--primary)',
     color: '#ffffff',
     fontWeight: '700',
