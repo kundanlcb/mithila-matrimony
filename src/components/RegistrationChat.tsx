@@ -546,7 +546,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
                               transform: template === tpl ? 'translateY(-2px)' : 'none'
                             }}
                           >
-                            <div style={{ width: '100%', height: '180px', overflow: 'hidden', position: 'relative', borderRadius: '4px', backgroundColor: '#fff', border: '1px solid var(--border-light)' }}>
+                            <div style={{ width: '100%', height: '242px', overflow: 'hidden', position: 'relative', borderRadius: '4px', backgroundColor: '#fff', border: '1px solid var(--border-light)' }}>
                               <div style={{ transform: 'scale(0.215)', transformOrigin: 'top left', width: '794px', height: '1123px', position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
                                 <TplComponent data={mappedData} />
                               </div>
