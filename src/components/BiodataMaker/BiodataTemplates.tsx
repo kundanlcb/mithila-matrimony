@@ -29,368 +29,62 @@ export type BiodataData = {
   photoUrl: string;
 };
 
-type TemplateProps = {
-  data: BiodataData;
-  id?: string;
-};
-
-// --- Helper: Religion Symbol ---
-const getReligionSymbol = (religion?: string) => {
-  if (!religion) return 'ॐ';
-  const r = religion.toLowerCase();
-  if (r.includes('hindu')) return 'ॐ';
-  if (r.includes('muslim') || r.includes('islam')) return '☪';
-  if (r.includes('sikh')) return 'ੴ';
-  if (r.includes('christian')) return '✝';
-  if (r.includes('jain')) return '卐';
-  if (r.includes('buddhis')) return '☸';
-  return 'ॐ';
-};
-
-// --- Template 1: Classic Premium ---
-export const TemplateClassic: React.FC<TemplateProps> = ({ data, id }) => (
-  <div id={id} style={{ textAlign: 'left', boxSizing: 'border-box', width: '794px', minWidth: '794px', maxWidth: '794px', height: '1123px', minHeight: '1123px', maxHeight: '1123px', fontFamily: '"Merriweather", "Georgia", serif', padding: '50px', backgroundColor: '#FFFAFA', color: '#333', border: '8px solid #8B0000', borderRadius: '4px', margin: '0 auto', overflow: 'hidden', position: 'relative' }}>
-    <div style={{ position: 'absolute', top: '10px', left: '10px', right: '10px', bottom: '10px', border: '1px solid #8B0000', pointerEvents: 'none' }}></div>
-    <div style={{ textAlign: 'center', marginBottom: '40px', borderBottom: '2px solid #8B0000', paddingBottom: '25px' }}>
-      <h1 style={{ color: '#8B0000', fontSize: '38px', margin: '0 0 10px 0', textTransform: 'uppercase', letterSpacing: '4px' }}>Biodata</h1>
-      <h2 style={{ fontSize: '28px', margin: 0, fontWeight: 'normal', fontStyle: 'italic', color: '#4A4A4A' }}>{data.fullName}</h2>
-    </div>
-    
-    <div style={{ display: 'flex', gap: '40px' }}>
-      {data.photoUrl && (
-        <div style={{ width: '180px', flexShrink: 0 }}>
-          <img src={data.photoUrl} alt="Profile" style={{ width: '100%', height: '240px', objectFit: 'cover', border: '4px solid #fff', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', borderRadius: '4px' }} crossOrigin="anonymous" />
-        </div>
-      )}
-      <div style={{ flex: 1 }}>
-        <h3 style={{ color: '#8B0000', borderBottom: '1px solid #EADDDD', paddingBottom: '8px', textTransform: 'uppercase', fontSize: '16px', letterSpacing: '1px', marginTop: 0 }}>Personal Details</h3>
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '25px', fontSize: '15px' }}>
-          <tbody>
-            <tr><td style={tLabel}>Date of Birth</td><td style={tValue}>{data.dob}</td></tr>
-            <tr><td style={tLabel}>Birth Place</td><td style={tValue}>{data.birthPlace}</td></tr>
-            <tr><td style={tLabel}>Height</td><td style={tValue}>{data.height}</td></tr>
-            <tr><td style={tLabel}>Complexion</td><td style={tValue}>{data.complexion}</td></tr>
-            <tr><td style={tLabel}>Gotra</td><td style={tValue}>{data.gotra}</td></tr>
-            <tr><td style={tLabel}>Mool</td><td style={tValue}>{data.mool}</td></tr>
-          </tbody>
-        </table>
-
-        <h3 style={{ color: '#8B0000', borderBottom: '1px solid #EADDDD', paddingBottom: '8px', textTransform: 'uppercase', fontSize: '16px', letterSpacing: '1px' }}>Education & Career</h3>
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '25px', fontSize: '15px' }}>
-          <tbody>
-            <tr><td style={tLabel}>Education</td><td style={tValue}>{data.education}</td></tr>
-            <tr><td style={tLabel}>Profession</td><td style={tValue}>{data.profession}</td></tr>
-            <tr><td style={tLabel}>Income</td><td style={tValue}>{data.income}</td></tr>
-          </tbody>
-        </table>
-
-        <h3 style={{ color: '#8B0000', borderBottom: '1px solid #EADDDD', paddingBottom: '8px', textTransform: 'uppercase', fontSize: '16px', letterSpacing: '1px' }}>Family Details</h3>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '15px' }}>
-          <tbody>
-            <tr><td style={tLabel}>Grandparent's Name</td><td style={tValue}>{data.grandparentName || 'Not Specified'}</td></tr>
-            <tr><td style={tLabel}>Father's Name</td><td style={tValue}>{data.fatherName || 'Not Specified'}</td></tr>
-            <tr><td style={tLabel}>Mother's Name</td><td style={tValue}>{data.motherName || 'Not Specified'}</td></tr>
-            <tr><td style={tLabel}>Siblings</td><td style={tValue}>{data.siblingsDetail || 'Not Specified'}</td></tr>
-            <tr><td style={tLabel}>Native Address</td><td style={tValue}>{data.ruralAddress?.city || 'Not Specified'}, {data.ruralAddress?.state || ''}</td></tr>
-            <tr><td style={tLabel}>Current Address</td><td style={tValue}>{data.urbanAddress?.city || 'Not Specified'}, {data.urbanAddress?.state || ''}</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-);
-
-// --- Template 2: Modern Premium ---
-export const TemplateModern: React.FC<TemplateProps> = ({ data, id }) => (
-  <div id={id} style={{ textAlign: 'left', boxSizing: 'border-box', width: '794px', minWidth: '794px', maxWidth: '794px', height: '1123px', minHeight: '1123px', maxHeight: '1123px', fontFamily: '"Inter", "Helvetica Neue", sans-serif', padding: '0', backgroundColor: '#F4F7F6', color: '#1A202C', margin: '0 auto', display: 'flex', overflow: 'hidden' }}>
-    <div style={{ backgroundColor: '#1A202C', color: '#FFFFFF', width: '280px', padding: '40px 30px', display: 'flex', flexDirection: 'column' }}>
-      {data.photoUrl && (
-        <div style={{ alignSelf: 'center', marginBottom: '30px' }}>
-          <img src={data.photoUrl} alt="Profile" style={{ width: '160px', height: '160px', objectFit: 'cover', borderRadius: '50%', border: '6px solid rgba(255,255,255,0.1)', boxShadow: '0 8px 24px rgba(0,0,0,0.3)' }} crossOrigin="anonymous" />
-        </div>
-      )}
-      <h2 style={{ margin: '0 0 5px 0', fontSize: '26px', textAlign: 'center', fontWeight: '700', letterSpacing: '-0.5px' }}>{data.fullName}</h2>
-      <div style={{ height: '2px', width: '40px', backgroundColor: '#2C7A7B', margin: '15px auto 30px auto' }}></div>
-      
-      <div style={{ fontSize: '15px', lineHeight: '2.2', color: '#E2E8F0' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px', marginBottom: '8px' }}><span style={{ color: '#A0AEC0' }}>DOB</span> <span style={{ fontWeight: '500' }}>{data.dob}</span></div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px', marginBottom: '8px' }}><span style={{ color: '#A0AEC0' }}>Place</span> <span style={{ fontWeight: '500' }}>{data.birthPlace}</span></div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px', marginBottom: '8px' }}><span style={{ color: '#A0AEC0' }}>Height</span> <span style={{ fontWeight: '500' }}>{data.height}</span></div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px', marginBottom: '8px' }}><span style={{ color: '#A0AEC0' }}>Complexion</span> <span style={{ fontWeight: '500' }}>{data.complexion}</span></div>
-      </div>
-    </div>
-    
-    <div style={{ flex: 1, padding: '50px 60px', display: 'flex', flexDirection: 'column', gap: '35px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #E2E8F0', paddingBottom: '20px' }}>
-        <h1 style={{ fontSize: '32px', color: '#1A202C', margin: 0, fontWeight: '800', letterSpacing: '-1px' }}>Biodata</h1>
-        <div style={{ padding: '8px 16px', backgroundColor: '#EDF2F7', borderRadius: '20px', fontSize: '12px', fontWeight: '600', color: '#4A5568', textTransform: 'uppercase', letterSpacing: '1px' }}>Profile Document</div>
-      </div>
-      
-      <div style={{ backgroundColor: '#FFFFFF', padding: '25px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.02)' }}>
-        <h3 style={{ color: '#2C7A7B', fontSize: '16px', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '10px' }}><span style={{ display: 'inline-block', width: '8px', height: '8px', backgroundColor: '#2C7A7B', borderRadius: '50%' }}></span> Religious Background</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', fontSize: '15px' }}>
-          <div><span style={{ color: '#718096', fontSize: '13px', display: 'block', marginBottom: '4px' }}>Gotra</span> <strong style={{ color: '#2D3748' }}>{data.gotra}</strong></div>
-          <div><span style={{ color: '#718096', fontSize: '13px', display: 'block', marginBottom: '4px' }}>Mool</span> <strong style={{ color: '#2D3748' }}>{data.mool || 'Not Specified'}</strong></div>
-        </div>
-      </div>
-
-      <div style={{ backgroundColor: '#FFFFFF', padding: '25px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.02)' }}>
-        <h3 style={{ color: '#2C7A7B', fontSize: '16px', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '10px' }}><span style={{ display: 'inline-block', width: '8px', height: '8px', backgroundColor: '#2C7A7B', borderRadius: '50%' }}></span> Education & Career</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', fontSize: '15px' }}>
-          <div style={{ gridColumn: 'span 2' }}><span style={{ color: '#718096', fontSize: '13px', display: 'block', marginBottom: '4px' }}>Education</span> <strong style={{ color: '#2D3748' }}>{data.education}</strong></div>
-          <div><span style={{ color: '#718096', fontSize: '13px', display: 'block', marginBottom: '4px' }}>Profession</span> <strong style={{ color: '#2D3748' }}>{data.profession}</strong></div>
-          <div><span style={{ color: '#718096', fontSize: '13px', display: 'block', marginBottom: '4px' }}>Income</span> <strong style={{ color: '#2D3748' }}>{data.income}</strong></div>
-        </div>
-      </div>
-
-      <div style={{ backgroundColor: '#FFFFFF', padding: '25px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.02)' }}>
-        <h3 style={{ color: '#2C7A7B', fontSize: '16px', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '10px' }}><span style={{ display: 'inline-block', width: '8px', height: '8px', backgroundColor: '#2C7A7B', borderRadius: '50%' }}></span> Family Background</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', fontSize: '15px' }}>
-          <div><span style={{ color: '#718096', fontSize: '13px', display: 'block', marginBottom: '4px' }}>Father's Name</span> <strong style={{ color: '#2D3748' }}>{data.fatherName || 'Not Specified'}</strong></div>
-          <div><span style={{ color: '#718096', fontSize: '13px', display: 'block', marginBottom: '4px' }}>Mother's Name</span> <strong style={{ color: '#2D3748' }}>{data.motherName || 'Not Specified'}</strong></div>
-          <div style={{ gridColumn: 'span 2' }}><span style={{ color: '#718096', fontSize: '13px', display: 'block', marginBottom: '4px' }}>Current Location</span> <strong style={{ color: '#2D3748' }}>{data.urbanAddress?.city || 'Not Specified'}, {data.urbanAddress?.state || ''}</strong></div>
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
-// --- Template 3: Elegant Premium ---
-export const TemplateElegant: React.FC<TemplateProps> = ({ data, id }) => (
-  <div id={id} style={{ textAlign: 'left', boxSizing: 'border-box', width: '794px', minWidth: '794px', maxWidth: '794px', height: '1123px', minHeight: '1123px', maxHeight: '1123px', fontFamily: '"Playfair Display", "Georgia", serif', padding: '60px 50px', backgroundColor: '#FDFBF7', color: '#4A4A4A', margin: '0 auto', overflow: 'hidden', position: 'relative' }}>
-    {/* Decorative corner borders */}
-    <div style={{ position: 'absolute', top: '30px', left: '30px', width: '40px', height: '40px', borderTop: '2px solid #D4AF37', borderLeft: '2px solid #D4AF37' }}></div>
-    <div style={{ position: 'absolute', top: '30px', right: '30px', width: '40px', height: '40px', borderTop: '2px solid #D4AF37', borderRight: '2px solid #D4AF37' }}></div>
-    <div style={{ position: 'absolute', bottom: '30px', left: '30px', width: '40px', height: '40px', borderBottom: '2px solid #D4AF37', borderLeft: '2px solid #D4AF37' }}></div>
-    <div style={{ position: 'absolute', bottom: '30px', right: '30px', width: '40px', height: '40px', borderBottom: '2px solid #D4AF37', borderRight: '2px solid #D4AF37' }}></div>
-
-    <div style={{ textAlign: 'center', marginBottom: '50px' }}>
-      <h1 style={{ color: '#CD5C5C', fontSize: '42px', fontStyle: 'italic', margin: '0 0 10px 0', letterSpacing: '2px' }}>{data.fullName}</h1>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px' }}>
-        <div style={{ height: '1px', width: '60px', backgroundColor: '#D4AF37' }}></div>
-        <p style={{ margin: 0, color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Matrimonial Biodata</p>
-        <div style={{ height: '1px', width: '60px', backgroundColor: '#D4AF37' }}></div>
-      </div>
-    </div>
-    
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 2.5fr', gap: '50px' }}>
-      <div>
-        {data.photoUrl && (
-          <div style={{ padding: '8px', border: '1px solid #D4AF37', boxShadow: '0 15px 30px rgba(0,0,0,0.08)', borderRadius: '4px' }}>
-            <img src={data.photoUrl} alt="Profile" style={{ width: '100%', height: '260px', objectFit: 'cover', borderRadius: '2px' }} crossOrigin="anonymous" />
-          </div>
-        )}
-      </div>
-      <div>
-        <div style={{ marginBottom: '35px' }}>
-          <h3 style={{ color: '#CD5C5C', fontSize: '20px', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ fontSize: '24px' }}>✧</span> Personal Details
-          </h3>
-          <table style={{ width: '100%', fontSize: '15px', lineHeight: '2.2' }}>
-            <tbody>
-              <tr><td style={{ width: '140px', color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Date of Birth</td><td style={{ fontWeight: 'bold' }}>{data.dob}</td></tr>
-              <tr><td style={{ color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Birth Place</td><td style={{ fontWeight: 'bold' }}>{data.birthPlace}</td></tr>
-              <tr><td style={{ color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Height & Color</td><td style={{ fontWeight: 'bold' }}>{data.height} | {data.complexion}</td></tr>
-              <tr><td style={{ color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Gotra & Mool</td><td style={{ fontWeight: 'bold' }}>{data.gotra} | {data.mool || 'Not Specified'}</td></tr>
-            </tbody>
-          </table>
-        </div>
-        
-        <div style={{ marginBottom: '35px' }}>
-          <h3 style={{ color: '#CD5C5C', fontSize: '20px', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ fontSize: '24px' }}>✧</span> Professional Details
-          </h3>
-          <table style={{ width: '100%', fontSize: '15px', lineHeight: '2.2' }}>
-            <tbody>
-              <tr><td style={{ width: '140px', color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Education</td><td style={{ fontWeight: 'bold' }}>{data.education}</td></tr>
-              <tr><td style={{ color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Occupation</td><td style={{ fontWeight: 'bold' }}>{data.profession}</td></tr>
-              <tr><td style={{ color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Income</td><td style={{ fontWeight: 'bold' }}>{data.income}</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div>
-          <h3 style={{ color: '#CD5C5C', fontSize: '20px', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ fontSize: '24px' }}>✧</span> Family Details
-          </h3>
-          <table style={{ width: '100%', fontSize: '15px', lineHeight: '2.2' }}>
-            <tbody>
-              <tr><td style={{ width: '140px', color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Father</td><td style={{ fontWeight: 'bold' }}>{data.fatherName || 'Not Specified'}</td></tr>
-              <tr><td style={{ color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Mother</td><td style={{ fontWeight: 'bold' }}>{data.motherName || 'Not Specified'}</td></tr>
-              <tr><td style={{ color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Residence</td><td style={{ fontWeight: 'bold' }}>{data.urbanAddress?.city || 'Not Specified'}, {data.urbanAddress?.state || ''}</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
-// --- Template 4: Minimalist Premium ---
-export const TemplateMinimal: React.FC<TemplateProps> = ({ data, id }) => (
-  <div id={id} style={{ textAlign: 'left', boxSizing: 'border-box', width: '794px', minWidth: '794px', maxWidth: '794px', height: '1123px', minHeight: '1123px', maxHeight: '1123px', fontFamily: '"Inter", "Helvetica Neue", sans-serif', padding: '80px', backgroundColor: '#FFFFFF', color: '#111111', margin: '0 auto', overflow: 'hidden' }}>
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '60px' }}>
-      <div style={{ flex: 1 }}>
-        <h1 style={{ fontSize: '48px', fontWeight: '800', margin: '0 0 10px 0', letterSpacing: '-2px', lineHeight: '1' }}>{data.fullName}</h1>
-        <p style={{ margin: 0, color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>{data.profession}</p>
-      </div>
-      {data.photoUrl && (
-        <div style={{ width: '140px', height: '180px', overflow: 'hidden', flexShrink: 0, border: '1px solid #E5E5E5' }}>
-          <img src={data.photoUrl} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'grayscale(15%)' }} crossOrigin="anonymous" />
-        </div>
-      )}
-    </div>
-    
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '60px' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '45px' }}>
-        <div>
-          <h4 style={{ textTransform: 'uppercase', color: '#999999', fontSize: '11px', letterSpacing: '2px', margin: '0 0 20px 0', borderBottom: '1px solid #EEEEEE', paddingBottom: '10px' }}>Profile</h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', fontSize: '15px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '20px' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Born</span> <span style={{ fontWeight: '600', color: '#1A202C' }}>{data.dob}</span></div>
-            <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '20px' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Location</span> <span style={{ fontWeight: '600', color: '#1A202C' }}>{data.birthPlace}</span></div>
-            <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '20px' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Height</span> <span style={{ fontWeight: '600', color: '#1A202C' }}>{data.height}</span></div>
-            <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '20px' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Color</span> <span style={{ fontWeight: '600', color: '#1A202C' }}>{data.complexion}</span></div>
-          </div>
-        </div>
-
-        <div>
-          <h4 style={{ textTransform: 'uppercase', color: '#999999', fontSize: '11px', letterSpacing: '2px', margin: '0 0 20px 0', borderBottom: '1px solid #EEEEEE', paddingBottom: '10px' }}>Background</h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', fontSize: '15px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '20px' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Gotra</span> <span style={{ fontWeight: '600', color: '#1A202C' }}>{data.gotra}</span></div>
-            <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '20px' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Mool</span> <span style={{ fontWeight: '600', color: '#1A202C' }}>{data.mool || 'Not Specified'}</span></div>
-          </div>
-        </div>
-      </div>
-      
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '45px' }}>
-        <div>
-          <h4 style={{ textTransform: 'uppercase', color: '#999999', fontSize: '11px', letterSpacing: '2px', margin: '0 0 20px 0', borderBottom: '1px solid #EEEEEE', paddingBottom: '10px' }}>Career</h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', fontSize: '15px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '20px' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Education</span> <span style={{ textAlign: 'right', maxWidth: '60%' }}>{data.education}</span></div>
-            <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '20px' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Profession</span> <span style={{ textAlign: 'right', maxWidth: '60%' }}>{data.profession}</span></div>
-            <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '20px' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Income</span> <span style={{ fontWeight: '600', color: '#1A202C' }}>{data.income}</span></div>
-          </div>
-        </div>
-
-        <div>
-          <h4 style={{ textTransform: 'uppercase', color: '#999999', fontSize: '11px', letterSpacing: '2px', margin: '0 0 20px 0', borderBottom: '1px solid #EEEEEE', paddingBottom: '10px' }}>Family</h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', fontSize: '15px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '20px' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Father</span> <span style={{ fontWeight: '600', color: '#1A202C' }}>{data.fatherName || 'Not Specified'}</span></div>
-            <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '20px' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Mother</span> <span style={{ fontWeight: '600', color: '#1A202C' }}>{data.motherName || 'Not Specified'}</span></div>
-            <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '20px' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Residence</span> <span style={{ textAlign: 'right', maxWidth: '60%' }}>{data.urbanAddress?.city || 'Not Specified'}, {data.urbanAddress?.state || ''}</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
-// --- Template 5: Traditional Premium ---
-export const TemplateTraditional: React.FC<TemplateProps> = ({ data, id }) => (
-  <div id={id} style={{ textAlign: 'left', boxSizing: 'border-box', width: '794px', minWidth: '794px', maxWidth: '794px', height: '1123px', minHeight: '1123px', maxHeight: '1123px', fontFamily: '"Palatino Linotype", "Book Antiqua", Palatino, serif', padding: '50px', backgroundColor: '#FFFDF5', color: '#5A0000', margin: '0 auto', border: '16px solid transparent', borderImage: 'repeating-linear-gradient(45deg, #D4AF37, #D4AF37 10px, #FFFDF5 10px, #FFFDF5 20px) 16', overflow: 'hidden', position: 'relative' }}>
-    <div style={{ position: 'absolute', top: '10px', left: '10px', right: '10px', bottom: '10px', border: '2px solid #D4AF37', pointerEvents: 'none' }}></div>
-    <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-      <div style={{ fontSize: '48px', color: '#D4AF37', marginBottom: '5px', textShadow: '1px 1px 2px rgba(0,0,0,0.1)' }}>{getReligionSymbol(data.religion)}</div>
-      <h1 style={{ fontSize: '36px', margin: '0 0 10px 0', color: '#8B0000', letterSpacing: '1px' }}>{data.fullName}</h1>
-      <div style={{ height: '3px', width: '100px', backgroundColor: '#D4AF37', margin: '0 auto' }}></div>
-    </div>
-    
-    <div style={{ display: 'flex', gap: '40px', alignItems: 'flex-start' }}>
-      <div style={{ flex: 1, padding: '25px', backgroundColor: '#FFFFFF', border: '1px solid #EADDCD', borderRadius: '8px' }}>
-        <h3 style={{ textAlign: 'center', color: '#8B0000', borderBottom: '2px solid #D4AF37', paddingBottom: '12px', marginTop: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>Janam Kundali</h3>
-        <table style={{ width: '100%', fontSize: '15px', lineHeight: '2' }}>
-          <tbody>
-            <tr><td style={{ color: '#666', width: '120px' }}>Date of Birth</td><td><strong>{data.dob}</strong></td></tr>
-            <tr><td style={{ color: '#666' }}>Place of Birth</td><td><strong>{data.birthPlace}</strong></td></tr>
-            <tr><td style={{ color: '#666' }}>Gotra</td><td><strong>{data.gotra}</strong></td></tr>
-            <tr><td style={{ color: '#666' }}>Mool</td><td><strong>{data.mool || 'Not Specified'}</strong></td></tr>
-            <tr><td style={{ color: '#666' }}>Height</td><td><strong>{data.height}</strong></td></tr>
-            <tr><td style={{ color: '#666' }}>Varna</td><td><strong>{data.complexion}</strong></td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      {data.photoUrl && (
-        <div style={{ width: '220px', padding: '10px', backgroundColor: '#FFFFFF', border: '1px solid #EADDCD', borderRadius: '8px' }}>
-          <img src={data.photoUrl} alt="Profile" style={{ width: '100%', height: '280px', objectFit: 'cover', borderRadius: '4px' }} crossOrigin="anonymous" />
-        </div>
-      )}
-    </div>
-
-    <div style={{ marginTop: '35px', padding: '25px', backgroundColor: '#FFFFFF', border: '1px solid #EADDCD', borderRadius: '8px' }}>
-      <h3 style={{ color: '#8B0000', borderBottom: '2px solid #D4AF37', paddingBottom: '12px', marginTop: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>Shiksha & Vyavsay</h3>
-      <table style={{ width: '100%', fontSize: '15px', lineHeight: '2' }}>
-        <tbody>
-          <tr><td style={{ color: '#666', width: '140px' }}>Education</td><td><strong>{data.education}</strong></td></tr>
-          <tr><td style={{ color: '#666' }}>Profession</td><td><strong>{data.profession}</strong></td></tr>
-          <tr><td style={{ color: '#666' }}>Income</td><td><strong>{data.income}</strong></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div style={{ marginTop: '35px', padding: '25px', backgroundColor: '#FFFFFF', border: '1px solid #EADDCD', borderRadius: '8px' }}>
-      <h3 style={{ color: '#8B0000', borderBottom: '2px solid #D4AF37', paddingBottom: '12px', marginTop: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>Parivar Details</h3>
-      <table style={{ width: '100%', fontSize: '15px', lineHeight: '2' }}>
-        <tbody>
-          <tr><td style={{ color: '#666', width: '140px' }}>Pita Ji</td><td><strong>{data.fatherName || 'Not Specified'}</strong></td></tr>
-          <tr><td style={{ color: '#666' }}>Mata Ji</td><td><strong>{data.motherName || 'Not Specified'}</strong></td></tr>
-          <tr><td style={{ color: '#666' }}>Niwas</td><td><strong>{data.urbanAddress?.city || 'Not Specified'}, {data.urbanAddress?.state || ''}</strong></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-);
-
-// --- Template 6: Split Themed (Modern) ---
-export type SplitTheme = {
+export type TemplateTheme = {
   name: string;
   primary: string;
   sidebarBg: string;
   sidebarText: string;
   mainBg: string;
   mainText: string;
+  photoShape: 'round' | 'offset-square';
 };
 
-export const splitThemes: SplitTheme[] = [
+export const templateThemes: TemplateTheme[] = [
   {
-    name: 'Yellow & Light',
-    primary: '#EAB308', // Yellow 500
-    sidebarBg: '#F8FAFC', // Slate 50
-    sidebarText: '#334155', // Slate 700
+    name: 'Magenta Flower',
+    primary: '#D81B60',
+    sidebarBg: '#FDF2F8',
+    sidebarText: '#334155',
     mainBg: '#FFFFFF',
-    mainText: '#1E293B'
+    mainText: '#1E293B',
+    photoShape: 'round'
   },
   {
-    name: 'Yellow & Dark',
-    primary: '#FBBF24', // Yellow 400
-    sidebarBg: '#1E293B', // Slate 800
-    sidebarText: '#F8FAFC',
+    name: 'Orange Marigold',
+    primary: '#F97316',
+    sidebarBg: '#FFF7ED',
+    sidebarText: '#334155',
     mainBg: '#FFFFFF',
-    mainText: '#334155'
+    mainText: '#1E293B',
+    photoShape: 'offset-square'
   },
   {
-    name: 'Teal & Dark',
-    primary: '#14B8A6', // Teal 500
-    sidebarBg: '#0F172A', // Slate 900
-    sidebarText: '#F8FAFC',
+    name: 'Yellow Sunflower',
+    primary: '#EAB308',
+    sidebarBg: '#FEFCE8',
+    sidebarText: '#334155',
     mainBg: '#FFFFFF',
-    mainText: '#334155'
+    mainText: '#1E293B',
+    photoShape: 'round'
   },
   {
-    name: 'Rose & Light',
-    primary: '#F43F5E', // Rose 500
-    sidebarBg: '#FFF1F2', // Rose 50
-    sidebarText: '#4C1D95', 
+    name: 'Green Jasmine',
+    primary: '#22C55E',
+    sidebarBg: '#F0FDF4',
+    sidebarText: '#334155',
     mainBg: '#FFFFFF',
-    mainText: '#1E293B'
+    mainText: '#1E293B',
+    photoShape: 'offset-square'
   }
 ];
 
-export type TemplateSplitProps = TemplateProps & {
-  theme?: SplitTheme;
+export type BiodataTemplateProps = {
+  data: BiodataData;
+  id?: string;
+  theme?: TemplateTheme;
 };
 
-export const TemplateSplit: React.FC<TemplateSplitProps> = ({ data, id, theme = splitThemes[0] }) => {
+export const BiodataTemplate: React.FC<BiodataTemplateProps> = ({ data, id, theme = templateThemes[0] }) => {
   return (
     <div id={id} style={{ 
       textAlign: 'left', boxSizing: 'border-box', 
@@ -400,47 +94,55 @@ export const TemplateSplit: React.FC<TemplateSplitProps> = ({ data, id, theme = 
       padding: '70px', backgroundColor: theme.mainBg, color: theme.mainText, 
       margin: '0 auto', display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative'
     }}>
-      {/* Background decorative elements (optional, to mimic the image's edges) */}
-      <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '150px', height: '150px', backgroundColor: `${theme.primary}20`, borderRadius: '50%', pointerEvents: 'none' }}></div>
-      <div style={{ position: 'absolute', bottom: '-80px', left: '-80px', width: '250px', height: '250px', backgroundColor: `${theme.primary}15`, borderRadius: '50%', pointerEvents: 'none' }}></div>
+      {/* Background decorative elements */}
+      <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '150px', height: '150px', backgroundColor: `${theme.primary}15`, borderRadius: '50%', pointerEvents: 'none' }}></div>
+      <div style={{ position: 'absolute', bottom: '-80px', left: '-80px', width: '250px', height: '250px', backgroundColor: `${theme.primary}10`, borderRadius: '50%', pointerEvents: 'none' }}></div>
 
-      {/* Header Section (Matching the Image) */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '60px' }}>
+      {/* Header Section */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '60px' }}>
         {/* Left Side: Name and Details */}
         <div style={{ flex: 1, paddingRight: '40px' }}>
           {/* Small accent square above name */}
-          <div style={{ width: '24px', height: '24px', backgroundColor: theme.primary, marginBottom: '25px' }}></div>
+          <div style={{ width: '24px', height: '24px', backgroundColor: theme.primary, marginBottom: '25px', borderRadius: '4px' }}></div>
           
-          <h1 style={{ fontSize: '52px', fontWeight: '800', margin: '0 0 12px 0', letterSpacing: '-1.5px', textTransform: 'uppercase', lineHeight: '1' }}>
+          <h1 style={{ fontSize: '52px', fontWeight: '800', margin: '0 0 12px 0', letterSpacing: '-1.5px', lineHeight: '1', color: theme.mainText }}>
             {data.fullName}
           </h1>
           
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px', fontSize: '13px', fontWeight: '600', color: theme.mainText, opacity: 0.7, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '35px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px', fontSize: '15px', fontWeight: '500', color: theme.mainText, opacity: 0.8, marginBottom: '35px' }}>
             <span>{data.profession || 'Professional'}</span>
-            <span style={{ color: theme.primary }}>•</span>
+            <span style={{ color: theme.primary, fontWeight: 'bold' }}>•</span>
             <span>{data.religion || 'Hindu'}</span>
-            <span style={{ color: theme.primary }}>•</span>
+            <span style={{ color: theme.primary, fontWeight: 'bold' }}>•</span>
             <span>{data.height}</span>
-            <span style={{ color: theme.primary }}>•</span>
+            <span style={{ color: theme.primary, fontWeight: 'bold' }}>•</span>
             <span>{data.complexion}</span>
           </div>
           
           {/* Contact Block */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', fontWeight: '500', color: theme.mainText, opacity: 0.9, paddingLeft: '18px', borderLeft: `4px solid ${theme.primary}` }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '14px', fontWeight: '500', color: theme.mainText, opacity: 0.9, paddingLeft: '18px', borderLeft: `4px solid ${theme.primary}` }}>
             {data.urbanAddress?.streetAddress && <div>{data.urbanAddress.streetAddress}</div>}
             <div>{data.urbanAddress?.city || 'City'}, {data.urbanAddress?.state || 'State'} {data.urbanAddress?.pincode}</div>
           </div>
         </div>
 
-        {/* Right Side: Photo with offset background */}
+        {/* Right Side: Photo */}
         {data.photoUrl && (
-          <div style={{ position: 'relative', width: '210px', height: '260px', flexShrink: 0, marginTop: '20px' }}>
-             {/* Offset Background */}
-             <div style={{ position: 'absolute', top: '20px', left: '20px', width: '100%', height: '100%', backgroundColor: theme.primary }}></div>
-             {/* Photo */}
-             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', overflow: 'hidden' }}>
-               <img src={data.photoUrl} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'contrast(1.05)' }} crossOrigin="anonymous" />
-             </div>
+          <div style={{ position: 'relative', width: '210px', height: '260px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+             {theme.photoShape === 'offset-square' ? (
+               <>
+                 {/* Offset Background */}
+                 <div style={{ position: 'absolute', top: '30px', left: '30px', width: '180px', height: '230px', backgroundColor: theme.primary, borderRadius: '8px' }}></div>
+                 {/* Photo */}
+                 <div style={{ position: 'absolute', top: '10px', left: '10px', width: '180px', height: '230px', overflow: 'hidden', borderRadius: '8px' }}>
+                   <img src={data.photoUrl} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} crossOrigin="anonymous" />
+                 </div>
+               </>
+             ) : (
+               <div style={{ width: '200px', height: '200px', overflow: 'hidden', borderRadius: '50%', border: `6px solid ${theme.primary}`, boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
+                 <img src={data.photoUrl} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} crossOrigin="anonymous" />
+               </div>
+             )}
           </div>
         )}
       </div>
@@ -450,7 +152,10 @@ export const TemplateSplit: React.FC<TemplateSplitProps> = ({ data, id, theme = 
         
         {/* Personal Details */}
         <div>
-          <h3 style={{ fontSize: '20px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '2.5px', margin: '0 0 25px 0', color: theme.mainText }}>Personal Details</h3>
+          <h3 style={{ fontSize: '20px', fontWeight: '700', letterSpacing: '1px', margin: '0 0 25px 0', color: theme.mainText, display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ width: '8px', height: '20px', backgroundColor: theme.primary, borderRadius: '4px' }}></span>
+            Personal Details
+          </h3>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px' }}>
             <div><span style={labelStyle}>Date of Birth</span> <strong style={valueStyle}>{data.dob}</strong></div>
             <div><span style={labelStyle}>Birth Place</span> <strong style={valueStyle}>{data.birthPlace}</strong></div>
@@ -461,7 +166,10 @@ export const TemplateSplit: React.FC<TemplateSplitProps> = ({ data, id, theme = 
 
         {/* Education & Career */}
         <div>
-          <h3 style={{ fontSize: '20px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '2.5px', margin: '0 0 25px 0', color: theme.mainText }}>Education & Career</h3>
+          <h3 style={{ fontSize: '20px', fontWeight: '700', letterSpacing: '1px', margin: '0 0 25px 0', color: theme.mainText, display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ width: '8px', height: '20px', backgroundColor: theme.primary, borderRadius: '4px' }}></span>
+            Education & Career
+          </h3>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px' }}>
              <div style={{ gridColumn: 'span 2' }}><span style={labelStyle}>Highest Education</span> <strong style={valueStyle}>{data.education}</strong></div>
              <div><span style={labelStyle}>Profession</span> <strong style={valueStyle}>{data.profession}</strong></div>
@@ -471,7 +179,10 @@ export const TemplateSplit: React.FC<TemplateSplitProps> = ({ data, id, theme = 
 
         {/* Family Details */}
         <div>
-          <h3 style={{ fontSize: '20px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '2.5px', margin: '0 0 25px 0', color: theme.mainText }}>Family Details</h3>
+          <h3 style={{ fontSize: '20px', fontWeight: '700', letterSpacing: '1px', margin: '0 0 25px 0', color: theme.mainText, display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ width: '8px', height: '20px', backgroundColor: theme.primary, borderRadius: '4px' }}></span>
+            Family Details
+          </h3>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px' }}>
             <div><span style={labelStyle}>Father's Name</span> <strong style={valueStyle}>{data.fatherName || 'Not Specified'}</strong></div>
             <div><span style={labelStyle}>Mother's Name</span> <strong style={valueStyle}>{data.motherName || 'Not Specified'}</strong></div>
@@ -486,21 +197,15 @@ export const TemplateSplit: React.FC<TemplateSplitProps> = ({ data, id, theme = 
 
 const labelStyle: React.CSSProperties = {
   color: 'inherit',
-  opacity: 0.5,
-  fontSize: '12px',
-  fontWeight: '600',
+  opacity: 0.6,
+  fontSize: '13px',
+  fontWeight: '500',
   display: 'block',
-  marginBottom: '6px',
-  textTransform: 'uppercase',
-  letterSpacing: '1px'
+  marginBottom: '6px'
 };
 const valueStyle: React.CSSProperties = {
   fontSize: '16px',
   fontWeight: '600',
   color: 'inherit',
-  opacity: 0.9
+  opacity: 0.95
 };
-
-// --- Shared Styles ---
-const tLabel: React.CSSProperties = { padding: '12px 10px 12px 0', borderBottom: '1px solid #f4f4f4', color: '#718096', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', width: '35%' };
-const tValue: React.CSSProperties = { padding: '12px 0', borderBottom: '1px solid #f4f4f4', color: '#2D3748', fontWeight: 600, fontSize: '15px' };

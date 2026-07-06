@@ -7,13 +7,8 @@ import { UploadService } from '../api/upload.service';
 import type { Biodata } from '../types';
 import { 
   type BiodataData, 
-  TemplateClassic, 
-  TemplateModern, 
-  TemplateElegant,
-  TemplateMinimal,
-  TemplateTraditional,
-  TemplateSplit,
-  splitThemes
+  BiodataTemplate,
+  templateThemes
 } from './BiodataMaker/BiodataTemplates';
 
 interface ChatMessage {
@@ -488,80 +483,64 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
     <div className="chat-container">
       {/* Bot Chat stream scroller */}
       <div className="chat-scroller">
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={msg.sender === 'bot' ? 'chat-bubble-bot' : 'chat-bubble-user'}
-            style={{ position: 'relative' }}
-          >
-            {/* Visual Chat Content rendering */}
-            {msg.inputType === 'template' ? (
-              (() => {
-                const mappedData: BiodataData = {
-                  fullName: biodataForm.fullName,
-                  gender: biodataForm.gender,
-                  dob: biodataForm.age ? `${new Date().getFullYear() - biodataForm.age}-01-01` : '1999-01-01',
-                  birthPlace: biodataForm.location || '',
-                  height: biodataForm.height || '',
-                  complexion: biodataForm.complexion || '',
-                  education: biodataForm.education,
-                  profession: biodataForm.profession,
-                  income: biodataForm.annualIncome ? biodataForm.annualIncome.toString() : '',
-                  gotra: biodataForm.gotra,
-                  mool: (biodataForm as any).mool || '',
-                  grandparentName: '',
-                  fatherName: '',
-                  motherName: '',
-                  siblingsDetail: '',
-                  ruralAddress: { streetAddress: '', city: biodataForm.location || '', state: '', pincode: '' },
-                  urbanAddress: { streetAddress: '', city: biodataForm.location || '', state: '', pincode: '' },
-                  photoUrl: biodataForm.photoUrl || ''
-                };
+        {messages.map((msg) => {
+          if (msg.inputType === 'template') {
+            const mappedData: BiodataData = {
+              fullName: biodataForm.fullName,
+              gender: biodataForm.gender,
+              dob: biodataForm.age ? `${new Date().getFullYear() - biodataForm.age}-01-01` : '1999-01-01',
+              birthPlace: biodataForm.location || '',
+              height: biodataForm.height || '',
+              complexion: biodataForm.complexion || '',
+              education: biodataForm.education,
+              profession: biodataForm.profession,
+              income: biodataForm.annualIncome ? biodataForm.annualIncome.toString() : '',
+              gotra: biodataForm.gotra,
+              mool: (biodataForm as any).mool || '',
+              grandparentName: '',
+              fatherName: '',
+              motherName: '',
+              siblingsDetail: '',
+              ruralAddress: { streetAddress: '', city: biodataForm.location || '', state: '', pincode: '' },
+              urbanAddress: { streetAddress: '', city: biodataForm.location || '', state: '', pincode: '' },
+              photoUrl: biodataForm.photoUrl || ''
+            };
 
-                return (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', minWidth: '320px' }}>
-                    <p style={{ color: 'var(--primary)', fontWeight: '600', fontSize: '1.05rem', textAlign: 'center' }}>{msg.text}</p>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.8rem' }}>
-                      {['TemplateClassic', 'TemplateModern', 'TemplateElegant', 'TemplateMinimal', 'TemplateTraditional', 'TemplateSplitYellowLight', 'TemplateSplitYellowDark', 'TemplateSplitTealDark', 'TemplateSplitRoseLight'].map(tpl => {
-                        const isSplit = tpl.startsWith('TemplateSplit');
-                        const themeIndex = tpl.includes('YellowLight') ? 0 : tpl.includes('YellowDark') ? 1 : tpl.includes('TealDark') ? 2 : 3;
-                        const theme = isSplit ? splitThemes[themeIndex] : undefined;
-                        const TplComponent = tpl === 'TemplateClassic' ? TemplateClassic : 
-                                             tpl === 'TemplateModern' ? TemplateModern : 
-                                             tpl === 'TemplateElegant' ? TemplateElegant : 
-                                             tpl === 'TemplateMinimal' ? TemplateMinimal : TemplateTraditional;
-                        return (
-                          <button
-                            key={tpl}
-                            onClick={() => setTemplate(tpl)}
-                            style={{
-                              padding: '0.5rem',
-                              border: template === tpl ? '2px solid var(--primary)' : '2px solid transparent',
-                              borderRadius: 'var(--radius-md)',
-                              backgroundColor: 'var(--bg-card)',
-                              cursor: 'pointer',
-                              fontWeight: '700',
-                              color: template === tpl ? 'var(--primary)' : 'var(--text-main)',
-                              boxShadow: template === tpl ? 'var(--shadow-md)' : 'var(--shadow-sm)',
-                              transition: 'all 0.2s',
-                              display: 'flex',
-                              flexDirection: 'column',
-                              alignItems: 'center',
-                              gap: '0.5rem',
-                              transform: template === tpl ? 'translateY(-2px)' : 'none'
-                            }}
-                          >
-                            <div style={{ width: '100%', height: '242px', overflow: 'hidden', position: 'relative', borderRadius: '4px', backgroundColor: '#fff', border: '1px solid var(--border-light)' }}>
-                              <div style={{ transform: 'scale(0.215)', transformOrigin: 'top left', width: '794px', height: '1123px', position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
-                                {isSplit ? <TemplateSplit data={mappedData} theme={theme} /> : <TplComponent data={mappedData} />}
-                              </div>
-                            </div>
-                            <span style={{ fontSize: '0.85rem' }}>{isSplit ? tpl.replace('TemplateSplit', 'Split ') : tpl.replace('Template', '')}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                <div style={{ display: 'flex', marginTop: '1rem' }}>
+            return (
+              <div key={msg.id} style={{ width: '100%', padding: '2rem 1rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <p style={{ color: 'var(--primary)', fontWeight: '600', fontSize: '1.2rem', marginBottom: '1.5rem', textAlign: 'center' }}>{msg.text}</p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', width: '100%', maxWidth: '1000px' }}>
+                  {templateThemes.map(theme => (
+                    <button
+                      key={theme.name}
+                      onClick={() => setTemplate(theme.name)}
+                      style={{
+                        padding: '0.75rem',
+                        border: template === theme.name ? '3px solid var(--primary)' : '3px solid transparent',
+                        borderRadius: '12px',
+                        backgroundColor: 'var(--bg-card)',
+                        cursor: 'pointer',
+                        fontWeight: '700',
+                        color: template === theme.name ? 'var(--primary)' : 'var(--text-main)',
+                        boxShadow: template === theme.name ? '0 10px 25px rgba(0,0,0,0.15)' : '0 4px 12px rgba(0,0,0,0.08)',
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        transform: template === theme.name ? 'translateY(-4px)' : 'none'
+                      }}
+                    >
+                      <div style={{ width: '100%', height: '320px', overflow: 'hidden', position: 'relative', borderRadius: '6px', backgroundColor: '#fff', border: '1px solid var(--border-light)' }}>
+                        <div style={{ transform: 'scale(0.284)', transformOrigin: 'top left', width: '794px', height: '1123px', position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
+                          <BiodataTemplate data={mappedData} theme={theme} />
+                        </div>
+                      </div>
+                      <span style={{ fontSize: '1rem' }}>{theme.name}</span>
+                    </button>
+                  ))}
+                </div>
+                <div style={{ display: 'flex', marginTop: '2rem', width: '100%', maxWidth: '400px' }}>
                   <button
                     onClick={() => {
                       setCurrentStep(19);
@@ -569,35 +548,43 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
                     }}
                     style={{
                       flex: 1,
-                      padding: '1rem',
+                      padding: '1.2rem',
                       backgroundColor: 'var(--primary)',
                       color: 'white',
                       border: 'none',
                       borderRadius: 'var(--radius-full)',
                       fontWeight: '700',
+                      fontSize: '1.1rem',
                       cursor: 'pointer',
-                      boxShadow: 'var(--shadow-md)',
+                      boxShadow: '0 8px 20px rgba(226, 62, 87, 0.3)',
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      gap: '0.5rem',
-                      transition: 'transform 0.2s'
+                      transition: 'transform 0.2s, box-shadow 0.2s'
                     }}
-                    onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-                    onMouseOut={(e) => e.currentTarget.style.transform = 'none'}
+                    onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 24px rgba(226, 62, 87, 0.4)' }}
+                    onMouseOut={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(226, 62, 87, 0.3)' }}
                   >
                     {locale === 'en' ? 'Confirm Template & Proceed' : 'टेम्पलेट की पुष्टि करें और आगे बढ़ें'}
                   </button>
                 </div>
               </div>
             );
-          })()
-        ) : msg.inputType === 'summary' ? (
-              <div style={styles.summaryWrapper}>
-                <p style={{ color: 'var(--primary)', fontWeight: '600', marginBottom: '0.8rem' }}>{msg.text}</p>
-                
-                {/* Mithila Summary Card Visual layout */}
-                <div style={styles.cardVisual} className="animate-scale">
+          }
+
+          return (
+            <div
+              key={msg.id}
+              className={msg.sender === 'bot' ? 'chat-bubble-bot' : 'chat-bubble-user'}
+              style={{ position: 'relative' }}
+            >
+              {/* Visual Chat Content rendering */}
+              {msg.inputType === 'summary' ? (
+                <div style={styles.summaryWrapper}>
+                  <p style={{ color: 'var(--primary)', fontWeight: '600', marginBottom: '0.8rem' }}>{msg.text}</p>
+                  
+                  {/* Mithila Summary Card Visual layout */}
+                  <div style={styles.cardVisual} className="animate-scale">
                   <div style={styles.cardHeader}>
                     <img src={biodataForm.photoUrl} alt="Portrait" style={styles.cardPortrait} />
                     <div style={styles.headerDetails}>
@@ -678,7 +665,8 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
               {msg.timestamp}
             </span>
           </div>
-        ))}
+        );
+      })}
 
         {/* Simulated Bot Typing State indicator */}
         {typing && (

@@ -6,13 +6,9 @@ import { jsPDF } from 'jspdf';
 
 import { 
   type BiodataData, 
-  TemplateClassic, 
-  TemplateModern, 
-  TemplateElegant, 
-  TemplateMinimal, 
-  TemplateTraditional,
-  TemplateSplit,
-  splitThemes
+  BiodataTemplate,
+  templateThemes,
+  type TemplateTheme
 } from './BiodataTemplates';
 
 
@@ -24,25 +20,14 @@ export const CreateBiodata: React.FC<{
 
 
   const [formData, setFormData] = useState<BiodataData | null>(null);
-  const [selectedTemplate, setSelectedTemplate] = useState<number>(1);
+  const [selectedTheme, setSelectedTheme] = useState<TemplateTheme>(templateThemes[0]);
 
   const [errorMsg, setErrorMsg] = useState('');
   const printRef = useRef<HTMLDivElement>(null);
 
   const downloadPDFFromChat = async (templateName: string, data: any) => {
-    // Map template name to index
-    const templateMap: Record<string, number> = {
-      'TemplateClassic': 1,
-      'TemplateModern': 2,
-      'TemplateElegant': 3,
-      'TemplateMinimal': 4,
-      'TemplateTraditional': 5,
-      'TemplateSplitYellowLight': 6,
-      'TemplateSplitYellowDark': 7,
-      'TemplateSplitTealDark': 8,
-      'TemplateSplitRoseLight': 9
-    };
-    setSelectedTemplate(templateMap[templateName] || 1);
+    const theme = templateThemes.find(t => t.name === templateName) || templateThemes[0];
+    setSelectedTheme(theme);
     
     // Map Chat data to BiodataData format required by Templates
     const mappedData: BiodataData = {
@@ -90,21 +75,7 @@ export const CreateBiodata: React.FC<{
 
   const renderTemplate = (isThumbnail = false, id?: string) => {
     if (!formData) return null;
-    const props = { data: formData, id };
-    const content = (() => {
-      switch (selectedTemplate) {
-        case 1: return <TemplateClassic {...props} />;
-        case 2: return <TemplateModern {...props} />;
-        case 3: return <TemplateElegant {...props} />;
-        case 4: return <TemplateMinimal {...props} />;
-        case 5: return <TemplateTraditional {...props} />;
-        case 6: return <TemplateSplit {...props} theme={splitThemes[0]} />;
-        case 7: return <TemplateSplit {...props} theme={splitThemes[1]} />;
-        case 8: return <TemplateSplit {...props} theme={splitThemes[2]} />;
-        case 9: return <TemplateSplit {...props} theme={splitThemes[3]} />;
-        default: return <TemplateClassic {...props} />;
-      }
-    })();
+    const content = <BiodataTemplate data={formData} id={id} theme={selectedTheme} />;
     
     if (isThumbnail) {
       return <div style={{ transform: 'scale(0.3)', transformOrigin: 'top left', width: '330%', pointerEvents: 'none' }}>{content}</div>;
