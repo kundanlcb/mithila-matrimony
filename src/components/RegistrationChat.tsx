@@ -926,16 +926,20 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
                     type="button"
                     onClick={() => handleUserSubmit(undefined, 'Skip')}
                     style={{
-                      ...styles.skipUploadBtn, 
-                      width: 'auto',
+                      backgroundColor: 'var(--bg-app)',
+                      color: 'var(--text-main)',
+                      border: '1px solid var(--border-light)',
                       borderRadius: 'var(--radius-full)',
                       padding: '0.55rem 1.4rem', 
+                      fontSize: '0.85rem',
+                      fontWeight: '600',
+                      cursor: 'pointer',
                       whiteSpace: 'nowrap', 
-                      alignSelf: 'center', 
-                      marginTop: 0 
+                      alignSelf: 'center',
+                      boxShadow: 'var(--shadow-sm)'
                     }}
                   >
-                    ⏭️ {locale === 'en' ? 'Skip' : 'छोड़ें'}
+                    {locale === 'en' ? 'Skip Step' : 'छोड़ें'}
                   </button>
                 );
              }
@@ -982,8 +986,7 @@ const styles = {
     outline: 'none',
     boxShadow: 'none',
     transition: 'var(--transition-fast)',
-    width: '100%',
-    borderBottom: '1px solid var(--border-light)'
+    width: '100%'
   },
   primarySendBtn: {
     padding: '0.55rem 1.6rem',
