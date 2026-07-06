@@ -702,7 +702,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
 
           {/* File Upload / Image drag-and-drop panel */}
           {messages[messages.length - 1].inputType === 'file' && (
-            <div className="chat-choices-panel animate-fade" style={{ flexDirection: 'column', gap: '0.8rem', alignItems: 'stretch', padding: '1.2rem 1.5rem' }}>
+            <div className="chat-choices-panel animate-fade" style={{ flexDirection: 'column', gap: '0.8rem', alignItems: 'stretch' }}>
               {/* Thumbnails of already uploaded photos */}
               {uploadedPhotos.length > 0 && (
                 <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>

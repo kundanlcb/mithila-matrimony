@@ -735,10 +735,11 @@ button {
 .chat-choices-panel {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-xs);
-  padding: var(--space-sm) var(--space-lg);
-  background-color: var(--bg-card);
-  border-top: 1px solid var(--border-light);
+  gap: var(--space-sm);
+  padding: var(--space-sm) 0;
+  background-color: transparent;
+  margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .typing-dot {
