@@ -350,10 +350,10 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         triggerBotResponse(t('bot_summary'), 'summary');
         break;
 
-      case 18: // Email entered in Biodata Mode
+      case 19: // Email entered in Biodata Mode
         if (!/^\S+@\S+\.\S+$/.test(valueToProcess)) {
           setErrorMsg(locale === 'en' ? 'Please enter a valid email.' : 'कृपया एक वैध ईमेल दर्ज करें।');
-          setCurrentStep(18);
+          setCurrentStep(19);
           setMessages(prev => prev.slice(0, -1));
           return;
         }
@@ -366,12 +366,12 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         } catch (err) {
           setTyping(false);
           setErrorMsg(locale === 'en' ? 'Failed to send OTP. Try again.' : 'OTP भेजने में विफल। पुनः प्रयास करें।');
-          setCurrentStep(18);
+          setCurrentStep(19);
           setMessages(prev => prev.slice(0, -1));
         }
         break;
 
-      case 19: // OTP entered in Biodata Mode
+      case 20: // OTP entered in Biodata Mode
         if (valueToProcess.length !== 4) {
           setErrorMsg(locale === 'en' ? 'OTP must be 4 digits.' : 'OTP 4 अंकों का होना चाहिए।');
           setCurrentStep(19);
@@ -382,13 +382,19 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         try {
           await AuthService.verifyOtp({ email, otp: valueToProcess });
           setTyping(false);
-          // Save the profile seamlessly
+          // Save the profile and trigger download/matches immediately!
           await handleFinalRegister(true); 
-          triggerBotResponse(locale === 'en' ? 'Profile saved successfully! Select a template to download your Biodata.' : 'प्रोफ़ाइल सहेजी गई! अपना बायोडेटा डाउनलोड करने के लिए एक टेम्पलेट चुनें।', 'template');
+          if (onDownloadBiodata) {
+            onDownloadBiodata(template, biodataForm);
+          }
+          triggerBotResponse(locale === 'en' ? 'Profile saved and Biodata downloading! Taking you to matches...' : 'प्रोफ़ाइल सहेजी गई और बायोडेटा डाउनलोड हो रहा है! आपको मैचों पर ले जा रहे हैं...', 'text');
+          setTimeout(() => {
+            onComplete();
+          }, 1500);
         } catch (err) {
           setTyping(false);
           setErrorMsg(locale === 'en' ? 'Invalid OTP. Please try again.' : 'अमान्य OTP। कृपया पुनः प्रयास करें।');
-          setCurrentStep(19);
+          setCurrentStep(20);
           setMessages(prev => prev.slice(0, -1));
         }
         break;
@@ -431,7 +437,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
 
   const handleConfirmSummary = () => {
     if (mode === 'biodata') {
-      setCurrentStep(18);
+      setCurrentStep(19);
       triggerBotResponse(locale === 'en' ? 'Please provide your email to save and download your Biodata.' : 'अपना बायोडेटा सहेजने और डाउनलोड करने के लिए कृपया अपना ईमेल प्रदान करें।', 'text');
     } else {
       handleFinalRegister();
@@ -499,9 +505,8 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
                   <button
                     onClick={() => {
-                      if (onDownloadBiodata) {
-                        onDownloadBiodata(template, biodataForm);
-                      }
+                      setCurrentStep(19);
+                      triggerBotResponse(locale === 'en' ? 'Please provide your email to save and download your Biodata.' : 'अपना बायोडेटा सहेजने और डाउनलोड करने के लिए कृपया अपना ईमेल प्रदान करें।', 'text');
                     }}
                     style={{
                       flex: 1,
@@ -519,23 +524,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
                       gap: '0.5rem'
                     }}
                   >
-                    📄 {locale === 'en' ? 'Download PDF' : 'PDF डाउनलोड करें'}
-                  </button>
-                  <button
-                    onClick={onComplete}
-                    style={{
-                      flex: 1,
-                      padding: '1rem',
-                      backgroundColor: 'var(--secondary)',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: 'var(--radius-md)',
-                      fontWeight: '700',
-                      cursor: 'pointer',
-                      boxShadow: 'var(--shadow-md)'
-                    }}
-                  >
-                    🔍 {locale === 'en' ? 'View Matches' : 'मैच देखें'}
+                    {locale === 'en' ? 'Confirm Template & Proceed' : 'टेम्पलेट की पुष्टि करें और आगे बढ़ें'}
                   </button>
                 </div>
               </div>
@@ -837,20 +826,25 @@ const styles = {
   },
   inputBox: {
     flex: 1,
-    padding: '0.75rem 1rem',
-    border: '1px solid var(--border-light)',
-    backgroundColor: 'var(--bg-card)',
+    padding: '0 1rem',
+    border: 'none',
+    backgroundColor: 'transparent',
     color: 'var(--text-main)',
-    borderRadius: 'var(--radius-sm)',
-    fontSize: '0.95rem',
-    outline: 'none'
+    fontSize: '1.05rem',
+    outline: 'none',
+    boxShadow: 'none',
+    transition: 'var(--transition-fast)'
   },
   primarySendBtn: {
-    padding: '0.75rem 1.5rem',
+    padding: '0.7rem 1.8rem',
     backgroundColor: 'var(--primary)',
     color: '#ffffff',
     fontWeight: '700',
-    borderRadius: 'var(--radius-sm)'
+    borderRadius: 'var(--radius-full)',
+    border: 'none',
+    cursor: 'pointer',
+    boxShadow: '0 4px 12px rgba(216, 27, 96, 0.25)',
+    transition: 'transform 0.2s, box-shadow 0.2s'
   },
   summaryWrapper: {
     display: 'flex',

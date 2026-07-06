@@ -27,14 +27,8 @@ export const CreateBiodata: React.FC<{
   const [errorMsg, setErrorMsg] = useState('');
   const printRef = useRef<HTMLDivElement>(null);
 
-  const downloadPDFFromChat = async (templateName: string, data: any) => {
-    // Map template name to index
-    const templateMap: Record<string, number> = {
-      'TemplateClassic': 1,
-      'TemplateModern': 2,
-      'TemplateElegant': 3
-    };
-    setSelectedTemplate(templateMap[templateName] || 1);
+  const downloadPDFFromChat = async (_templateName: string, data: any) => {
+    // We already have selectedTemplate from the initial screen, so we ignore templateName from chat.
     
     // Map Chat data to BiodataData format required by Templates
     const mappedData: BiodataData = {
@@ -99,6 +93,67 @@ export const CreateBiodata: React.FC<{
     }
     return content;
   };
+
+  const [hasSelectedTemplate, setHasSelectedTemplate] = useState<boolean>(false);
+
+  if (!hasSelectedTemplate) {
+    return (
+      <div style={{ width: '100%', maxWidth: '900px', margin: '0 auto', padding: '3rem 1rem' }} className="animate-fade">
+        <h2 style={{ textAlign: 'center', marginBottom: '0.5rem', color: 'var(--text-headers)', fontFamily: 'var(--font-serif)', fontSize: '2.5rem' }}>Select a Biodata Template</h2>
+        <p style={{ textAlign: 'center', marginBottom: '3rem', color: 'var(--text-muted)' }}>Choose a premium design for your Mithila Biodata before providing your details.</p>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
+          {['TemplateClassic', 'TemplateModern', 'TemplateElegant'].map(tpl => {
+            const templateMap: Record<string, number> = {
+              'TemplateClassic': 1,
+              'TemplateModern': 2,
+              'TemplateElegant': 3
+            };
+            const tplIndex = templateMap[tpl];
+            
+            return (
+              <button
+                key={tpl}
+                onClick={() => {
+                  setSelectedTemplate(tplIndex);
+                  setHasSelectedTemplate(true);
+                }}
+                style={{
+                  padding: '2rem',
+                  border: '2px solid transparent',
+                  borderRadius: 'var(--radius-lg)',
+                  backgroundColor: 'var(--bg-card)',
+                  cursor: 'pointer',
+                  fontWeight: '700',
+                  color: 'var(--text-main)',
+                  boxShadow: 'var(--shadow-md)',
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '1rem',
+                  outline: 'none'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--primary)';
+                  e.currentTarget.style.transform = 'translateY(-5px)';
+                  e.currentTarget.style.boxShadow = 'var(--shadow-lg)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.borderColor = 'transparent';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+                }}
+              >
+                <div style={{ fontSize: '4rem' }}>📄</div>
+                <div style={{ fontSize: '1.2rem', color: 'var(--text-headers)' }}>{tpl.replace('Template', '')} Design</div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ width: '100%', maxWidth: '800px', margin: '0 auto' }}>

@@ -669,21 +669,23 @@ button {
 .chat-container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 80px); /* Full height minus app header */
+  height: calc(100dvh - 80px); /* Leave room for headers */
   background-color: transparent; /* Use app background */
   border: none;
   box-shadow: none;
   overflow: hidden;
+  position: relative;
 }
 
 .chat-scroller {
   flex: 1;
   overflow-y: auto;
-  padding: var(--space-lg);
+  padding: var(--space-lg) var(--space-md);
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
   scroll-behavior: smooth;
+  padding-bottom: 5rem; /* extra space at bottom */
 }
 
 .chat-bubble-bot {
@@ -714,10 +716,20 @@ button {
 .chat-input-bar {
   display: flex;
   gap: var(--space-sm);
-  padding: var(--space-md) var(--space-lg);
-  background-color: var(--bg-app);
-  border-top: 1px solid var(--border-light);
+  padding: 0.8rem;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
   align-items: center;
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 2rem);
+  max-width: 760px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  backdrop-filter: var(--blur-glass);
+  z-index: 10;
 }
 
 .chat-choices-panel {

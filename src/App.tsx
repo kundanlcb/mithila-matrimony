@@ -1984,7 +1984,7 @@ function App() {
           </div>
         )}
         {activeView === 'create-biodata' && (
-          <div className="animate-fade" style={{ width: '100%', display: 'flex', justifyContent: 'center', padding: '20px' }}>
+          <div className="animate-fade" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
             <CreateBiodata 
               onClose={() => setActiveView('home')} 
               onSuccess={() => {
