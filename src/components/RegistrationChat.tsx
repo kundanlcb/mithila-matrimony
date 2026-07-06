@@ -5,6 +5,12 @@ import { AuthService } from '../api/auth.service';
 import { apiClient } from '../api/apiClient';
 import { UploadService } from '../api/upload.service';
 import type { Biodata } from '../types';
+import { 
+  type BiodataData, 
+  TemplateClassic, 
+  TemplateModern, 
+  TemplateElegant 
+} from './BiodataMaker/BiodataTemplates';
 
 interface ChatMessage {
   id: string;
@@ -478,35 +484,65 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
           >
             {/* Visual Chat Content rendering */}
             {msg.inputType === 'template' ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', minWidth: '320px' }}>
-                <p style={{ color: 'var(--primary)', fontWeight: '600', fontSize: '1.05rem', textAlign: 'center' }}>{msg.text}</p>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.8rem' }}>
-                  {['TemplateClassic', 'TemplateModern', 'TemplateElegant'].map(tpl => (
-                    <button
-                      key={tpl}
-                      onClick={() => setTemplate(tpl)}
-                      style={{
-                        padding: '1.2rem 0.5rem',
-                        border: template === tpl ? '2px solid var(--primary)' : '2px solid transparent',
-                        borderRadius: 'var(--radius-md)',
-                        backgroundColor: 'var(--bg-card)',
-                        cursor: 'pointer',
-                        fontWeight: '700',
-                        color: template === tpl ? 'var(--primary)' : 'var(--text-main)',
-                        boxShadow: template === tpl ? 'var(--shadow-md)' : 'var(--shadow-sm)',
-                        transition: 'all 0.2s',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        transform: template === tpl ? 'translateY(-2px)' : 'none'
-                      }}
-                    >
-                      <div style={{ fontSize: '2.5rem' }}>📄</div>
-                      {tpl.replace('Template', '')}
-                    </button>
-                  ))}
-                </div>
+              (() => {
+                const mappedData: BiodataData = {
+                  fullName: biodataForm.fullName,
+                  gender: biodataForm.gender,
+                  dob: biodataForm.age ? `${new Date().getFullYear() - biodataForm.age}-01-01` : '1999-01-01',
+                  birthPlace: biodataForm.location || '',
+                  height: biodataForm.height || '',
+                  complexion: biodataForm.complexion || '',
+                  education: biodataForm.education,
+                  profession: biodataForm.profession,
+                  income: biodataForm.annualIncome ? biodataForm.annualIncome.toString() : '',
+                  gotra: biodataForm.gotra,
+                  mool: (biodataForm as any).mool || '',
+                  grandparentName: '',
+                  fatherName: '',
+                  motherName: '',
+                  siblingsDetail: '',
+                  ruralAddress: { streetAddress: '', city: biodataForm.location || '', state: '', pincode: '' },
+                  urbanAddress: { streetAddress: '', city: biodataForm.location || '', state: '', pincode: '' },
+                  photoUrl: biodataForm.photoUrl || ''
+                };
+
+                return (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', minWidth: '320px' }}>
+                    <p style={{ color: 'var(--primary)', fontWeight: '600', fontSize: '1.05rem', textAlign: 'center' }}>{msg.text}</p>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.8rem' }}>
+                      {['TemplateClassic', 'TemplateModern', 'TemplateElegant'].map(tpl => {
+                        const TplComponent = tpl === 'TemplateClassic' ? TemplateClassic : (tpl === 'TemplateModern' ? TemplateModern : TemplateElegant);
+                        return (
+                          <button
+                            key={tpl}
+                            onClick={() => setTemplate(tpl)}
+                            style={{
+                              padding: '0.5rem',
+                              border: template === tpl ? '2px solid var(--primary)' : '2px solid transparent',
+                              borderRadius: 'var(--radius-md)',
+                              backgroundColor: 'var(--bg-card)',
+                              cursor: 'pointer',
+                              fontWeight: '700',
+                              color: template === tpl ? 'var(--primary)' : 'var(--text-main)',
+                              boxShadow: template === tpl ? 'var(--shadow-md)' : 'var(--shadow-sm)',
+                              transition: 'all 0.2s',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'center',
+                              gap: '0.5rem',
+                              transform: template === tpl ? 'translateY(-2px)' : 'none'
+                            }}
+                          >
+                            <div style={{ width: '100%', height: '180px', overflow: 'hidden', position: 'relative', borderRadius: '4px', backgroundColor: '#fff', border: '1px solid var(--border-light)' }}>
+                              <div style={{ transform: 'scale(0.24)', transformOrigin: 'top left', width: '416%', pointerEvents: 'none' }}>
+                                <TplComponent data={mappedData} />
+                              </div>
+                            </div>
+                            <span style={{ fontSize: '0.85rem' }}>{tpl.replace('Template', '')}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
                 <div style={{ display: 'flex', marginTop: '1rem' }}>
                   <button
                     onClick={() => {
@@ -536,7 +572,9 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
                   </button>
                 </div>
               </div>
-            ) : msg.inputType === 'summary' ? (
+            );
+          })()
+        ) : msg.inputType === 'summary' ? (
               <div style={styles.summaryWrapper}>
                 <p style={{ color: 'var(--primary)', fontWeight: '600', marginBottom: '0.8rem' }}>{msg.text}</p>
                 
