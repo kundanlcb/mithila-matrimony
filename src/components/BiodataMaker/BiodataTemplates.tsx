@@ -397,52 +397,61 @@ export const TemplateSplit: React.FC<TemplateSplitProps> = ({ data, id, theme = 
       width: '794px', minWidth: '794px', maxWidth: '794px', 
       height: '1123px', minHeight: '1123px', maxHeight: '1123px', 
       fontFamily: '"Inter", "Helvetica Neue", sans-serif', 
-      padding: '0', backgroundColor: theme.mainBg, color: theme.mainText, 
-      margin: '0 auto', display: 'flex', flexDirection: 'column', overflow: 'hidden' 
+      padding: '70px', backgroundColor: theme.mainBg, color: theme.mainText, 
+      margin: '0 auto', display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative'
     }}>
-      {/* Header Section */}
-      <div style={{ 
-        backgroundColor: theme.sidebarBg, color: theme.sidebarText, 
-        padding: '50px 40px', display: 'flex', flexDirection: 'column', 
-        alignItems: 'center', textAlign: 'center', borderBottom: `4px solid ${theme.primary}`
-      }}>
-        {/* Photo Container - Square with rounded corners as requested */}
+      {/* Background decorative elements (optional, to mimic the image's edges) */}
+      <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '150px', height: '150px', backgroundColor: `${theme.primary}20`, borderRadius: '50%', pointerEvents: 'none' }}></div>
+      <div style={{ position: 'absolute', bottom: '-80px', left: '-80px', width: '250px', height: '250px', backgroundColor: `${theme.primary}15`, borderRadius: '50%', pointerEvents: 'none' }}></div>
+
+      {/* Header Section (Matching the Image) */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '60px' }}>
+        {/* Left Side: Name and Details */}
+        <div style={{ flex: 1, paddingRight: '40px' }}>
+          {/* Small accent square above name */}
+          <div style={{ width: '24px', height: '24px', backgroundColor: theme.primary, marginBottom: '25px' }}></div>
+          
+          <h1 style={{ fontSize: '52px', fontWeight: '800', margin: '0 0 12px 0', letterSpacing: '-1.5px', textTransform: 'uppercase', lineHeight: '1' }}>
+            {data.fullName}
+          </h1>
+          
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px', fontSize: '13px', fontWeight: '600', color: theme.mainText, opacity: 0.7, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '35px' }}>
+            <span>{data.profession || 'Professional'}</span>
+            <span style={{ color: theme.primary }}>•</span>
+            <span>{data.religion || 'Hindu'}</span>
+            <span style={{ color: theme.primary }}>•</span>
+            <span>{data.height}</span>
+            <span style={{ color: theme.primary }}>•</span>
+            <span>{data.complexion}</span>
+          </div>
+          
+          {/* Contact Block */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', fontWeight: '500', color: theme.mainText, opacity: 0.9, paddingLeft: '18px', borderLeft: `4px solid ${theme.primary}` }}>
+            {data.urbanAddress?.streetAddress && <div>{data.urbanAddress.streetAddress}</div>}
+            <div>{data.urbanAddress?.city || 'City'}, {data.urbanAddress?.state || 'State'} {data.urbanAddress?.pincode}</div>
+          </div>
+        </div>
+
+        {/* Right Side: Photo with offset background */}
         {data.photoUrl && (
-          <div style={{ marginBottom: '20px' }}>
-            <img 
-              src={data.photoUrl} 
-              alt="Profile" 
-              style={{ width: '180px', height: '180px', objectFit: 'cover', borderRadius: '32px', border: `4px solid ${theme.primary}`, boxShadow: '0 8px 16px rgba(0,0,0,0.1)' }} 
-              crossOrigin="anonymous" 
-            />
+          <div style={{ position: 'relative', width: '210px', height: '260px', flexShrink: 0, marginTop: '20px' }}>
+             {/* Offset Background */}
+             <div style={{ position: 'absolute', top: '20px', left: '20px', width: '100%', height: '100%', backgroundColor: theme.primary }}></div>
+             {/* Photo */}
+             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', overflow: 'hidden' }}>
+               <img src={data.photoUrl} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'contrast(1.05)' }} crossOrigin="anonymous" />
+             </div>
           </div>
         )}
-
-        <h1 style={{ fontSize: '46px', fontWeight: '800', margin: '0 0 15px 0', letterSpacing: '-1px', textTransform: 'uppercase', lineHeight: '1.1' }}>
-          {data.fullName}
-        </h1>
-        
-        {/* Subtitle line with bullet points */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', fontSize: '15px', fontWeight: '600', opacity: 0.9, flexWrap: 'wrap' }}>
-          <span>{data.profession || 'Professional'}</span>
-          <span style={{ color: theme.primary }}>•</span>
-          <span>{data.religion || 'Hindu'}</span>
-          <span style={{ color: theme.primary }}>•</span>
-          <span>{data.height}</span>
-          <span style={{ color: theme.primary }}>•</span>
-          <span>{data.complexion}</span>
-        </div>
       </div>
 
-      {/* Main Content Sections */}
-      <div style={{ flex: 1, padding: '50px 60px', display: 'flex', flexDirection: 'column', gap: '35px' }}>
+      {/* Full Width Sections */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '45px' }}>
         
         {/* Personal Details */}
         <div>
-          <h3 style={{ fontSize: '18px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 20px 0', color: theme.primary, borderBottom: `2px solid ${theme.primary}40`, paddingBottom: '8px' }}>
-             Personal & Astrological
-          </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+          <h3 style={{ fontSize: '20px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '2.5px', margin: '0 0 25px 0', color: theme.mainText }}>Personal Details</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px' }}>
             <div><span style={labelStyle}>Date of Birth</span> <strong style={valueStyle}>{data.dob}</strong></div>
             <div><span style={labelStyle}>Birth Place</span> <strong style={valueStyle}>{data.birthPlace}</strong></div>
             <div><span style={labelStyle}>Gotra</span> <strong style={valueStyle}>{data.gotra}</strong></div>
@@ -452,10 +461,8 @@ export const TemplateSplit: React.FC<TemplateSplitProps> = ({ data, id, theme = 
 
         {/* Education & Career */}
         <div>
-          <h3 style={{ fontSize: '18px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 20px 0', color: theme.primary, borderBottom: `2px solid ${theme.primary}40`, paddingBottom: '8px' }}>
-             Education & Career
-          </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+          <h3 style={{ fontSize: '20px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '2.5px', margin: '0 0 25px 0', color: theme.mainText }}>Education & Career</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px' }}>
              <div style={{ gridColumn: 'span 2' }}><span style={labelStyle}>Highest Education</span> <strong style={valueStyle}>{data.education}</strong></div>
              <div><span style={labelStyle}>Profession</span> <strong style={valueStyle}>{data.profession}</strong></div>
              <div><span style={labelStyle}>Annual Income</span> <strong style={valueStyle}>{data.income}</strong></div>
@@ -464,31 +471,14 @@ export const TemplateSplit: React.FC<TemplateSplitProps> = ({ data, id, theme = 
 
         {/* Family Details */}
         <div>
-          <h3 style={{ fontSize: '18px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 20px 0', color: theme.primary, borderBottom: `2px solid ${theme.primary}40`, paddingBottom: '8px' }}>
-             Family Details
-          </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+          <h3 style={{ fontSize: '20px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '2.5px', margin: '0 0 25px 0', color: theme.mainText }}>Family Details</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px' }}>
             <div><span style={labelStyle}>Father's Name</span> <strong style={valueStyle}>{data.fatherName || 'Not Specified'}</strong></div>
             <div><span style={labelStyle}>Mother's Name</span> <strong style={valueStyle}>{data.motherName || 'Not Specified'}</strong></div>
             <div style={{ gridColumn: 'span 2' }}><span style={labelStyle}>Grandparent</span> <strong style={valueStyle}>{data.grandparentName || 'Not Specified'}</strong></div>
           </div>
         </div>
 
-        {/* Contact / Address */}
-        <div>
-          <h3 style={{ fontSize: '18px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 20px 0', color: theme.primary, borderBottom: `2px solid ${theme.primary}40`, paddingBottom: '8px' }}>
-             Contact & Residence
-          </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '15px' }}>
-            <div><span style={labelStyle}>Current Address</span> 
-              <strong style={{ ...valueStyle, display: 'block', marginTop: '4px' }}>
-                {data.urbanAddress?.streetAddress ? `${data.urbanAddress.streetAddress}, ` : ''}
-                {data.urbanAddress?.city || 'City'}, {data.urbanAddress?.state || 'State'} {data.urbanAddress?.pincode}
-              </strong>
-            </div>
-          </div>
-        </div>
-        
       </div>
     </div>
   );
@@ -496,18 +486,19 @@ export const TemplateSplit: React.FC<TemplateSplitProps> = ({ data, id, theme = 
 
 const labelStyle: React.CSSProperties = {
   color: 'inherit',
-  opacity: 0.6,
-  fontSize: '11px',
+  opacity: 0.5,
+  fontSize: '12px',
   fontWeight: '600',
   display: 'block',
-  marginBottom: '4px',
+  marginBottom: '6px',
   textTransform: 'uppercase',
   letterSpacing: '1px'
 };
 const valueStyle: React.CSSProperties = {
-  fontSize: '15px',
+  fontSize: '16px',
   fontWeight: '600',
-  color: 'inherit'
+  color: 'inherit',
+  opacity: 0.9
 };
 
 // --- Shared Styles ---
