@@ -147,6 +147,14 @@ function App() {
   useEffect(() => {
     if (activeView === 'inbox') {
       loadInteractionsAndMatches();
+      document.body.style.overflow = 'auto';
+    }
+    
+    // Sync URL
+    if (activeView === 'create-biodata') {
+      window.history.pushState(null, '', '/create-biodata');
+    } else if (activeView === 'home' && window.location.pathname === '/create-biodata') {
+      window.history.pushState(null, '', '/');
     }
   }, [activeView]);
 
@@ -172,6 +180,8 @@ function App() {
           setPublicProfileId(profileId);
           setActiveView('public-profile');
         }
+      } else if (path.startsWith('/create-biodata')) {
+        setActiveView('create-biodata');
       }
 
       if (token && savedProfile) {
