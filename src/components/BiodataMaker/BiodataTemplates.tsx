@@ -398,89 +398,94 @@ export const TemplateSplit: React.FC<TemplateSplitProps> = ({ data, id, theme = 
       height: '1123px', minHeight: '1123px', maxHeight: '1123px', 
       fontFamily: '"Inter", "Helvetica Neue", sans-serif', 
       padding: '0', backgroundColor: theme.mainBg, color: theme.mainText, 
-      margin: '0 auto', display: 'flex', overflow: 'hidden' 
+      margin: '0 auto', display: 'flex', flexDirection: 'column', overflow: 'hidden' 
     }}>
-      {/* Sidebar */}
+      {/* Header Section */}
       <div style={{ 
         backgroundColor: theme.sidebarBg, color: theme.sidebarText, 
-        width: '280px', flexShrink: 0, padding: '40px 30px', 
-        display: 'flex', flexDirection: 'column', gap: '30px' 
+        padding: '50px 40px', display: 'flex', flexDirection: 'column', 
+        alignItems: 'center', textAlign: 'center', borderBottom: `4px solid ${theme.primary}`
       }}>
-        {/* Photo Container */}
+        {/* Photo Container - Square with rounded corners as requested */}
         {data.photoUrl && (
-          <div style={{ alignSelf: 'center', marginBottom: '10px' }}>
+          <div style={{ marginBottom: '20px' }}>
             <img 
               src={data.photoUrl} 
               alt="Profile" 
-              style={{ width: '180px', height: '180px', objectFit: 'cover', borderRadius: '50%', border: `4px solid ${theme.primary}`, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} 
+              style={{ width: '180px', height: '180px', objectFit: 'cover', borderRadius: '32px', border: `4px solid ${theme.primary}`, boxShadow: '0 8px 16px rgba(0,0,0,0.1)' }} 
               crossOrigin="anonymous" 
             />
           </div>
         )}
 
-        {/* Contact section */}
-        <div>
-          <h3 style={{ fontSize: '15px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', borderBottom: `2px solid ${theme.primary}`, paddingBottom: '8px', marginBottom: '15px' }}>Contact</h3>
-          <div style={{ fontSize: '13px', lineHeight: '1.6', opacity: 0.9 }}>
-            {data.urbanAddress?.streetAddress && <div>{data.urbanAddress.streetAddress}</div>}
-            <div>{data.urbanAddress?.city || 'City'}, {data.urbanAddress?.state || 'State'} {data.urbanAddress?.pincode}</div>
-          </div>
-        </div>
-
-        {/* Family Background */}
-        <div>
-          <h3 style={{ fontSize: '15px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', borderBottom: `2px solid ${theme.primary}`, paddingBottom: '8px', marginBottom: '15px' }}>Family</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', fontSize: '13px', opacity: 0.9 }}>
-            <div><strong style={{ display: 'block', color: theme.primary, textTransform: 'uppercase', fontSize: '11px', letterSpacing: '1px' }}>Father</strong> {data.fatherName || 'Not Specified'}</div>
-            <div><strong style={{ display: 'block', color: theme.primary, textTransform: 'uppercase', fontSize: '11px', letterSpacing: '1px' }}>Mother</strong> {data.motherName || 'Not Specified'}</div>
-            <div><strong style={{ display: 'block', color: theme.primary, textTransform: 'uppercase', fontSize: '11px', letterSpacing: '1px' }}>Grandparent</strong> {data.grandparentName || 'Not Specified'}</div>
-          </div>
-        </div>
+        <h1 style={{ fontSize: '46px', fontWeight: '800', margin: '0 0 15px 0', letterSpacing: '-1px', textTransform: 'uppercase', lineHeight: '1.1' }}>
+          {data.fullName}
+        </h1>
         
-        {/* Decorative Element */}
-        <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', opacity: 0.5 }}>
-           <div style={{ width: '40px', height: '4px', backgroundColor: theme.primary, borderRadius: '2px' }}></div>
+        {/* Subtitle line with bullet points */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', fontSize: '15px', fontWeight: '600', opacity: 0.9, flexWrap: 'wrap' }}>
+          <span>{data.profession || 'Professional'}</span>
+          <span style={{ color: theme.primary }}>•</span>
+          <span>{data.religion || 'Hindu'}</span>
+          <span style={{ color: theme.primary }}>•</span>
+          <span>{data.height}</span>
+          <span style={{ color: theme.primary }}>•</span>
+          <span>{data.complexion}</span>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div style={{ flex: 1, padding: '60px 50px', display: 'flex', flexDirection: 'column', gap: '45px' }}>
-        {/* Header */}
-        <div style={{ borderBottom: `3px solid ${theme.primary}`, paddingBottom: '20px' }}>
-          <h1 style={{ fontSize: '42px', fontWeight: '800', margin: '0 0 10px 0', letterSpacing: '-1px', textTransform: 'uppercase', color: theme.mainText, lineHeight: '1.1' }}>
-            {data.fullName}
-          </h1>
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: theme.primary, margin: 0, textTransform: 'uppercase', letterSpacing: '3px' }}>
-            {data.profession || 'Professional Profile'}
-          </h2>
-        </div>
-
+      {/* Main Content Sections */}
+      <div style={{ flex: 1, padding: '50px 60px', display: 'flex', flexDirection: 'column', gap: '35px' }}>
+        
         {/* Personal Details */}
         <div>
-          <h3 style={{ fontSize: '18px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 25px 0', color: theme.mainText, display: 'flex', alignItems: 'center', gap: '12px' }}>
-             <span style={{ display: 'inline-block', width: '12px', height: '12px', backgroundColor: theme.primary, borderRadius: '2px' }}></span> Personal Details
+          <h3 style={{ fontSize: '18px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 20px 0', color: theme.primary, borderBottom: `2px solid ${theme.primary}40`, paddingBottom: '8px' }}>
+             Personal & Astrological
           </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px' }}>
-            <div style={detailBoxStyle(theme)}><span style={labelStyle(theme)}>Date of Birth</span> <strong style={valueStyle}>{data.dob}</strong></div>
-            <div style={detailBoxStyle(theme)}><span style={labelStyle(theme)}>Birth Place</span> <strong style={valueStyle}>{data.birthPlace}</strong></div>
-            <div style={detailBoxStyle(theme)}><span style={labelStyle(theme)}>Height</span> <strong style={valueStyle}>{data.height}</strong></div>
-            <div style={detailBoxStyle(theme)}><span style={labelStyle(theme)}>Complexion</span> <strong style={valueStyle}>{data.complexion}</strong></div>
-            <div style={detailBoxStyle(theme)}><span style={labelStyle(theme)}>Gotra</span> <strong style={valueStyle}>{data.gotra}</strong></div>
-            <div style={detailBoxStyle(theme)}><span style={labelStyle(theme)}>Mool</span> <strong style={valueStyle}>{data.mool || 'Not Specified'}</strong></div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+            <div><span style={labelStyle}>Date of Birth</span> <strong style={valueStyle}>{data.dob}</strong></div>
+            <div><span style={labelStyle}>Birth Place</span> <strong style={valueStyle}>{data.birthPlace}</strong></div>
+            <div><span style={labelStyle}>Gotra</span> <strong style={valueStyle}>{data.gotra}</strong></div>
+            <div><span style={labelStyle}>Mool</span> <strong style={valueStyle}>{data.mool || 'Not Specified'}</strong></div>
           </div>
         </div>
 
         {/* Education & Career */}
         <div>
-          <h3 style={{ fontSize: '18px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 25px 0', color: theme.mainText, display: 'flex', alignItems: 'center', gap: '12px' }}>
-             <span style={{ display: 'inline-block', width: '12px', height: '12px', backgroundColor: theme.primary, borderRadius: '2px' }}></span> Education & Career
+          <h3 style={{ fontSize: '18px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 20px 0', color: theme.primary, borderBottom: `2px solid ${theme.primary}40`, paddingBottom: '8px' }}>
+             Education & Career
           </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
-             <div style={{ ...detailBoxStyle(theme), display: 'block' }}><span style={labelStyle(theme)}>Highest Education</span> <strong style={valueStyle}>{data.education}</strong></div>
-             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px' }}>
-                <div style={detailBoxStyle(theme)}><span style={labelStyle(theme)}>Profession</span> <strong style={valueStyle}>{data.profession}</strong></div>
-                <div style={detailBoxStyle(theme)}><span style={labelStyle(theme)}>Income</span> <strong style={valueStyle}>{data.income}</strong></div>
-             </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+             <div style={{ gridColumn: 'span 2' }}><span style={labelStyle}>Highest Education</span> <strong style={valueStyle}>{data.education}</strong></div>
+             <div><span style={labelStyle}>Profession</span> <strong style={valueStyle}>{data.profession}</strong></div>
+             <div><span style={labelStyle}>Annual Income</span> <strong style={valueStyle}>{data.income}</strong></div>
+          </div>
+        </div>
+
+        {/* Family Details */}
+        <div>
+          <h3 style={{ fontSize: '18px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 20px 0', color: theme.primary, borderBottom: `2px solid ${theme.primary}40`, paddingBottom: '8px' }}>
+             Family Details
+          </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+            <div><span style={labelStyle}>Father's Name</span> <strong style={valueStyle}>{data.fatherName || 'Not Specified'}</strong></div>
+            <div><span style={labelStyle}>Mother's Name</span> <strong style={valueStyle}>{data.motherName || 'Not Specified'}</strong></div>
+            <div style={{ gridColumn: 'span 2' }}><span style={labelStyle}>Grandparent</span> <strong style={valueStyle}>{data.grandparentName || 'Not Specified'}</strong></div>
+          </div>
+        </div>
+
+        {/* Contact / Address */}
+        <div>
+          <h3 style={{ fontSize: '18px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 20px 0', color: theme.primary, borderBottom: `2px solid ${theme.primary}40`, paddingBottom: '8px' }}>
+             Contact & Residence
+          </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '15px' }}>
+            <div><span style={labelStyle}>Current Address</span> 
+              <strong style={{ ...valueStyle, display: 'block', marginTop: '4px' }}>
+                {data.urbanAddress?.streetAddress ? `${data.urbanAddress.streetAddress}, ` : ''}
+                {data.urbanAddress?.city || 'City'}, {data.urbanAddress?.state || 'State'} {data.urbanAddress?.pincode}
+              </strong>
+            </div>
           </div>
         </div>
         
@@ -489,20 +494,16 @@ export const TemplateSplit: React.FC<TemplateSplitProps> = ({ data, id, theme = 
   );
 };
 
-const detailBoxStyle = (theme: SplitTheme): React.CSSProperties => ({
-  borderLeft: `3px solid ${theme.primary}`,
-  paddingLeft: '15px'
-});
-const labelStyle = (theme: SplitTheme): React.CSSProperties => ({
-  color: theme.mainText,
-  opacity: 0.5,
+const labelStyle: React.CSSProperties = {
+  color: 'inherit',
+  opacity: 0.6,
   fontSize: '11px',
   fontWeight: '600',
   display: 'block',
-  marginBottom: '6px',
+  marginBottom: '4px',
   textTransform: 'uppercase',
-  letterSpacing: '1.5px'
-});
+  letterSpacing: '1px'
+};
 const valueStyle: React.CSSProperties = {
   fontSize: '15px',
   fontWeight: '600',
