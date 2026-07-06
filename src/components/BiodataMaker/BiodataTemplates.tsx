@@ -49,7 +49,7 @@ const getReligionSymbol = (religion?: string) => {
 
 // --- Template 1: Classic Premium ---
 export const TemplateClassic: React.FC<TemplateProps> = ({ data, id }) => (
-  <div id={id} style={{ boxSizing: 'border-box', width: '794px', height: '1123px', fontFamily: '"Merriweather", "Georgia", serif', padding: '50px', backgroundColor: '#FFFAFA', color: '#333', border: '12px solid #8B0000', margin: '0 auto', overflow: 'hidden', position: 'relative' }}>
+  <div id={id} style={{ boxSizing: 'border-box', width: '794px', minWidth: '794px', maxWidth: '794px', height: '1123px', minHeight: '1123px', maxHeight: '1123px', fontFamily: '"Merriweather", "Georgia", serif', padding: '50px', backgroundColor: '#FFFAFA', color: '#333', border: '12px solid #8B0000', margin: '0 auto', overflow: 'hidden', position: 'relative' }}>
     <div style={{ position: 'absolute', top: '10px', left: '10px', right: '10px', bottom: '10px', border: '1px solid #8B0000', pointerEvents: 'none' }}></div>
     <div style={{ textAlign: 'center', marginBottom: '40px', borderBottom: '2px solid #8B0000', paddingBottom: '25px' }}>
       <h1 style={{ color: '#8B0000', fontSize: '38px', margin: '0 0 10px 0', textTransform: 'uppercase', letterSpacing: '4px' }}>Biodata</h1>
@@ -102,7 +102,7 @@ export const TemplateClassic: React.FC<TemplateProps> = ({ data, id }) => (
 
 // --- Template 2: Modern Premium ---
 export const TemplateModern: React.FC<TemplateProps> = ({ data, id }) => (
-  <div id={id} style={{ boxSizing: 'border-box', width: '794px', height: '1123px', fontFamily: '"Inter", "Helvetica Neue", sans-serif', padding: '0', backgroundColor: '#F4F7F6', color: '#1A202C', margin: '0 auto', display: 'flex', overflow: 'hidden' }}>
+  <div id={id} style={{ boxSizing: 'border-box', width: '794px', minWidth: '794px', maxWidth: '794px', height: '1123px', minHeight: '1123px', maxHeight: '1123px', fontFamily: '"Inter", "Helvetica Neue", sans-serif', padding: '0', backgroundColor: '#F4F7F6', color: '#1A202C', margin: '0 auto', display: 'flex', overflow: 'hidden' }}>
     <div style={{ backgroundColor: '#1A202C', color: '#FFFFFF', width: '280px', padding: '40px 30px', display: 'flex', flexDirection: 'column' }}>
       {data.photoUrl && (
         <div style={{ alignSelf: 'center', marginBottom: '30px' }}>
@@ -157,7 +157,7 @@ export const TemplateModern: React.FC<TemplateProps> = ({ data, id }) => (
 
 // --- Template 3: Elegant Premium ---
 export const TemplateElegant: React.FC<TemplateProps> = ({ data, id }) => (
-  <div id={id} style={{ boxSizing: 'border-box', width: '794px', height: '1123px', fontFamily: '"Playfair Display", "Georgia", serif', padding: '60px 50px', backgroundColor: '#FDFBF7', color: '#4A4A4A', margin: '0 auto', overflow: 'hidden', position: 'relative' }}>
+  <div id={id} style={{ boxSizing: 'border-box', width: '794px', minWidth: '794px', maxWidth: '794px', height: '1123px', minHeight: '1123px', maxHeight: '1123px', fontFamily: '"Playfair Display", "Georgia", serif', padding: '60px 50px', backgroundColor: '#FDFBF7', color: '#4A4A4A', margin: '0 auto', overflow: 'hidden', position: 'relative' }}>
     {/* Decorative corner borders */}
     <div style={{ position: 'absolute', top: '30px', left: '30px', width: '40px', height: '40px', borderTop: '2px solid #D4AF37', borderLeft: '2px solid #D4AF37' }}></div>
     <div style={{ position: 'absolute', top: '30px', right: '30px', width: '40px', height: '40px', borderTop: '2px solid #D4AF37', borderRight: '2px solid #D4AF37' }}></div>
@@ -228,7 +228,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({ data, id }) => (
 
 // --- Template 4: Minimalist Premium ---
 export const TemplateMinimal: React.FC<TemplateProps> = ({ data, id }) => (
-  <div id={id} style={{ boxSizing: 'border-box', width: '794px', height: '1123px', fontFamily: '"Inter", "Helvetica Neue", sans-serif', padding: '80px', backgroundColor: '#FFFFFF', color: '#111111', margin: '0 auto', overflow: 'hidden' }}>
+  <div id={id} style={{ boxSizing: 'border-box', width: '794px', minWidth: '794px', maxWidth: '794px', height: '1123px', minHeight: '1123px', maxHeight: '1123px', fontFamily: '"Inter", "Helvetica Neue", sans-serif', padding: '80px', backgroundColor: '#FFFFFF', color: '#111111', margin: '0 auto', overflow: 'hidden' }}>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '60px' }}>
       <div style={{ flex: 1 }}>
         <h1 style={{ fontSize: '48px', fontWeight: '800', margin: '0 0 10px 0', letterSpacing: '-2px', lineHeight: '1' }}>{data.fullName}</h1>
@@ -287,7 +287,7 @@ export const TemplateMinimal: React.FC<TemplateProps> = ({ data, id }) => (
 
 // --- Template 5: Traditional Premium ---
 export const TemplateTraditional: React.FC<TemplateProps> = ({ data, id }) => (
-  <div id={id} style={{ boxSizing: 'border-box', width: '794px', height: '1123px', fontFamily: '"Palatino Linotype", "Book Antiqua", Palatino, serif', padding: '50px', backgroundColor: '#FFFDF5', color: '#5A0000', margin: '0 auto', border: '16px solid transparent', borderImage: 'repeating-linear-gradient(45deg, #D4AF37, #D4AF37 10px, #FFFDF5 10px, #FFFDF5 20px) 16', overflow: 'hidden', position: 'relative' }}>
+  <div id={id} style={{ boxSizing: 'border-box', width: '794px', minWidth: '794px', maxWidth: '794px', height: '1123px', minHeight: '1123px', maxHeight: '1123px', fontFamily: '"Palatino Linotype", "Book Antiqua", Palatino, serif', padding: '50px', backgroundColor: '#FFFDF5', color: '#5A0000', margin: '0 auto', border: '16px solid transparent', borderImage: 'repeating-linear-gradient(45deg, #D4AF37, #D4AF37 10px, #FFFDF5 10px, #FFFDF5 20px) 16', overflow: 'hidden', position: 'relative' }}>
     <div style={{ position: 'absolute', top: '10px', left: '10px', right: '10px', bottom: '10px', border: '2px solid #D4AF37', pointerEvents: 'none' }}></div>
     <div style={{ textAlign: 'center', marginBottom: '40px' }}>
       <div style={{ fontSize: '48px', color: '#D4AF37', marginBottom: '5px', textShadow: '1px 1px 2px rgba(0,0,0,0.1)' }}>{getReligionSymbol(data.religion)}</div>
