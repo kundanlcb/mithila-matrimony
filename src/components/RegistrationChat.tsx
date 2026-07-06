@@ -940,7 +940,37 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
             );
           }
         })()}
-        <div style={{ display: 'flex', gap: '0.8rem', justifyContent: 'flex-end', width: '100%', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '0.8rem', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+          <div>
+            {/* Skip Button */}
+            {(() => {
+               const skippableSteps = [9, 10, 11, 13, 14, 15, 16, 17, 18, 20, 21, 23];
+               if (skippableSteps.includes(currentStep) && !typing && (messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType === 'text')) {
+                  return (
+                    <button
+                      type="button"
+                      onClick={() => handleUserSubmit(undefined, 'Skip')}
+                      style={{
+                        backgroundColor: 'var(--bg-app)',
+                        color: 'var(--text-main)',
+                        border: '1px solid var(--border-light)',
+                        borderRadius: 'var(--radius-full)',
+                        padding: '0.55rem 1.4rem', 
+                        fontSize: '0.85rem',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        whiteSpace: 'nowrap', 
+                        alignSelf: 'center',
+                        boxShadow: 'var(--shadow-sm)'
+                      }}
+                    >
+                      {locale === 'en' ? 'Skip Step' : 'छोड़ें'}
+                    </button>
+                  );
+               }
+               return null;
+            })()}
+          </div>
           <button
             type="submit"
             disabled={typing || (messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType !== 'text')}
@@ -949,34 +979,6 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
           >
             {t('chat_btn_send')}
           </button>
-          {/* Skip Button */}
-          {(() => {
-             const skippableSteps = [9, 10, 11, 13, 14, 15, 16, 17, 18, 20, 21, 23];
-             if (skippableSteps.includes(currentStep) && !typing && (messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType === 'text')) {
-                return (
-                  <button
-                    type="button"
-                    onClick={() => handleUserSubmit(undefined, 'Skip')}
-                    style={{
-                      backgroundColor: 'var(--bg-app)',
-                      color: 'var(--text-main)',
-                      border: '1px solid var(--border-light)',
-                      borderRadius: 'var(--radius-full)',
-                      padding: '0.55rem 1.4rem', 
-                      fontSize: '0.85rem',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap', 
-                      alignSelf: 'center',
-                      boxShadow: 'var(--shadow-sm)'
-                    }}
-                  >
-                    {locale === 'en' ? 'Skip Step' : 'छोड़ें'}
-                  </button>
-                );
-             }
-             return null;
-          })()}
         </div>
       </form>
     </div>
