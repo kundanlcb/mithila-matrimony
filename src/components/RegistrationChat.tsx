@@ -9,7 +9,9 @@ import {
   type BiodataData, 
   TemplateClassic, 
   TemplateModern, 
-  TemplateElegant 
+  TemplateElegant,
+  TemplateMinimal,
+  TemplateTraditional
 } from './BiodataMaker/BiodataTemplates';
 
 interface ChatMessage {
@@ -61,6 +63,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
     religion: 'Hindu',
     caste: 'Brahmin (Maithil)',
     gotra: 'Kashyap',
+    mool: '',
     diet: 'Vegetarian',
     profession: 'Software Engineer',
     annualIncome: 1200000,
@@ -196,7 +199,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
     setErrorMsg(null);
     
     const valueToProcess = directValue !== undefined ? directValue : inputValue.trim();
-    if (!valueToProcess && currentStep !== 15) { // Hobbies selection done via button
+    if (!valueToProcess && currentStep !== 16) { // Hobbies selection done via button
       setErrorMsg(t('chat_error_empty'));
       return;
     }
@@ -205,7 +208,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
     setMessages(prev => [...prev, {
       id: 'user-' + Math.random().toString(36).substr(2, 9),
       sender: 'user',
-      text: currentStep === 15 ? tempInterests.join(', ') : valueToProcess,
+      text: currentStep === 16 ? tempInterests.join(', ') : valueToProcess,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }]);
 
@@ -288,49 +291,57 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
 
       case 6: // Complexion entered -> Ask Religion
         setBiodataForm(prev => ({ ...prev, complexion: valueToProcess }));
-        triggerBotResponse(t('bot_religion'), 'select', optionsReligion);
+        triggerBotResponse(t('bot_religion'), 'select', [...optionsReligion, 'Skip']);
         break;
 
       case 7: // Religion entered -> Ask Caste
-        setBiodataForm(prev => ({ ...prev, religion: valueToProcess }));
-        triggerBotResponse(t('bot_caste'), 'select', optionsCaste);
+        setBiodataForm(prev => ({ ...prev, religion: valueToProcess === 'Skip' ? 'Not Specified' : valueToProcess }));
+        triggerBotResponse(t('bot_caste'), 'select', [...optionsCaste, 'Skip']);
         break;
 
       case 8: // Caste selected -> Ask Gotra
-        setBiodataForm(prev => ({ ...prev, caste: valueToProcess }));
-        triggerBotResponse(t('bot_gotra'), 'select', optionsGotra);
+        setBiodataForm(prev => ({ ...prev, caste: valueToProcess === 'Skip' ? 'Not Specified' : valueToProcess }));
+        triggerBotResponse(t('bot_gotra'), 'select', [...optionsGotra, 'Skip']);
         break;
 
-      case 9: // Gotra selected -> Ask Diet
-        setBiodataForm(prev => ({ ...prev, gotra: valueToProcess }));
+      case 9: // Gotra selected -> Ask Mool
+        setBiodataForm(prev => ({ ...prev, gotra: valueToProcess === 'Skip' ? 'Not Specified' : valueToProcess }));
+        triggerBotResponse(locale === 'en' ? 'What is your Mool?' : 'आपका मूल क्या है?', 'select', ['Skip', 'Mool 1', 'Mool 2']); // Mool is usually text, we can use 'text' but give 'Skip' as an option. Since we can't easily mix text and select, let's just make it a text prompt but let them type Skip. Wait, actually, the user can just type it. If they click skip, we handle it. Let's just use 'text' and tell them to skip by clicking a skip button or typing skip. But we have a skip button for files. Let's use 'text' and add a bot hint.
+        // Wait, if it's 'text', they can't click 'Skip'. Let's give them a select with 'Skip' and some common ones, or maybe just ask for text?
+        // Let's use 'text' for now. We can't use 'select' without options.
+        triggerBotResponse(locale === 'en' ? 'What is your Mool? (Type your Mool or type "Skip")' : 'आपका मूल क्या है? (अपना मूल लिखें या "Skip" लिखें)', 'text');
+        break;
+
+      case 10: // Mool entered -> Ask Diet
+        setBiodataForm(prev => ({ ...prev, mool: valueToProcess.toLowerCase() === 'skip' ? 'Not Specified' : valueToProcess }));
         triggerBotResponse(t('bot_diet'), 'select', ['Vegetarian', 'Non-Vegetarian', 'Eggetarian', 'Vegan']);
         break;
 
-      case 10: // Diet entered -> Ask City
+      case 11: // Diet entered -> Ask City
         setBiodataForm(prev => ({ ...prev, diet: valueToProcess }));
         triggerBotResponse(t('bot_city'), 'select', optionsCity);
         break;
 
-      case 11: // City entered -> Ask Education
+      case 12: // City entered -> Ask Education
         setBiodataForm(prev => ({ ...prev, location: valueToProcess }));
         triggerBotResponse(t('bot_education'), 'text');
         break;
 
-      case 12: // Education entered -> Ask Profession
+      case 13: // Education entered -> Ask Profession
         setBiodataForm(prev => ({ ...prev, education: valueToProcess }));
         triggerBotResponse(t('bot_profession'), 'select', optionsProfession);
         break;
 
-      case 13: // Profession entered -> Ask Income
+      case 14: // Profession entered -> Ask Income
         setBiodataForm(prev => ({ ...prev, profession: valueToProcess }));
         triggerBotResponse(t('bot_income'), 'text');
         break;
 
-      case 14: { // Income entered -> Ask Hobbies
+      case 15: { // Income entered -> Ask Hobbies
         const incomeNum = parseInt(valueToProcess);
         if (isNaN(incomeNum) || incomeNum <= 0) {
           setErrorMsg(t('chat_error_income'));
-          setCurrentStep(14);
+          setCurrentStep(15);
           setMessages(prev => prev.slice(0, -1));
           return;
         }
@@ -339,27 +350,27 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         break;
       }
 
-      case 15: // Hobbies selected -> Ask Bio
+      case 16: // Hobbies selected -> Ask Bio
         setBiodataForm(prev => ({ ...prev, interests: tempInterests }));
         triggerBotResponse(t('bot_bio'), 'text');
         break;
 
-      case 16: // Bio entered -> Ask Photo Upload
+      case 17: // Bio entered -> Ask Photo Upload
         setBiodataForm(prev => ({ ...prev, aboutMe: valueToProcess }));
         triggerBotResponse(t('bot_photo'), 'file');
         break;
 
-      case 17: // Photo Uploaded -> Summary Review
+      case 18: // Photo Uploaded -> Summary Review
         if (valueToProcess && valueToProcess !== 'skip') {
           setBiodataForm(prev => ({ ...prev, photoUrl: valueToProcess }));
         }
         triggerBotResponse(t('bot_summary'), 'summary');
         break;
 
-      case 19: // Email entered in Biodata Mode
+      case 20: // Email entered in Biodata Mode
         if (!/^\S+@\S+\.\S+$/.test(valueToProcess)) {
           setErrorMsg(locale === 'en' ? 'Please enter a valid email.' : 'कृपया एक वैध ईमेल दर्ज करें।');
-          setCurrentStep(19);
+          setCurrentStep(20);
           setMessages(prev => prev.slice(0, -1));
           return;
         }
@@ -368,19 +379,19 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         try {
           await AuthService.requestOtp({ email: valueToProcess });
           setTyping(false);
-          triggerBotResponse(locale === 'en' ? 'OTP sent! Please enter the 4-digit code.' : 'OTP भेजा गया! कृपया 4-अंकीय कोड दर्ज करें।', 'text');
+          triggerBotResponse(locale === 'en' ? 'OTP sent! Please enter the 6-digit code.' : 'OTP भेजा गया! कृपया 6-अंकीय कोड दर्ज करें।', 'text');
         } catch (err) {
           setTyping(false);
           setErrorMsg(locale === 'en' ? 'Failed to send OTP. Try again.' : 'OTP भेजने में विफल। पुनः प्रयास करें।');
-          setCurrentStep(19);
+          setCurrentStep(20);
           setMessages(prev => prev.slice(0, -1));
         }
         break;
 
-      case 20: // OTP entered in Biodata Mode
-        if (valueToProcess.length !== 4) {
-          setErrorMsg(locale === 'en' ? 'OTP must be 4 digits.' : 'OTP 4 अंकों का होना चाहिए।');
-          setCurrentStep(19);
+      case 21: // OTP entered in Biodata Mode
+        if (valueToProcess.length !== 6) {
+          setErrorMsg(locale === 'en' ? 'OTP must be 6 digits.' : 'OTP 6 अंकों का होना चाहिए।');
+          setCurrentStep(20);
           setMessages(prev => prev.slice(0, -1));
           return;
         }
@@ -400,13 +411,12 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         } catch (err) {
           setTyping(false);
           setErrorMsg(locale === 'en' ? 'Invalid OTP. Please try again.' : 'अमान्य OTP। कृपया पुनः प्रयास करें।');
-          setCurrentStep(20);
+          setCurrentStep(21);
           setMessages(prev => prev.slice(0, -1));
         }
         break;
 
-      case 20: // Template selection / download action (handled mostly by UI buttons)
-        break;
+      case 22: // Template selection / download action (handled mostly by UI buttons)
         break;
     }
   };
@@ -443,7 +453,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
 
   const handleConfirmSummary = () => {
     if (mode === 'biodata') {
-      setCurrentStep(18);
+      setCurrentStep(19); // shifted from 18 to 19 because step 17 is now 18.
       triggerBotResponse(locale === 'en' ? 'Awesome! Now, choose a premium design for your Biodata.' : 'बहुत बढ़िया! अब, अपने बायोडेटा के लिए एक प्रीमियम डिज़ाइन चुनें।', 'template');
     } else {
       handleFinalRegister();
@@ -510,8 +520,11 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', minWidth: '320px' }}>
                     <p style={{ color: 'var(--primary)', fontWeight: '600', fontSize: '1.05rem', textAlign: 'center' }}>{msg.text}</p>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.8rem' }}>
-                      {['TemplateClassic', 'TemplateModern', 'TemplateElegant'].map(tpl => {
-                        const TplComponent = tpl === 'TemplateClassic' ? TemplateClassic : (tpl === 'TemplateModern' ? TemplateModern : TemplateElegant);
+                      {['TemplateClassic', 'TemplateModern', 'TemplateElegant', 'TemplateMinimal', 'TemplateTraditional'].map(tpl => {
+                        const TplComponent = tpl === 'TemplateClassic' ? TemplateClassic : 
+                                             tpl === 'TemplateModern' ? TemplateModern : 
+                                             tpl === 'TemplateElegant' ? TemplateElegant : 
+                                             tpl === 'TemplateMinimal' ? TemplateMinimal : TemplateTraditional;
                         return (
                           <button
                             key={tpl}
@@ -634,7 +647,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
                   </button>
                 </div>
               </div>
-            ) : (msg.text.startsWith('data:image/') || msg.text.startsWith('http')) && msg.sender === 'user' && currentStep > 15 ? (
+            ) : (msg.text.startsWith('data:image/') || msg.text.startsWith('http')) && msg.sender === 'user' && currentStep > 16 ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                 <span style={{ fontSize: '0.8rem', opacity: 0.9 }}>📷 {locale === 'en' ? 'Uploaded Profile Photo:' : 'प्रोफ़ाइल फ़ोटो अपलोड की गई:'}</span>
                 <img 
@@ -643,8 +656,8 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
                   style={{ width: '80px', height: '80px', borderRadius: 'var(--radius-sm)', objectFit: 'cover', border: '2px solid #ffffff', boxShadow: 'var(--shadow-md)' }} 
                 />
               </div>
-            ) : msg.text === 'skip' ? (
-              <span>⏩ {locale === 'en' ? 'Skipped Photo Upload' : 'फ़ोटो अपलोड छोड़ दिया गया'}</span>
+            ) : msg.text === 'skip' || msg.text.toLowerCase() === 'skip' ? (
+              <span>⏩ {locale === 'en' ? 'Skipped' : 'छोड़ दिया गया'}</span>
             ) : (
               <span>{msg.text}</span>
             )}
@@ -818,18 +831,18 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
       {/* Chat bottom input text prompt panel */}
       <form onSubmit={handleUserSubmit} className="chat-input-bar">
         <input
-          type={currentStep === -1 ? 'password' : (currentStep === 3 || currentStep === 14 ? 'number' : currentStep === 1 ? 'tel' : 'text')}
+          type={currentStep === -1 ? 'password' : (currentStep === 3 || currentStep === 15 ? 'number' : currentStep === 1 ? 'tel' : 'text')}
           placeholder={
             typing
-              ? (locale === 'en' ? 'Maithil Assistant is typing...' : 'मैथिल सहायक टाइप कर रहा है...')
+              ? (locale === 'en' ? 'Maithil Assistant typing...' : 'मैथिल सहायक टाइप कर रहा है...')
               : messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType !== 'text'
-                ? (locale === 'en' ? 'Please choose an option above...' : 'कृपया ऊपर एक विकल्प चुनें...')
+                ? (locale === 'en' ? 'Select an option...' : 'कृपया ऊपर एक विकल्प चुनें...')
                 : currentStep === -1 ? '••••••••' : t('chat_placeholder')
           }
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           disabled={typing || (messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType !== 'text')}
-          style={styles.inputBox}
+          style={{ ...styles.inputBox, minWidth: 0, textOverflow: 'ellipsis' }}
           data-testid="chat-input"
         />
         <button

@@ -32,7 +32,9 @@ export const CreateBiodata: React.FC<{
     const templateMap: Record<string, number> = {
       'TemplateClassic': 1,
       'TemplateModern': 2,
-      'TemplateElegant': 3
+      'TemplateElegant': 3,
+      'TemplateMinimal': 4,
+      'TemplateTraditional': 5
     };
     setSelectedTemplate(templateMap[templateName] || 1);
     

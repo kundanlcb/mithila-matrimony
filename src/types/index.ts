@@ -33,6 +33,7 @@ export interface Biodata {
   gender: 'Male' | 'Female';
   age: number;             // Valid range: 18 to 70
   gotra: string;           // Clan/Lineage (e.g. Kashyap, Shandilya, Vatsa, Bhardwaj)
+  mool?: string;           // Original ancestral village (Mool)
   religion?: string;       // Religion (e.g. Hindu, Muslim, Christian)
   caste?: string;          // Caste (e.g. Brahmin, Kayastha)
   profession: string;      // Occupation (e.g. Software Engineer, Doctor, Teacher)
