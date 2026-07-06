@@ -530,7 +530,13 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         ...biodataForm,
         photoUrl: primary,
         additionalPhotos: additional,
-        addresses: [{ addressType: 'CURRENT', city: biodataForm.location, state: 'N/A', country: 'India' }]
+        addresses: [{ 
+          addressType: 'CURRENT', 
+          city: biodataForm.location, 
+          state: 'N/A', 
+          country: 'India',
+          streetAddress: (biodataForm as any).streetAddress || ''
+        }]
       };
       await BiodataService.updateMine(payload as any);
       await BiodataService.complete();
