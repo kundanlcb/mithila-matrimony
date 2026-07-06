@@ -437,8 +437,8 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
 
   const handleConfirmSummary = () => {
     if (mode === 'biodata') {
-      setCurrentStep(19);
-      triggerBotResponse(locale === 'en' ? 'Please provide your email to save and download your Biodata.' : 'अपना बायोडेटा सहेजने और डाउनलोड करने के लिए कृपया अपना ईमेल प्रदान करें।', 'text');
+      setCurrentStep(18);
+      triggerBotResponse(locale === 'en' ? 'Awesome! Now, choose a premium design for your Biodata.' : 'बहुत बढ़िया! अब, अपने बायोडेटा के लिए एक प्रीमियम डिज़ाइन चुनें।', 'template');
     } else {
       handleFinalRegister();
     }
@@ -478,35 +478,40 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
           >
             {/* Visual Chat Content rendering */}
             {msg.inputType === 'template' ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%' }}>
-                <p style={{ color: 'var(--primary)', fontWeight: '600' }}>{msg.text}</p>
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', minWidth: '320px' }}>
+                <p style={{ color: 'var(--primary)', fontWeight: '600', fontSize: '1.05rem', textAlign: 'center' }}>{msg.text}</p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.8rem' }}>
                   {['TemplateClassic', 'TemplateModern', 'TemplateElegant'].map(tpl => (
                     <button
                       key={tpl}
                       onClick={() => setTemplate(tpl)}
                       style={{
-                        flex: 1,
-                        padding: '1rem',
+                        padding: '1.2rem 0.5rem',
                         border: template === tpl ? '2px solid var(--primary)' : '2px solid transparent',
                         borderRadius: 'var(--radius-md)',
                         backgroundColor: 'var(--bg-card)',
                         cursor: 'pointer',
-                        fontWeight: '600',
-                        color: 'var(--text-main)',
-                        boxShadow: 'var(--shadow-sm)',
-                        transition: 'all 0.2s'
+                        fontWeight: '700',
+                        color: template === tpl ? 'var(--primary)' : 'var(--text-main)',
+                        boxShadow: template === tpl ? 'var(--shadow-md)' : 'var(--shadow-sm)',
+                        transition: 'all 0.2s',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        transform: template === tpl ? 'translateY(-2px)' : 'none'
                       }}
                     >
+                      <div style={{ fontSize: '2.5rem' }}>📄</div>
                       {tpl.replace('Template', '')}
                     </button>
                   ))}
                 </div>
-                <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+                <div style={{ display: 'flex', marginTop: '1rem' }}>
                   <button
                     onClick={() => {
                       setCurrentStep(19);
-                      triggerBotResponse(locale === 'en' ? 'Please provide your email to save and download your Biodata.' : 'अपना बायोडेटा सहेजने और डाउनलोड करने के लिए कृपया अपना ईमेल प्रदान करें।', 'text');
+                      triggerBotResponse(locale === 'en' ? 'Great choice! Please provide your email to save and download your Biodata.' : 'बढ़िया विकल्प! अपना बायोडेटा सहेजने और डाउनलोड करने के लिए कृपया अपना ईमेल प्रदान करें।', 'text');
                     }}
                     style={{
                       flex: 1,
@@ -514,15 +519,18 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
                       backgroundColor: 'var(--primary)',
                       color: 'white',
                       border: 'none',
-                      borderRadius: 'var(--radius-md)',
+                      borderRadius: 'var(--radius-full)',
                       fontWeight: '700',
                       cursor: 'pointer',
                       boxShadow: 'var(--shadow-md)',
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      gap: '0.5rem'
+                      gap: '0.5rem',
+                      transition: 'transform 0.2s'
                     }}
+                    onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                    onMouseOut={(e) => e.currentTarget.style.transform = 'none'}
                   >
                     {locale === 'en' ? 'Confirm Template & Proceed' : 'टेम्पलेट की पुष्टि करें और आगे बढ़ें'}
                   </button>
