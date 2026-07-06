@@ -19,6 +19,7 @@ export type BiodataData = {
   income: string;
   gotra: string;
   mool: string;
+  religion?: string;
   grandparentName: string;
   fatherName: string;
   motherName: string;
