@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BiodataService } from '../api/biodata.service';
+import { calculateAge } from '../utils/helpers';
 import type { BiodataResponse } from '../types/api.types';
 import { useLanguage } from '../context/LanguageContext';
 import { ImageSlider } from './ImageSlider';
@@ -58,7 +59,7 @@ export const PublicProfileView = ({ userId, onLoginClick }: PublicProfileViewPro
           <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '2rem 1.5rem 1.5rem', background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%)', color: '#fff', pointerEvents: 'none' }}>
             <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.2rem', margin: '0 0 0.2rem 0', color: '#fff' }}>{profile.fullName}</h2>
             <p style={{ margin: 0, fontSize: '1rem', color: '#f0f0f0', opacity: 0.9 }}>
-              {profile.age} {locale === 'en' ? 'Yrs' : 'वर्ष'} • {profile.height} • {profile.location}
+              {calculateAge(profile.dateOfBirth)} {locale === 'en' ? 'Yrs' : 'वर्ष'} • {profile.height} • {profile.location}
             </p>
           </div>
         </div>

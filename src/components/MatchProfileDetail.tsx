@@ -3,6 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { BiodataService } from '../api/biodata.service';
 import type { BiodataResponse } from '../types/api.types';
 import { ImageSlider } from './ImageSlider';
+import { calculateAge } from '../utils/helpers';
 
 interface MatchProfileDetailProps {
   userId: string;
@@ -115,12 +116,12 @@ const MatchProfileDetail: React.FC<MatchProfileDetailProps> = ({
 
           {/* Core Details & Actions - Right on Desktop */}
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: '280px', justifyContent: 'center' }}>
-            <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.5rem', margin: '0 0 0.5rem 0', color: 'var(--text-headers)' }}>
-              {profile.fullName}
-            </h2>
-            <p style={{ margin: '0 0 1.5rem 0', fontSize: '1.1rem', color: 'var(--text-muted)' }}>
-              {profile.age && `${profile.age} ${locale === 'en' ? 'Yrs' : 'वर्ष'} • `}{profile.height && `${profile.height} • `}{profile.location}
-            </p>
+            <div style={{ pointerEvents: 'none' }}>
+              <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.5rem', margin: '0 0 0.5rem 0', color: 'var(--text-headers)' }}>{profile.fullName}</h2>
+              <p style={{ margin: '0 0 1.5rem 0', fontSize: '1.1rem', color: 'var(--text-muted)' }}>
+              {profile.dateOfBirth && `${calculateAge(profile.dateOfBirth)} ${locale === 'en' ? 'Yrs' : 'वर्ष'} • `}{profile.height && `${profile.height} • `}{profile.location}
+              </p>
+            </div>
 
             {/* Quick Pills */}
             <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap', marginBottom: '2.5rem' }}>

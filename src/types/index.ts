@@ -31,7 +31,7 @@ export interface Biodata {
   userId: string;          // Association key to UserProfile
   fullName: string;        // User's full name
   gender: 'Male' | 'Female';
-  age: number;             // Valid range: 18 to 70
+  dateOfBirth?: string;    // User's Date of Birth
   gotra: string;           // Clan/Lineage (e.g. Kashyap, Shandilya, Vatsa, Bhardwaj)
   mool?: string;           // Original ancestral village (Mool)
   religion?: string;       // Religion (e.g. Hindu, Muslim, Christian)

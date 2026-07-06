@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import type { ProfileInteraction, Biodata } from '../types';
 
+const calculateAge = (dob?: string) => {
+  if (!dob) return 25;
+  const diff = Date.now() - new Date(dob).getTime();
+  return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+};
+
 interface MatchInboxProps {
   interactions: ProfileInteraction[];
   profiles: Biodata[];
@@ -70,7 +76,7 @@ const MatchInbox: React.FC<MatchInboxProps> = ({ interactions, profiles, activeU
                   <img src={sender.photoUrl} alt={sender.fullName} style={styles.avatar} />
                   <div style={styles.cardInfo}>
                     <h4 style={styles.name}>{sender.fullName}</h4>
-                    <p style={styles.meta}>{sender.age} yrs • {sender.profession}</p>
+                    <p style={styles.meta}>{calculateAge(sender.dateOfBirth)} yrs • {sender.profession}</p>
                   </div>
                   <div style={styles.actionCol}>
                     <button onClick={() => onAccept(int.interactionId)} style={styles.btnAccept} aria-label="Accept">

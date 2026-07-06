@@ -99,7 +99,7 @@ export const BiodataTemplate: React.FC<BiodataTemplateProps> = ({ data, id, them
       <div style={{ position: 'absolute', bottom: '-80px', left: '-80px', width: '250px', height: '250px', backgroundColor: `${theme.primary}10`, borderRadius: '50%', pointerEvents: 'none' }}></div>
 
       {/* Header Section */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '60px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '60px', width: '100%' }}>
         {/* Left Side: Name and Details */}
         <div style={{ flex: 1, paddingRight: '40px' }}>
           {/* Small accent square above name */}
@@ -156,7 +156,7 @@ export const BiodataTemplate: React.FC<BiodataTemplateProps> = ({ data, id, them
             <span style={{ width: '8px', height: '20px', backgroundColor: theme.primary, borderRadius: '4px' }}></span>
             Personal Details
           </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px', width: '100%' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '25px', width: '100%' }}>
             <div><span style={labelStyle}>Date of Birth</span> <strong style={valueStyle}>{data.dob}</strong></div>
             <div><span style={labelStyle}>Birth Place</span> <strong style={valueStyle}>{data.birthPlace || 'Not Specified'}</strong></div>
             <div><span style={labelStyle}>Gotra</span> <strong style={valueStyle}>{data.gotra}</strong></div>
@@ -170,8 +170,8 @@ export const BiodataTemplate: React.FC<BiodataTemplateProps> = ({ data, id, them
             <span style={{ width: '8px', height: '20px', backgroundColor: theme.primary, borderRadius: '4px' }}></span>
             Education & Career
           </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px', width: '100%' }}>
-             <div style={{ gridColumn: 'span 2' }}><span style={labelStyle}>Highest Education</span> <strong style={valueStyle}>{data.education}</strong></div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '25px', width: '100%' }}>
+             <div><span style={labelStyle}>Highest Education</span> <strong style={valueStyle}>{data.education}</strong></div>
              <div><span style={labelStyle}>Profession</span> <strong style={valueStyle}>{data.profession}</strong></div>
              <div><span style={labelStyle}>Annual Income</span> <strong style={valueStyle}>{data.income}</strong></div>
           </div>
@@ -183,10 +183,10 @@ export const BiodataTemplate: React.FC<BiodataTemplateProps> = ({ data, id, them
             <span style={{ width: '8px', height: '20px', backgroundColor: theme.primary, borderRadius: '4px' }}></span>
             Family Details
           </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px', width: '100%' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '25px', width: '100%' }}>
             <div><span style={labelStyle}>Father's Name</span> <strong style={valueStyle}>{data.fatherName || 'Not Specified'}</strong></div>
             <div><span style={labelStyle}>Mother's Name</span> <strong style={valueStyle}>{data.motherName || 'Not Specified'}</strong></div>
-            <div style={{ gridColumn: 'span 2' }}><span style={labelStyle}>Grandparent</span> <strong style={valueStyle}>{data.grandparentName || 'Not Specified'}</strong></div>
+            <div><span style={labelStyle}>Grandparent</span> <strong style={valueStyle}>{data.grandparentName || 'Not Specified'}</strong></div>
           </div>
         </div>
 

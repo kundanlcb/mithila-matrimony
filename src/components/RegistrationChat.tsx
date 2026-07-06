@@ -53,7 +53,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
   const [biodataForm, setBiodataForm] = useState<Omit<Biodata, 'biodataId' | 'userId'>>({
     fullName: '',
     gender: 'Female',
-    age: 24,
+    dateOfBirth: '1999-01-01',
     height: '5\' 6"',
     maritalStatus: 'Never Married',
     complexion: 'Fair',
@@ -260,7 +260,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         triggerBotResponse(t('bot_gender', { name: biodataForm.fullName || valueToProcess }), 'select', ['Female', 'Male']);
         break;
 
-      case 2: // Gender selected -> Ask Age
+      case 2: // Gender selected -> Ask DOB
         setBiodataForm(prev => ({ 
           ...prev, 
           gender: valueToProcess as 'Male' | 'Female',
@@ -271,15 +271,14 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         triggerBotResponse(t('bot_age'), 'text');
         break;
 
-      case 3: // Age entered -> Ask Height
-        const ageNum = parseInt(valueToProcess);
-        if (isNaN(ageNum) || ageNum < 18 || ageNum > 70) {
+      case 3: // DOB entered -> Ask Height
+        if (!valueToProcess || valueToProcess.trim() === '') {
           setErrorMsg(t('chat_error_age'));
           setCurrentStep(3);
           setMessages(prev => prev.slice(0, -1));
           return;
         }
-        setBiodataForm(prev => ({ ...prev, age: ageNum }));
+        setBiodataForm(prev => ({ ...prev, dateOfBirth: valueToProcess.trim() }));
         triggerBotResponse(t('bot_height'), 'select', ["5' 0\"", "5' 2\"", "5' 4\"", "5' 6\"", "5' 8\"", "5' 10\"", "6' 0\"+"]);
         break;
 
@@ -558,7 +557,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
             const mappedData: BiodataData = {
               fullName: biodataForm.fullName,
               gender: biodataForm.gender,
-              dob: biodataForm.age ? `${new Date().getFullYear() - biodataForm.age}-01-01` : '1999-01-01',
+              dob: biodataForm.dateOfBirth || '1999-01-01',
               birthPlace: biodataForm.birthPlace || '',
               height: biodataForm.height || '',
               complexion: biodataForm.complexion || '',
@@ -659,14 +658,14 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
                     <img src={biodataForm.photoUrl} alt="Portrait" style={styles.cardPortrait} />
                     <div style={styles.headerDetails}>
                       <h4 style={styles.cardName}>{biodataForm.fullName}</h4>
-                      <p style={styles.cardSubText}>{biodataForm.age} Yrs • {biodataForm.gender}</p>
+                      <p style={styles.cardSubText}>{biodataForm.dateOfBirth ? Math.floor((Date.now() - new Date(biodataForm.dateOfBirth).getTime()) / (1000 * 60 * 60 * 24 * 365.25)) : 24} Yrs • {biodataForm.gender}</p>
                     </div>
                   </div>
                   
                   <div style={styles.detailsGrid}>
                           <div style={styles.detailBox}>
                             <span style={styles.detailLabel}>{locale === 'en' ? 'Age & Height' : 'उम्र और लंबाई'}</span>
-                            <span style={styles.detailVal}>{biodataForm.age} {locale === 'en' ? 'Yrs' : 'वर्ष'} • {biodataForm.height}</span>
+                            <span style={styles.detailVal}>{biodataForm.dateOfBirth ? Math.floor((Date.now() - new Date(biodataForm.dateOfBirth).getTime()) / (1000 * 60 * 60 * 24 * 365.25)) : 24} {locale === 'en' ? 'Yrs' : 'वर्ष'} • {biodataForm.height}</span>
                           </div>
                           
                           <div style={styles.detailBox}>
@@ -894,7 +893,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
       {/* Chat bottom input text prompt panel */}
       <form onSubmit={handleUserSubmit} className="chat-input-bar">
         {(() => {
-          const type = currentStep === -1 ? 'password' : (currentStep === 3 || currentStep === 15 ? 'number' : currentStep === 1 ? 'tel' : 'text');
+          const type = currentStep === -1 ? 'password' : (currentStep === 15 ? 'number' : currentStep === 1 ? 'tel' : currentStep === 3 ? 'date' : 'text');
           const placeholderText = typing
             ? (locale === 'en' ? 'Maithil Assistant typing...' : 'मैथिल सहायक टाइप कर रहा है...')
             : messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType !== 'text'

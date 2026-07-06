@@ -4,6 +4,7 @@ import { useLanguage } from '../context/LanguageContext';
 import type { Biodata } from '../types';
 import { SubscriptionService } from '../api/subscription.service';
 import { ImageSlider } from './ImageSlider';
+import { calculateAge } from '../utils/helpers';
 
 interface ProfileDetailProps {
   profile: Biodata;
@@ -65,7 +66,7 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({
             <div style={{ ...styles.heroInfo, pointerEvents: 'none' }}>
               <h2 style={styles.name}>{profile.fullName}</h2>
               <p style={styles.basicMeta}>
-                {profile.age} {locale === 'en' ? 'Yrs' : 'वर्ष'} • {profile.location}
+                {calculateAge(profile.dateOfBirth)} {locale === 'en' ? 'Yrs' : 'वर्ष'} • {profile.location}
               </p>
             </div>
           </div>

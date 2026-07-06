@@ -20,6 +20,7 @@ import PremiumPaywall from './components/PremiumPaywall';
 import { PublicProfileView } from './components/PublicProfileView';
 import { ImageSlider } from './components/ImageSlider';
 import { CreateBiodata } from './components/BiodataMaker/CreateBiodata';
+import { calculateAge } from './utils/helpers';
 
 function App() {
   // Localization & Theme Hooks
@@ -1345,15 +1346,16 @@ function App() {
                         if (activeFilters.diet && profile.diet !== activeFilters.diet) return false;
                         if (activeFilters.religion && profile.religion !== activeFilters.religion) return false;
                         if (activeFilters.caste && profile.caste !== activeFilters.caste) return false;
-                        if (activeFilters.minAge && profile.age < activeFilters.minAge) return false;
-                        if (activeFilters.maxAge && profile.age > activeFilters.maxAge) return false;
+                        const age = calculateAge(profile.dateOfBirth);
+                        if (activeFilters.minAge && age < activeFilters.minAge) return false;
+                        if (activeFilters.maxAge && age > activeFilters.maxAge) return false;
                         return true;
                       });
 
                       const sortedProfiles = [...filteredProfiles].sort((a, b) => {
                         if (sortBy === 'score') return b.compatibilityScore - a.compatibilityScore;
-                        if (sortBy === 'age_asc') return a.age - b.age;
-                        if (sortBy === 'age_desc') return b.age - a.age;
+                        if (sortBy === 'age_asc') return calculateAge(a.dateOfBirth) - calculateAge(b.dateOfBirth);
+                        if (sortBy === 'age_desc') return calculateAge(b.dateOfBirth) - calculateAge(a.dateOfBirth);
                         if (sortBy === 'income') return b.annualIncome - a.annualIncome;
                         return 0;
                       });
@@ -1393,7 +1395,7 @@ function App() {
                               </div>
                               <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '1rem', background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)', color: '#fff' }}>
                                 <h3 style={{ margin: 0, fontSize: '1.2rem', fontFamily: 'var(--font-serif)', color: '#ffffff' }}>{profile.fullName}</h3>
-                                <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem', opacity: 0.9, color: '#f0f0f0' }}>{profile.age} Yrs • {profile.location}</p>
+                                <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem', opacity: 0.9, color: '#f0f0f0' }}>{calculateAge(profile.dateOfBirth)} Yrs • {profile.location}</p>
                               </div>
                             </div>
                             
@@ -1496,7 +1498,7 @@ function App() {
                     </button>
                     <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '2rem 1.5rem 1.5rem', background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%)', color: '#fff', pointerEvents: 'none' }}>
                       <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.2rem', margin: '0 0 0.2rem 0', color: '#fff' }}>{activeBiodata.fullName}</h2>
-                      <p style={{ margin: 0, fontSize: '1rem', color: '#f0f0f0', opacity: 0.9 }}>{activeBiodata.age} {t('app_yrs')} • {activeBiodata.location}</p>
+                      <p style={{ margin: 0, fontSize: '1rem', color: '#f0f0f0', opacity: 0.9 }}>{calculateAge(activeBiodata.dateOfBirth)} {t('app_yrs')} • {activeBiodata.location}</p>
                     </div>
                   </div>
                   
