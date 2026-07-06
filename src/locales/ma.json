@@ -237,5 +237,6 @@
   "biodata_maker_btn_preview": "पूर्वावलोकन",
   "biodata_maker_btn_send_otp": "OTP पठाऊ आ डाउनलोड करू",
   "biodata_maker_btn_verify_dl": "सत्यापित करू आ डाउनलोड करू",
-  "biodata_maker_btn_back": "पाछाँ"
+  "biodata_maker_btn_back": "पाछाँ",
+  "not_specified": "उल्लेखित नहि"
 }

@@ -21,10 +21,11 @@ import { PublicProfileView } from './components/PublicProfileView';
 import { ImageSlider } from './components/ImageSlider';
 import { CreateBiodata } from './components/BiodataMaker/CreateBiodata';
 import { calculateAge } from './utils/helpers';
+import { LanguageSwitcher } from './components/LanguageSwitcher';
 
 function App() {
   // Localization & Theme Hooks
-  const { t, locale, setLanguage } = useLanguage();
+  const { locale, t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
 
   // Application State
@@ -2064,16 +2065,7 @@ function App() {
               <h4 className="footer-col-title">{t('app_settings')}</h4>
               <div className="footer-controls-group">
                 {/* Language Switcher Dropdown */}
-                <select 
-                  className="footer-toggle-btn"
-                  value={locale}
-                  onChange={(e) => setLanguage(e.target.value as any)}
-                  style={{ appearance: 'none', textAlign: 'center', cursor: 'pointer' }}
-                >
-                  <option value="ma">🌐 मैथिली (Maithili)</option>
-                  <option value="hi">🌐 हिंदी (Hindi)</option>
-                  <option value="en">🌐 English (अंग्रेजी)</option>
-                </select>
+                <LanguageSwitcher />
                 
                 {/* Theme Selector Switcher */}
                 <button 

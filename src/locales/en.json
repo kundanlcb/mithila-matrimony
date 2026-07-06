@@ -237,5 +237,6 @@
   "biodata_maker_btn_preview": "Preview",
   "biodata_maker_btn_send_otp": "Send OTP & Download",
   "biodata_maker_btn_verify_dl": "Verify & Download",
-  "biodata_maker_btn_back": "Back"
+  "biodata_maker_btn_back": "Back",
+  "not_specified": "Not Specified"
 }

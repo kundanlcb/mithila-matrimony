@@ -237,5 +237,6 @@
   "biodata_maker_btn_preview": "पूर्वावलोकन",
   "biodata_maker_btn_send_otp": "OTP भेजें और डाउनलोड करें",
   "biodata_maker_btn_verify_dl": "सत्यापित करें और डाउनलोड करें",
-  "biodata_maker_btn_back": "पीछे"
+  "biodata_maker_btn_back": "पीछे",
+  "not_specified": "निर्दिष्ट नहीं"
 }
