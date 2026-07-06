@@ -893,21 +893,53 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
 
       {/* Chat bottom input text prompt panel */}
       <form onSubmit={handleUserSubmit} className="chat-input-bar">
-        <input
-          type={currentStep === -1 ? 'password' : (currentStep === 3 || currentStep === 15 ? 'number' : currentStep === 1 ? 'tel' : 'text')}
-          placeholder={
-            typing
-              ? (locale === 'en' ? 'Maithil Assistant typing...' : 'मैथिल सहायक टाइप कर रहा है...')
-              : messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType !== 'text'
-                ? (locale === 'en' ? 'Select an option...' : 'कृपया ऊपर एक विकल्प चुनें...')
-                : currentStep === -1 ? '••••••••' : t('chat_placeholder')
+        {(() => {
+          const type = currentStep === -1 ? 'password' : (currentStep === 3 || currentStep === 15 ? 'number' : currentStep === 1 ? 'tel' : 'text');
+          const placeholderText = typing
+            ? (locale === 'en' ? 'Maithil Assistant typing...' : 'मैथिल सहायक टाइप कर रहा है...')
+            : messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType !== 'text'
+              ? (locale === 'en' ? 'Select an option...' : 'कृपया ऊपर एक विकल्प चुनें...')
+              : currentStep === -1 ? '••••••••' : t('chat_placeholder');
+          const isDisabled = typing || (messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType !== 'text');
+          
+          if (type === 'text') {
+            return (
+              <textarea
+                rows={1}
+                placeholder={placeholderText}
+                value={inputValue}
+                onChange={(e) => {
+                  setInputValue(e.target.value);
+                  e.target.style.height = 'auto';
+                  e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`;
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (!isDisabled) {
+                      handleUserSubmit(e as any);
+                    }
+                  }
+                }}
+                disabled={isDisabled}
+                style={{ ...styles.inputBox, minWidth: 0, resize: 'none', overflowY: 'auto', maxHeight: '120px' }}
+                data-testid="chat-input"
+              />
+            );
+          } else {
+            return (
+              <input
+                type={type}
+                placeholder={placeholderText}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                disabled={isDisabled}
+                style={{ ...styles.inputBox, minWidth: 0, textOverflow: 'ellipsis' }}
+                data-testid="chat-input"
+              />
+            );
           }
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          disabled={typing || (messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType !== 'text')}
-          style={{ ...styles.inputBox, minWidth: 0, textOverflow: 'ellipsis' }}
-          data-testid="chat-input"
-        />
+        })()}
         <div style={{ display: 'flex', gap: '0.8rem', justifyContent: 'flex-end', width: '100%', alignItems: 'center' }}>
           <button
             type="submit"
