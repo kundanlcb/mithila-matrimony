@@ -49,7 +49,7 @@ const getReligionSymbol = (religion?: string) => {
 
 // --- Template 1: Classic Premium ---
 export const TemplateClassic: React.FC<TemplateProps> = ({ data, id }) => (
-  <div id={id} style={{ boxSizing: 'border-box', width: '794px', minWidth: '794px', maxWidth: '794px', height: '1123px', minHeight: '1123px', maxHeight: '1123px', fontFamily: '"Merriweather", "Georgia", serif', padding: '50px', backgroundColor: '#FFFAFA', color: '#333', border: '12px solid #8B0000', margin: '0 auto', overflow: 'hidden', position: 'relative' }}>
+  <div id={id} style={{ boxSizing: 'border-box', width: '794px', minWidth: '794px', maxWidth: '794px', height: '1123px', minHeight: '1123px', maxHeight: '1123px', fontFamily: '"Merriweather", "Georgia", serif', padding: '50px', backgroundColor: '#FFFAFA', color: '#333', border: '8px solid #8B0000', borderRadius: '4px', margin: '0 auto', overflow: 'hidden', position: 'relative' }}>
     <div style={{ position: 'absolute', top: '10px', left: '10px', right: '10px', bottom: '10px', border: '1px solid #8B0000', pointerEvents: 'none' }}></div>
     <div style={{ textAlign: 'center', marginBottom: '40px', borderBottom: '2px solid #8B0000', paddingBottom: '25px' }}>
       <h1 style={{ color: '#8B0000', fontSize: '38px', margin: '0 0 10px 0', textTransform: 'uppercase', letterSpacing: '4px' }}>Biodata</h1>
@@ -66,33 +66,33 @@ export const TemplateClassic: React.FC<TemplateProps> = ({ data, id }) => (
         <h3 style={{ color: '#8B0000', borderBottom: '1px solid #EADDDD', paddingBottom: '8px', textTransform: 'uppercase', fontSize: '16px', letterSpacing: '1px', marginTop: 0 }}>Personal Details</h3>
         <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '25px', fontSize: '15px' }}>
           <tbody>
-            <tr><td style={tCell}><strong>Date of Birth:</strong></td><td style={tCell}>{data.dob}</td></tr>
-            <tr><td style={tCell}><strong>Birth Place:</strong></td><td style={tCell}>{data.birthPlace}</td></tr>
-            <tr><td style={tCell}><strong>Height:</strong></td><td style={tCell}>{data.height}</td></tr>
-            <tr><td style={tCell}><strong>Complexion:</strong></td><td style={tCell}>{data.complexion}</td></tr>
-            <tr><td style={tCell}><strong>Gotra:</strong></td><td style={tCell}>{data.gotra}</td></tr>
-            <tr><td style={tCell}><strong>Mool:</strong></td><td style={tCell}>{data.mool}</td></tr>
+            <tr><td style={tLabel}>Date of Birth</td><td style={tValue}>{data.dob}</td></tr>
+            <tr><td style={tLabel}>Birth Place</td><td style={tValue}>{data.birthPlace}</td></tr>
+            <tr><td style={tLabel}>Height</td><td style={tValue}>{data.height}</td></tr>
+            <tr><td style={tLabel}>Complexion</td><td style={tValue}>{data.complexion}</td></tr>
+            <tr><td style={tLabel}>Gotra</td><td style={tValue}>{data.gotra}</td></tr>
+            <tr><td style={tLabel}>Mool</td><td style={tValue}>{data.mool}</td></tr>
           </tbody>
         </table>
 
         <h3 style={{ color: '#8B0000', borderBottom: '1px solid #EADDDD', paddingBottom: '8px', textTransform: 'uppercase', fontSize: '16px', letterSpacing: '1px' }}>Education & Career</h3>
         <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '25px', fontSize: '15px' }}>
           <tbody>
-            <tr><td style={tCell}><strong>Education:</strong></td><td style={tCell}>{data.education}</td></tr>
-            <tr><td style={tCell}><strong>Profession:</strong></td><td style={tCell}>{data.profession}</td></tr>
-            <tr><td style={tCell}><strong>Income:</strong></td><td style={tCell}>{data.income}</td></tr>
+            <tr><td style={tLabel}>Education</td><td style={tValue}>{data.education}</td></tr>
+            <tr><td style={tLabel}>Profession</td><td style={tValue}>{data.profession}</td></tr>
+            <tr><td style={tLabel}>Income</td><td style={tValue}>{data.income}</td></tr>
           </tbody>
         </table>
 
         <h3 style={{ color: '#8B0000', borderBottom: '1px solid #EADDDD', paddingBottom: '8px', textTransform: 'uppercase', fontSize: '16px', letterSpacing: '1px' }}>Family Details</h3>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '15px' }}>
           <tbody>
-            <tr><td style={tCell}><strong>Grandparent's Name:</strong></td><td style={tCell}>{data.grandparentName || 'Not Specified'}</td></tr>
-            <tr><td style={tCell}><strong>Father's Name:</strong></td><td style={tCell}>{data.fatherName || 'Not Specified'}</td></tr>
-            <tr><td style={tCell}><strong>Mother's Name:</strong></td><td style={tCell}>{data.motherName || 'Not Specified'}</td></tr>
-            <tr><td style={tCell}><strong>Siblings:</strong></td><td style={tCell}>{data.siblingsDetail || 'Not Specified'}</td></tr>
-            <tr><td style={tCell}><strong>Native Address:</strong></td><td style={tCell}>{data.ruralAddress?.city || 'Not Specified'}, {data.ruralAddress?.state || ''}</td></tr>
-            <tr><td style={tCell}><strong>Current Address:</strong></td><td style={tCell}>{data.urbanAddress?.city || 'Not Specified'}, {data.urbanAddress?.state || ''}</td></tr>
+            <tr><td style={tLabel}>Grandparent's Name</td><td style={tValue}>{data.grandparentName || 'Not Specified'}</td></tr>
+            <tr><td style={tLabel}>Father's Name</td><td style={tValue}>{data.fatherName || 'Not Specified'}</td></tr>
+            <tr><td style={tLabel}>Mother's Name</td><td style={tValue}>{data.motherName || 'Not Specified'}</td></tr>
+            <tr><td style={tLabel}>Siblings</td><td style={tValue}>{data.siblingsDetail || 'Not Specified'}</td></tr>
+            <tr><td style={tLabel}>Native Address</td><td style={tValue}>{data.ruralAddress?.city || 'Not Specified'}, {data.ruralAddress?.state || ''}</td></tr>
+            <tr><td style={tLabel}>Current Address</td><td style={tValue}>{data.urbanAddress?.city || 'Not Specified'}, {data.urbanAddress?.state || ''}</td></tr>
           </tbody>
         </table>
       </div>
@@ -110,7 +110,7 @@ export const TemplateModern: React.FC<TemplateProps> = ({ data, id }) => (
         </div>
       )}
       <h2 style={{ margin: '0 0 5px 0', fontSize: '26px', textAlign: 'center', fontWeight: '700', letterSpacing: '-0.5px' }}>{data.fullName}</h2>
-      <div style={{ height: '2px', width: '40px', backgroundColor: '#3182CE', margin: '15px auto 30px auto' }}></div>
+      <div style={{ height: '2px', width: '40px', backgroundColor: '#2C7A7B', margin: '15px auto 30px auto' }}></div>
       
       <div style={{ fontSize: '15px', lineHeight: '2.2', color: '#E2E8F0' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px', marginBottom: '8px' }}><span style={{ color: '#A0AEC0' }}>DOB</span> <span style={{ fontWeight: '500' }}>{data.dob}</span></div>
@@ -127,7 +127,7 @@ export const TemplateModern: React.FC<TemplateProps> = ({ data, id }) => (
       </div>
       
       <div style={{ backgroundColor: '#FFFFFF', padding: '25px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.02)' }}>
-        <h3 style={{ color: '#3182CE', fontSize: '16px', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '10px' }}><span style={{ display: 'inline-block', width: '8px', height: '8px', backgroundColor: '#3182CE', borderRadius: '50%' }}></span> Religious Background</h3>
+        <h3 style={{ color: '#2C7A7B', fontSize: '16px', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '10px' }}><span style={{ display: 'inline-block', width: '8px', height: '8px', backgroundColor: '#2C7A7B', borderRadius: '50%' }}></span> Religious Background</h3>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', fontSize: '15px' }}>
           <div><span style={{ color: '#718096', fontSize: '13px', display: 'block', marginBottom: '4px' }}>Gotra</span> <strong style={{ color: '#2D3748' }}>{data.gotra}</strong></div>
           <div><span style={{ color: '#718096', fontSize: '13px', display: 'block', marginBottom: '4px' }}>Mool</span> <strong style={{ color: '#2D3748' }}>{data.mool || 'Not Specified'}</strong></div>
@@ -135,7 +135,7 @@ export const TemplateModern: React.FC<TemplateProps> = ({ data, id }) => (
       </div>
 
       <div style={{ backgroundColor: '#FFFFFF', padding: '25px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.02)' }}>
-        <h3 style={{ color: '#3182CE', fontSize: '16px', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '10px' }}><span style={{ display: 'inline-block', width: '8px', height: '8px', backgroundColor: '#3182CE', borderRadius: '50%' }}></span> Education & Career</h3>
+        <h3 style={{ color: '#2C7A7B', fontSize: '16px', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '10px' }}><span style={{ display: 'inline-block', width: '8px', height: '8px', backgroundColor: '#2C7A7B', borderRadius: '50%' }}></span> Education & Career</h3>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', fontSize: '15px' }}>
           <div style={{ gridColumn: 'span 2' }}><span style={{ color: '#718096', fontSize: '13px', display: 'block', marginBottom: '4px' }}>Education</span> <strong style={{ color: '#2D3748' }}>{data.education}</strong></div>
           <div><span style={{ color: '#718096', fontSize: '13px', display: 'block', marginBottom: '4px' }}>Profession</span> <strong style={{ color: '#2D3748' }}>{data.profession}</strong></div>
@@ -144,7 +144,7 @@ export const TemplateModern: React.FC<TemplateProps> = ({ data, id }) => (
       </div>
 
       <div style={{ backgroundColor: '#FFFFFF', padding: '25px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.02)' }}>
-        <h3 style={{ color: '#3182CE', fontSize: '16px', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '10px' }}><span style={{ display: 'inline-block', width: '8px', height: '8px', backgroundColor: '#3182CE', borderRadius: '50%' }}></span> Family Background</h3>
+        <h3 style={{ color: '#2C7A7B', fontSize: '16px', textTransform: 'uppercase', letterSpacing: '1.5px', margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '10px' }}><span style={{ display: 'inline-block', width: '8px', height: '8px', backgroundColor: '#2C7A7B', borderRadius: '50%' }}></span> Family Background</h3>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', fontSize: '15px' }}>
           <div><span style={{ color: '#718096', fontSize: '13px', display: 'block', marginBottom: '4px' }}>Father's Name</span> <strong style={{ color: '#2D3748' }}>{data.fatherName || 'Not Specified'}</strong></div>
           <div><span style={{ color: '#718096', fontSize: '13px', display: 'block', marginBottom: '4px' }}>Mother's Name</span> <strong style={{ color: '#2D3748' }}>{data.motherName || 'Not Specified'}</strong></div>
@@ -168,7 +168,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({ data, id }) => (
       <h1 style={{ color: '#CD5C5C', fontSize: '42px', fontStyle: 'italic', margin: '0 0 10px 0', letterSpacing: '2px' }}>{data.fullName}</h1>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px' }}>
         <div style={{ height: '1px', width: '60px', backgroundColor: '#D4AF37' }}></div>
-        <p style={{ letterSpacing: '3px', textTransform: 'uppercase', fontSize: '12px', margin: 0, color: '#888' }}>Matrimonial Biodata</p>
+        <p style={{ margin: 0, color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Matrimonial Biodata</p>
         <div style={{ height: '1px', width: '60px', backgroundColor: '#D4AF37' }}></div>
       </div>
     </div>
@@ -176,7 +176,7 @@ export const TemplateElegant: React.FC<TemplateProps> = ({ data, id }) => (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 2.5fr', gap: '50px' }}>
       <div>
         {data.photoUrl && (
-          <div style={{ padding: '8px', border: '1px solid #D4AF37', borderRadius: '4px' }}>
+          <div style={{ padding: '8px', border: '1px solid #D4AF37', boxShadow: '0 15px 30px rgba(0,0,0,0.08)', borderRadius: '4px' }}>
             <img src={data.photoUrl} alt="Profile" style={{ width: '100%', height: '260px', objectFit: 'cover', borderRadius: '2px' }} crossOrigin="anonymous" />
           </div>
         )}
@@ -186,12 +186,12 @@ export const TemplateElegant: React.FC<TemplateProps> = ({ data, id }) => (
           <h3 style={{ color: '#CD5C5C', fontSize: '20px', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span style={{ fontSize: '24px' }}>✧</span> Personal Details
           </h3>
-          <table style={{ width: '100%', fontSize: '15px', lineHeight: '1.8' }}>
+          <table style={{ width: '100%', fontSize: '15px', lineHeight: '2.2' }}>
             <tbody>
-              <tr><td style={{ width: '140px', color: '#888' }}>Date of Birth</td><td style={{ fontWeight: 'bold' }}>{data.dob}</td></tr>
-              <tr><td style={{ color: '#888' }}>Birth Place</td><td style={{ fontWeight: 'bold' }}>{data.birthPlace}</td></tr>
-              <tr><td style={{ color: '#888' }}>Height & Color</td><td style={{ fontWeight: 'bold' }}>{data.height} | {data.complexion}</td></tr>
-              <tr><td style={{ color: '#888' }}>Gotra & Mool</td><td style={{ fontWeight: 'bold' }}>{data.gotra} | {data.mool || 'Not Specified'}</td></tr>
+              <tr><td style={{ width: '140px', color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Date of Birth</td><td style={{ fontWeight: 'bold' }}>{data.dob}</td></tr>
+              <tr><td style={{ color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Birth Place</td><td style={{ fontWeight: 'bold' }}>{data.birthPlace}</td></tr>
+              <tr><td style={{ color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Height & Color</td><td style={{ fontWeight: 'bold' }}>{data.height} | {data.complexion}</td></tr>
+              <tr><td style={{ color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Gotra & Mool</td><td style={{ fontWeight: 'bold' }}>{data.gotra} | {data.mool || 'Not Specified'}</td></tr>
             </tbody>
           </table>
         </div>
@@ -200,11 +200,11 @@ export const TemplateElegant: React.FC<TemplateProps> = ({ data, id }) => (
           <h3 style={{ color: '#CD5C5C', fontSize: '20px', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span style={{ fontSize: '24px' }}>✧</span> Professional Details
           </h3>
-          <table style={{ width: '100%', fontSize: '15px', lineHeight: '1.8' }}>
+          <table style={{ width: '100%', fontSize: '15px', lineHeight: '2.2' }}>
             <tbody>
-              <tr><td style={{ width: '140px', color: '#888' }}>Education</td><td style={{ fontWeight: 'bold' }}>{data.education}</td></tr>
-              <tr><td style={{ color: '#888' }}>Occupation</td><td style={{ fontWeight: 'bold' }}>{data.profession}</td></tr>
-              <tr><td style={{ color: '#888' }}>Income</td><td style={{ fontWeight: 'bold' }}>{data.income}</td></tr>
+              <tr><td style={{ width: '140px', color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Education</td><td style={{ fontWeight: 'bold' }}>{data.education}</td></tr>
+              <tr><td style={{ color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Occupation</td><td style={{ fontWeight: 'bold' }}>{data.profession}</td></tr>
+              <tr><td style={{ color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Income</td><td style={{ fontWeight: 'bold' }}>{data.income}</td></tr>
             </tbody>
           </table>
         </div>
@@ -213,11 +213,11 @@ export const TemplateElegant: React.FC<TemplateProps> = ({ data, id }) => (
           <h3 style={{ color: '#CD5C5C', fontSize: '20px', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span style={{ fontSize: '24px' }}>✧</span> Family Details
           </h3>
-          <table style={{ width: '100%', fontSize: '15px', lineHeight: '1.8' }}>
+          <table style={{ width: '100%', fontSize: '15px', lineHeight: '2.2' }}>
             <tbody>
-              <tr><td style={{ width: '140px', color: '#888' }}>Father</td><td style={{ fontWeight: 'bold' }}>{data.fatherName || 'Not Specified'}</td></tr>
-              <tr><td style={{ color: '#888' }}>Mother</td><td style={{ fontWeight: 'bold' }}>{data.motherName || 'Not Specified'}</td></tr>
-              <tr><td style={{ color: '#888' }}>Residence</td><td style={{ fontWeight: 'bold' }}>{data.urbanAddress?.city || 'Not Specified'}, {data.urbanAddress?.state || ''}</td></tr>
+              <tr><td style={{ width: '140px', color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Father</td><td style={{ fontWeight: 'bold' }}>{data.fatherName || 'Not Specified'}</td></tr>
+              <tr><td style={{ color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Mother</td><td style={{ fontWeight: 'bold' }}>{data.motherName || 'Not Specified'}</td></tr>
+              <tr><td style={{ color: '#999', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>Residence</td><td style={{ fontWeight: 'bold' }}>{data.urbanAddress?.city || 'Not Specified'}, {data.urbanAddress?.state || ''}</td></tr>
             </tbody>
           </table>
         </div>
@@ -232,7 +232,7 @@ export const TemplateMinimal: React.FC<TemplateProps> = ({ data, id }) => (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '60px' }}>
       <div style={{ flex: 1 }}>
         <h1 style={{ fontSize: '48px', fontWeight: '800', margin: '0 0 10px 0', letterSpacing: '-2px', lineHeight: '1' }}>{data.fullName}</h1>
-        <p style={{ margin: 0, fontSize: '18px', color: '#666666', letterSpacing: '-0.5px' }}>{data.profession}</p>
+        <p style={{ margin: 0, color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>{data.profession}</p>
       </div>
       {data.photoUrl && (
         <div style={{ width: '140px', height: '180px', overflow: 'hidden', flexShrink: 0, border: '1px solid #E5E5E5' }}>
@@ -246,18 +246,18 @@ export const TemplateMinimal: React.FC<TemplateProps> = ({ data, id }) => (
         <div>
           <h4 style={{ textTransform: 'uppercase', color: '#999999', fontSize: '11px', letterSpacing: '2px', margin: '0 0 20px 0', borderBottom: '1px solid #EEEEEE', paddingBottom: '10px' }}>Profile</h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', fontSize: '15px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#666666' }}>Born</span> <span>{data.dob}</span></div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#666666' }}>Location</span> <span>{data.birthPlace}</span></div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#666666' }}>Height</span> <span>{data.height}</span></div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#666666' }}>Color</span> <span>{data.complexion}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Born</span> <span style={{ fontWeight: '600', color: '#1A202C' }}>{data.dob}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Location</span> <span style={{ fontWeight: '600', color: '#1A202C' }}>{data.birthPlace}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Height</span> <span style={{ fontWeight: '600', color: '#1A202C' }}>{data.height}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Color</span> <span style={{ fontWeight: '600', color: '#1A202C' }}>{data.complexion}</span></div>
           </div>
         </div>
 
         <div>
           <h4 style={{ textTransform: 'uppercase', color: '#999999', fontSize: '11px', letterSpacing: '2px', margin: '0 0 20px 0', borderBottom: '1px solid #EEEEEE', paddingBottom: '10px' }}>Background</h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', fontSize: '15px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#666666' }}>Gotra</span> <span>{data.gotra}</span></div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#666666' }}>Mool</span> <span>{data.mool || 'Not Specified'}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Gotra</span> <span style={{ fontWeight: '600', color: '#1A202C' }}>{data.gotra}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Mool</span> <span style={{ fontWeight: '600', color: '#1A202C' }}>{data.mool || 'Not Specified'}</span></div>
           </div>
         </div>
       </div>
@@ -266,18 +266,18 @@ export const TemplateMinimal: React.FC<TemplateProps> = ({ data, id }) => (
         <div>
           <h4 style={{ textTransform: 'uppercase', color: '#999999', fontSize: '11px', letterSpacing: '2px', margin: '0 0 20px 0', borderBottom: '1px solid #EEEEEE', paddingBottom: '10px' }}>Career</h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', fontSize: '15px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#666666' }}>Education</span> <span style={{ textAlign: 'right', maxWidth: '60%' }}>{data.education}</span></div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#666666' }}>Profession</span> <span style={{ textAlign: 'right', maxWidth: '60%' }}>{data.profession}</span></div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#666666' }}>Income</span> <span>{data.income}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Education</span> <span style={{ textAlign: 'right', maxWidth: '60%' }}>{data.education}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Profession</span> <span style={{ textAlign: 'right', maxWidth: '60%' }}>{data.profession}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Income</span> <span style={{ fontWeight: '600', color: '#1A202C' }}>{data.income}</span></div>
           </div>
         </div>
 
         <div>
           <h4 style={{ textTransform: 'uppercase', color: '#999999', fontSize: '11px', letterSpacing: '2px', margin: '0 0 20px 0', borderBottom: '1px solid #EEEEEE', paddingBottom: '10px' }}>Family</h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', fontSize: '15px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#666666' }}>Father</span> <span>{data.fatherName || 'Not Specified'}</span></div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#666666' }}>Mother</span> <span>{data.motherName || 'Not Specified'}</span></div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#666666' }}>Residence</span> <span style={{ textAlign: 'right', maxWidth: '60%' }}>{data.urbanAddress?.city || 'Not Specified'}, {data.urbanAddress?.state || ''}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Father</span> <span style={{ fontWeight: '600', color: '#1A202C' }}>{data.fatherName || 'Not Specified'}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Mother</span> <span style={{ fontWeight: '600', color: '#1A202C' }}>{data.motherName || 'Not Specified'}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: '#A0AEC0', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Residence</span> <span style={{ textAlign: 'right', maxWidth: '60%' }}>{data.urbanAddress?.city || 'Not Specified'}, {data.urbanAddress?.state || ''}</span></div>
           </div>
         </div>
       </div>
@@ -296,7 +296,7 @@ export const TemplateTraditional: React.FC<TemplateProps> = ({ data, id }) => (
     </div>
     
     <div style={{ display: 'flex', gap: '40px', alignItems: 'flex-start' }}>
-      <div style={{ flex: 1, padding: '25px', backgroundColor: '#FFFFFF', border: '1px solid #EADDCD', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', borderRadius: '8px' }}>
+      <div style={{ flex: 1, padding: '25px', backgroundColor: '#FFFFFF', border: '1px solid #EADDCD', borderRadius: '8px' }}>
         <h3 style={{ textAlign: 'center', color: '#8B0000', borderBottom: '2px solid #D4AF37', paddingBottom: '12px', marginTop: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>Janam Kundali</h3>
         <table style={{ width: '100%', fontSize: '15px', lineHeight: '2' }}>
           <tbody>
@@ -311,13 +311,13 @@ export const TemplateTraditional: React.FC<TemplateProps> = ({ data, id }) => (
       </div>
 
       {data.photoUrl && (
-        <div style={{ width: '220px', padding: '10px', backgroundColor: '#FFFFFF', border: '1px solid #EADDCD', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', borderRadius: '8px' }}>
+        <div style={{ width: '220px', padding: '10px', backgroundColor: '#FFFFFF', border: '1px solid #EADDCD', borderRadius: '8px' }}>
           <img src={data.photoUrl} alt="Profile" style={{ width: '100%', height: '280px', objectFit: 'cover', borderRadius: '4px' }} crossOrigin="anonymous" />
         </div>
       )}
     </div>
 
-    <div style={{ marginTop: '35px', padding: '25px', backgroundColor: '#FFFFFF', border: '1px solid #EADDCD', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', borderRadius: '8px' }}>
+    <div style={{ marginTop: '35px', padding: '25px', backgroundColor: '#FFFFFF', border: '1px solid #EADDCD', borderRadius: '8px' }}>
       <h3 style={{ color: '#8B0000', borderBottom: '2px solid #D4AF37', paddingBottom: '12px', marginTop: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>Shiksha & Vyavsay</h3>
       <table style={{ width: '100%', fontSize: '15px', lineHeight: '2' }}>
         <tbody>
@@ -328,7 +328,7 @@ export const TemplateTraditional: React.FC<TemplateProps> = ({ data, id }) => (
       </table>
     </div>
 
-    <div style={{ marginTop: '35px', padding: '25px', backgroundColor: '#FFFFFF', border: '1px solid #EADDCD', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', borderRadius: '8px' }}>
+    <div style={{ marginTop: '35px', padding: '25px', backgroundColor: '#FFFFFF', border: '1px solid #EADDCD', borderRadius: '8px' }}>
       <h3 style={{ color: '#8B0000', borderBottom: '2px solid #D4AF37', paddingBottom: '12px', marginTop: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>Parivar Details</h3>
       <table style={{ width: '100%', fontSize: '15px', lineHeight: '2' }}>
         <tbody>
@@ -342,4 +342,5 @@ export const TemplateTraditional: React.FC<TemplateProps> = ({ data, id }) => (
 );
 
 // --- Shared Styles ---
-const tCell = { padding: '8px 0', borderBottom: '1px solid #f0f0f0' };
+const tLabel: React.CSSProperties = { padding: '12px 10px 12px 0', borderBottom: '1px solid #f4f4f4', color: '#718096', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', width: '35%' };
+const tValue: React.CSSProperties = { padding: '12px 0', borderBottom: '1px solid #f4f4f4', color: '#2D3748', fontWeight: 600, fontSize: '15px' };
