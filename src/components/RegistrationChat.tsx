@@ -438,6 +438,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         setEmail(valueToProcess);
         setTyping(true);
         try {
+          setEmail(valueToProcess);
           await AuthService.requestOtp({ email: valueToProcess });
           setTyping(false);
           triggerBotResponse(locale === 'en' ? 'OTP sent! Please enter the 6-digit code.' : 'OTP भेजा गया! कृपया 6-अंकीय कोड दर्ज करें।', 'text');
@@ -635,6 +636,52 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
                     onMouseOut={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(226, 62, 87, 0.3)' }}
                   >
                     {locale === 'en' ? 'Confirm Template & Proceed' : 'टेम्पलेट की पुष्टि करें और आगे बढ़ें'}
+                  </button>
+                </div>
+              </div>
+            );
+          }
+
+          if (currentStep === 26 && msg.id === messages[messages.length - 1].id) {
+            return (
+              <div key={msg.id} style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                <div className={msg.sender === 'bot' ? 'chat-bubble-bot' : 'chat-bubble-user'} style={{ position: 'relative' }}>
+                  {msg.text}
+                </div>
+                <div style={{ display: 'flex', gap: '0.8rem', marginTop: '1rem', alignSelf: 'flex-start', flexWrap: 'wrap' }}>
+                  <button
+                    onClick={async () => {
+                      setTyping(true);
+                      try {
+                        await AuthService.requestOtp({ email });
+                        setTyping(false);
+                        triggerBotResponse(locale === 'en' ? 'OTP resent! Please check your email.' : 'OTP फिर से भेज दिया गया! कृपया अपना ईमेल जांचें।', 'text');
+                      } catch (e) {
+                        setTyping(false);
+                        setErrorMsg(locale === 'en' ? 'Failed to resend OTP.' : 'OTP दोबारा भेजने में विफल।');
+                      }
+                    }}
+                    style={{
+                      ...styles.choiceChip,
+                      backgroundColor: 'transparent',
+                      color: 'var(--primary)',
+                      border: '1px solid var(--primary)',
+                    }}
+                  >
+                    {locale === 'en' ? 'Resend OTP' : 'OTP पुनः भेजें'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setCurrentStep(25);
+                      triggerBotResponse(locale === 'en' ? 'Please provide your new email address.' : 'कृपया अपना नया ईमेल पता प्रदान करें।', 'text');
+                    }}
+                    style={{
+                      ...styles.choiceChip,
+                      backgroundColor: 'transparent',
+                      color: 'var(--text-main)',
+                    }}
+                  >
+                    {locale === 'en' ? 'Change Email' : 'ईमेल बदलें'}
                   </button>
                 </div>
               </div>
