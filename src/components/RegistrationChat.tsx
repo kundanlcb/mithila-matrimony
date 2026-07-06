@@ -633,8 +633,6 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
           </div>
         )}
         
-        <div ref={chatEndRef} />
-      </div>
 
       {/* Validation warning banner */}
       {errorMsg && (
@@ -775,6 +773,9 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
           )}
         </>
       )}
+
+        <div ref={chatEndRef} />
+      </div>
 
       {/* Chat bottom input text prompt panel */}
       <form onSubmit={handleUserSubmit} className="chat-input-bar">
