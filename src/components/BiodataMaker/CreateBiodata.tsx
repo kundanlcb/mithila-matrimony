@@ -33,8 +33,8 @@ export const CreateBiodata: React.FC<{
     const mappedData: BiodataData = {
       fullName: data.fullName,
       gender: data.gender,
-      dob: data.age ? `${2026 - data.age}-01-01` : '1999-01-01', // Approx DOB based on age
-      birthPlace: data.location,
+      dob: data.dateOfBirth || data.dob || (data.age ? `${2026 - data.age}-01-01` : '1999-01-01'),
+      birthPlace: data.birthPlace || data.location,
       height: data.height,
       complexion: data.complexion,
       education: data.education,
@@ -42,12 +42,12 @@ export const CreateBiodata: React.FC<{
       income: data.annualIncome ? data.annualIncome.toString() : '',
       gotra: data.gotra,
       mool: data.mool || '',
-      grandparentName: '',
-      fatherName: '',
-      motherName: '',
-      siblingsDetail: '',
+      grandparentName: data.grandparentName || '',
+      fatherName: data.fatherName || '',
+      motherName: data.motherName || '',
+      siblingsDetail: data.siblingsDetail || '',
       ruralAddress: { streetAddress: '', city: data.location, state: '', pincode: '' },
-      urbanAddress: { streetAddress: '', city: data.location, state: '', pincode: '' },
+      urbanAddress: { streetAddress: data.streetAddress || '', city: data.location, state: '', pincode: '' },
       photoUrl: data.photoUrl
     };
     setFormData(mappedData);
