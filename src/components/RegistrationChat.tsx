@@ -461,8 +461,20 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         try {
           await AuthService.verifyOtp({ email, otp: valueToProcess });
           setTyping(false);
+        } catch (err) {
+          setTyping(false);
+          setErrorMsg(locale === 'en' ? 'Invalid OTP. Please try again.' : 'अमान्य OTP। कृपया पुनः प्रयास करें।');
+          setCurrentStep(26);
+          setMessages(prev => prev.slice(0, -1));
+          return; // Stop here if OTP fails
+        }
+
+        // OTP succeeded, now save profile
+        setTyping(true);
+        try {
           // Save the profile and trigger download/matches immediately!
           await handleFinalRegister(true); 
+          setTyping(false);
           if (onDownloadBiodata) {
             onDownloadBiodata(template, biodataForm);
           }
@@ -472,7 +484,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
           }, 1500);
         } catch (err) {
           setTyping(false);
-          setErrorMsg(locale === 'en' ? 'Invalid OTP. Please try again.' : 'अमान्य OTP। कृपया पुनः प्रयास करें।');
+          // handleFinalRegister already sets its own error message, but we need to stay on this step
           setCurrentStep(26);
           setMessages(prev => prev.slice(0, -1));
         }
@@ -526,8 +538,20 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
     try {
       const primary = uploadedPhotos[0] || biodataForm.photoUrl;
       const additional = uploadedPhotos.slice(1);
+      
+      let calculatedAge = undefined;
+      if (biodataForm.dateOfBirth) {
+        const dobDate = new Date(biodataForm.dateOfBirth);
+        if (!isNaN(dobDate.getTime())) {
+          const ageDiffMs = Date.now() - dobDate.getTime();
+          const ageDate = new Date(ageDiffMs);
+          calculatedAge = Math.abs(ageDate.getUTCFullYear() - 1970);
+        }
+      }
+
       const payload = {
         ...biodataForm,
+        age: calculatedAge,
         photoUrl: primary,
         additionalPhotos: additional,
         addresses: [{ 
