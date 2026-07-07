@@ -239,7 +239,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         AuthService.setupPassword({ password: valueToProcess }).then(() => {
           triggerBotResponse(t('bot_welcome'), 'text');
         }).catch(err => {
-          setErrorMsg('Failed to set password: ' + err.message);
+          setErrorMsg(t('error_set_password') + err.message);
           setCurrentStep(-1);
           setMessages(prev => prev.slice(0, -1));
         });
@@ -253,7 +253,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
 
       case 1: // Phone entered -> Ask Gender
         if (!/^\+?[0-9\s-]{10,15}$/.test(valueToProcess)) {
-          setErrorMsg(locale === 'en' ? 'Please enter a valid phone number.' : 'कृपया एक वैध फ़ोन नंबर दर्ज करें।');
+          setErrorMsg(t('error_invalid_phone'));
           setCurrentStep(1);
           setMessages(prev => prev.slice(0, -1));
           return;
@@ -283,7 +283,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
           return;
         }
         setBiodataForm(prev => ({ ...prev, dateOfBirth: valueToProcess.trim() }));
-        triggerBotResponse(locale === 'en' ? 'Where were you born? (Birth Place)' : 'आपका जन्म स्थान क्या है?', 'text');
+        triggerBotResponse(t('bot_birth_place'), 'text');
         break;
 
       case 4: // Birth Place -> Ask Height
@@ -318,7 +318,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
 
       case 10: // Gotra selected -> Ask Mool
         setBiodataForm(prev => ({ ...prev, gotra: finalValue }));
-        triggerBotResponse(locale === 'en' ? 'What is your Mool?' : 'आपका मूल क्या है?', 'text');
+        triggerBotResponse(t('bot_mool'), 'text');
         break;
 
       case 11: // Mool entered -> Ask Diet
@@ -367,23 +367,23 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
           text: locale === 'en' ? '— 👨‍👩‍👧‍👦 Section 3 of 5: Family Details —' : '— 👨‍👩‍👧‍👦 भाग 3/5: परिवार का विवरण —',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }]);
-        triggerBotResponse(locale === 'en' ? 'What is your Father\'s Name?' : 'आपके पिता का क्या नाम है?', 'text');
+        triggerBotResponse(t('bot_father_name'), 'text');
         break;
       }
 
       case 16: // Father's Name -> Mother's Name
         setBiodataForm(prev => ({ ...prev, fatherName: finalValue }));
-        triggerBotResponse(locale === 'en' ? 'What is your Mother\'s Name?' : 'आपकी माता का क्या नाम है?', 'text');
+        triggerBotResponse(t('bot_mother_name'), 'text');
         break;
 
       case 17: // Mother's Name -> Grandparent's Name
         setBiodataForm(prev => ({ ...prev, motherName: finalValue }));
-        triggerBotResponse(locale === 'en' ? 'What is your Grandparent\'s Name?' : 'आपके दादा/दादी का क्या नाम है?', 'text');
+        triggerBotResponse(t('bot_grandparent_name'), 'text');
         break;
 
       case 18: // Grandparent's Name -> Siblings Details
         setBiodataForm(prev => ({ ...prev, grandparentName: finalValue }));
-        triggerBotResponse(locale === 'en' ? 'Any details about your siblings? (e.g. 1 Brother, 1 Sister)' : 'आपके भाई-बहनों के बारे में कोई विवरण? (उदा. 1 भाई, 1 बहन)', 'text');
+        triggerBotResponse(t('bot_siblings'), 'text');
         break;
 
       // === SECTION 4: ADDRESS DETAILS ===
@@ -395,27 +395,27 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
           text: locale === 'en' ? '— 🏠 Section 4 of 5: Address Details —' : '— 🏠 भाग 4/5: पते का विवरण —',
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }]);
-        triggerBotResponse(locale === 'en' ? 'Which City do you currently live in?' : 'आप वर्तमान में किस शहर में रहते हैं?', 'text');
+        triggerBotResponse(t('bot_city'), 'text');
         break;
 
       case 20: // Current City -> Current State
         setBiodataForm(prev => ({ ...prev, currentCity: finalValue, location: finalValue }));
-        triggerBotResponse(locale === 'en' ? 'Which State do you currently live in?' : 'आप वर्तमान में किस राज्य में रहते हैं?', 'text');
+        triggerBotResponse(t('bot_state'), 'text');
         break;
 
       case 21: // Current State -> Pincode
         setBiodataForm(prev => ({ ...prev, currentState: finalValue }));
-        triggerBotResponse(locale === 'en' ? 'What is your current Pincode?' : 'आपका वर्तमान पिनकोड क्या है?', 'text');
+        triggerBotResponse(t('bot_pincode'), 'text');
         break;
         
       case 22: // Pincode -> Locality
         setBiodataForm(prev => ({ ...prev, pincode: finalValue }));
-        triggerBotResponse(locale === 'en' ? 'What is your locality/colony/village?' : 'आपका मोहल्ला/कॉलोनी/गांव क्या है?', 'text');
+        triggerBotResponse(t('bot_locality'), 'text');
         break;
 
       case 23: // Locality -> Native District
         setBiodataForm(prev => ({ ...prev, locality: finalValue }));
-        triggerBotResponse(locale === 'en' ? 'What is your Native District?' : 'आपका मूल जिला क्या है?', 'text');
+        triggerBotResponse(t('bot_native_district'), 'text');
         break;
 
       // === SECTION 5: ADDITIONAL INFO & CONTACT ===
@@ -449,7 +449,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
 
       case 28: // Email entered in Biodata Mode
         if (!/^\S+@\S+\.\S+$/.test(valueToProcess)) {
-          setErrorMsg(locale === 'en' ? 'Please enter a valid email.' : 'कृपया एक वैध ईमेल दर्ज करें।');
+          setErrorMsg(t('error_invalid_email_bot'));
           setCurrentStep(28);
           setMessages(prev => prev.slice(0, -1));
           return;
@@ -459,10 +459,10 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         try {
           await AuthService.requestOtp({ email: valueToProcess });
           setTyping(false);
-          triggerBotResponse(locale === 'en' ? 'OTP sent! Please enter the 6-digit code. (Check your spam/junk folder if not in primary inbox)' : 'OTP भेजा गया! कृपया 6-अंकीय कोड दर्ज करें। (यदि प्राइमरी इनबॉक्स में नहीं है, तो कृपया अपना स्पैम/जंक फ़ोल्डर जांचें)', 'text');
+          triggerBotResponse(t('bot_otp_sent'), 'text');
         } catch (err) {
           setTyping(false);
-          setErrorMsg(locale === 'en' ? 'Failed to send OTP. Try again.' : 'OTP भेजने में विफल। पुनः प्रयास करें।');
+          setErrorMsg(t('error_send_otp_failed'));
           setCurrentStep(28);
           setMessages(prev => prev.slice(0, -1));
         }
@@ -470,7 +470,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
 
       case 29: // OTP entered in Biodata Mode
         if (valueToProcess.length !== 6) {
-          setErrorMsg(locale === 'en' ? 'OTP must be 6 digits.' : 'OTP 6 अंकों का होना चाहिए।');
+          setErrorMsg(t('error_otp_length'));
           setCurrentStep(29);
           setMessages(prev => prev.slice(0, -1));
           return;
@@ -481,7 +481,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
           setTyping(false);
         } catch (err) {
           setTyping(false);
-          setErrorMsg(locale === 'en' ? 'Invalid OTP. Please try again.' : 'अमान्य OTP। कृपया पुनः प्रयास करें।');
+          setErrorMsg(t('error_invalid_otp_bot'));
           setCurrentStep(29);
           setMessages(prev => prev.slice(0, -1));
           return; // Stop here if OTP fails
@@ -496,7 +496,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
           if (onDownloadBiodata) {
             onDownloadBiodata(template, biodataForm);
           }
-          triggerBotResponse(locale === 'en' ? 'Profile saved and Biodata downloading! Taking you to matches...' : 'प्रोफ़ाइल सहेजी गई और बायोडेटा डाउनलोड हो रहा है! आपको मैचों पर ले जा रहे हैं...', 'text');
+          triggerBotResponse(t('bot_profile_saved'), 'text');
           setTimeout(() => {
             onComplete();
           }, 1500);
@@ -528,7 +528,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
-        setErrorMsg(locale === 'en' ? 'File size exceeds 2MB limit.' : 'फ़ाइल का आकार 2MB सीमा से अधिक है।');
+        setErrorMsg(t('error_file_size'));
         return;
       }
       
@@ -536,7 +536,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         const fileUrl = await UploadService.uploadFile(file);
         setUploadedPhotos(prev => [...prev, fileUrl]);
       } catch (err: any) {
-        setErrorMsg(`Upload failed: ${err.message}`);
+        setErrorMsg(`${t('error_upload_failed')}${err.message}`);
       }
     }
   };
@@ -544,7 +544,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
   const handleConfirmSummary = () => {
     if (mode === 'biodata') {
       setCurrentStep(27); // Template selection step is now 27
-      triggerBotResponse(locale === 'en' ? 'Awesome! Now, choose a premium design for your Biodata.' : 'बहुत बढ़िया! अब, अपने बायोडेटा के लिए एक प्रीमियम डिज़ाइन चुनें।', 'template');
+      triggerBotResponse(t('bot_choose_design'), 'template');
     } else {
       handleFinalRegister();
     }
@@ -585,7 +585,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
         onComplete();
       }
     } catch (e) {
-      setErrorMsg('Failed to complete registration. Please try again.');
+      setErrorMsg(t('error_registration_failed'));
       throw e; // Throw so that step 19 catch block catches it!
     }
   };
@@ -655,7 +655,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
                   <button
                     onClick={() => {
                       setCurrentStep(25);
-                      triggerBotResponse(locale === 'en' ? 'Great choice! Please provide your email to save and download your Biodata.' : 'बढ़िया विकल्प! अपना बायोडेटा सहेजने और डाउनलोड करने के लिए कृपया अपना ईमेल प्रदान करें।', 'text');
+                      triggerBotResponse(t('bot_provide_email_download'), 'text');
                     }}
                     style={{
                       flex: 1,
@@ -696,10 +696,10 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
                       try {
                         await AuthService.requestOtp({ email });
                         setTyping(false);
-                        triggerBotResponse(locale === 'en' ? 'OTP resent! Please check your email. (Check your spam/junk folder if not in primary inbox)' : 'OTP फिर से भेज दिया गया! कृपया अपना ईमेल जांचें। (यदि प्राइमरी इनबॉक्स में नहीं है, तो कृपया अपना स्पैम/जंक फ़ोल्डर जांचें)', 'text');
+                        triggerBotResponse(t('bot_otp_resent'), 'text');
                       } catch (e) {
                         setTyping(false);
-                        setErrorMsg(locale === 'en' ? 'Failed to resend OTP.' : 'OTP दोबारा भेजने में विफल।');
+                        setErrorMsg(t('error_resend_otp_failed'));
                       }
                     }}
                     style={{
@@ -714,7 +714,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
                   <button
                     onClick={() => {
                       setCurrentStep(25);
-                      triggerBotResponse(locale === 'en' ? 'Please provide your new email address.' : 'कृपया अपना नया ईमेल पता प्रदान करें।', 'text');
+                      triggerBotResponse(t('bot_provide_new_email'), 'text');
                     }}
                     style={{
                       ...styles.choiceChip,
