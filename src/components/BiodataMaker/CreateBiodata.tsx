@@ -46,8 +46,8 @@ export const CreateBiodata: React.FC<{
       fatherName: data.fatherName || '',
       motherName: data.motherName || '',
       siblingsDetail: data.siblingsDetail || '',
-      ruralAddress: { streetAddress: '', city: data.location, state: '', pincode: '' },
-      urbanAddress: { streetAddress: data.streetAddress || '', city: data.location, state: '', pincode: '' },
+      ruralAddress: { streetAddress: data.nativeDistrict || '', city: '', state: '', pincode: '' },
+      urbanAddress: { streetAddress: data.locality || '', city: data.currentCity || data.location || '', state: data.currentState || '', pincode: data.pincode || '' },
       photoUrl: data.photoUrl
     };
     setFormData(mappedData);

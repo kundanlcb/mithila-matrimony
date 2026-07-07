@@ -89,6 +89,11 @@ export interface BiodataResponse {
   phoneNumber?: string;
   email?: string;
   addresses?: AddressResponse[];
+  currentCity?: string;
+  currentState?: string;
+  pincode?: string;
+  locality?: string;
+  nativeDistrict?: string;
 }
 
 export interface UpdateBiodataRequest {
@@ -120,6 +125,11 @@ export interface UpdateBiodataRequest {
   additionalPhotos?: string[];
   email?: string;
   addresses?: AddressRequest[];
+  currentCity?: string;
+  currentState?: string;
+  pincode?: string;
+  locality?: string;
+  nativeDistrict?: string;
 }
 
 export interface PresignedUrlResponse {

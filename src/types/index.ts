@@ -57,6 +57,11 @@ export interface Biodata {
   phoneNumber?: string;
   email?: string;
   addresses?: AddressResponse[];
+  currentCity?: string;
+  currentState?: string;
+  pincode?: string;
+  locality?: string;
+  nativeDistrict?: string;
   additionalPhotos?: string[];
 }
 

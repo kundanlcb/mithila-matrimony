@@ -48,7 +48,7 @@
   "label_email": "Email Address",
   "label_otp": "Enter 6-Digit OTP Code",
   "simulated_otp_alert": "OTP Sent",
-  "msg_check_email_otp": "Please check your email for the verification code.",
+  "msg_check_email_otp": "Please check your email for the verification code. (Check your spam/junk folder if not in primary inbox)",
   "btn_request_otp": "Request Verification OTP",
   "btn_verify_otp": "Verify & Authenticate",
   "btn_change_email": "Change Email Address",
