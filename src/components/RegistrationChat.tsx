@@ -37,6 +37,19 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
   const [inputValue, setInputValue] = useState('');
   const [typing, setTyping] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const inputRef = useRef<any>(null);
+  const isDisabled = typing || (messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType !== 'text');
+  useEffect(() => {
+    if (!isDisabled && inputRef.current) {
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }, 50);
+    }
+  }, [isDisabled]);
+
   
   // Biodata Mode specific states
   const [email, setEmail] = useState('');
@@ -987,13 +1000,12 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
             : messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType !== 'text'
               ? (locale === 'en' ? 'Select an option...' : 'कृपया ऊपर एक विकल्प चुनें...')
               : currentStep === -1 ? '••••••••' : t('chat_placeholder');
-          const isDisabled = typing || (messages.length > 0 && messages[messages.length - 1].sender === 'bot' && messages[messages.length - 1].inputType !== 'text');
-          
           if (type === 'text') {
             return (
               <textarea
                 rows={1}
                 placeholder={placeholderText}
+                ref={inputRef}
                 value={inputValue}
                 onChange={(e) => {
                   setInputValue(e.target.value);
@@ -1018,6 +1030,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
               <input
                 type={type}
                 placeholder={placeholderText}
+                ref={inputRef}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 disabled={isDisabled}
