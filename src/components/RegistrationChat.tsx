@@ -625,6 +625,9 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
               fatherName: biodataForm.fatherName || '',
               motherName: biodataForm.motherName || '',
               siblingsDetail: biodataForm.siblingsDetail || '',
+              interests: (biodataForm as any).interests || [],
+              nativeDistrict: (biodataForm as any).nativeDistrict || '',
+              aboutMe: biodataForm.aboutMe || '',
               ruralAddress: { streetAddress: '', city: biodataForm.location || '', state: '', pincode: '' },
               urbanAddress: { streetAddress: (biodataForm as any).streetAddress || '', city: biodataForm.location || '', state: '', pincode: '' },
               photoUrl: biodataForm.photoUrl || ''

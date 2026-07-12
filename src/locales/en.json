@@ -264,5 +264,8 @@
   "error_file_size": "File size exceeds 2MB limit.",
   "error_upload_failed": "Upload failed: ",
   "error_registration_failed": "Failed to complete registration. Please try again.",
-  "error_resend_otp_failed": "Failed to resend OTP."
+  "error_resend_otp_failed": "Failed to resend OTP.",
+  "biodata_maker_hobbies": "Hobbies & Interests",
+  "biodata_maker_native_district": "Native District",
+  "biodata_maker_about_me": "About Me"
 }

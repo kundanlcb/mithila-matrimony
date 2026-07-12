@@ -264,5 +264,8 @@
   "error_file_size": "फ़ाइलक आकार 2MB सीमा सँ बेसी अछि।",
   "error_upload_failed": "अपलोड विफल: ",
   "error_registration_failed": "पंजीकरण पूरा करबामे विफल। कृपया पुनः प्रयास करू।",
-  "error_resend_otp_failed": "OTP दोबारा पठाबामे विफल।"
+  "error_resend_otp_failed": "OTP दोबारा पठाबामे विफल।",
+  "biodata_maker_hobbies": "शौक आ रुचि",
+  "biodata_maker_native_district": "मूल जिला",
+  "biodata_maker_about_me": "हमर बारे मे"
 }
