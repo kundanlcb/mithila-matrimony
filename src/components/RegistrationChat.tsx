@@ -667,7 +667,7 @@ export const RegistrationChat = ({ mode = 'registration', onComplete, onDownload
                 <div style={{ display: 'flex', marginTop: '2rem', width: '100%', maxWidth: '400px' }}>
                   <button
                     onClick={() => {
-                      setCurrentStep(25);
+                      setCurrentStep(28);
                       triggerBotResponse(t('bot_provide_email_download'), 'text');
                     }}
                     style={{
