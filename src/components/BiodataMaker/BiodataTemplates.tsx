@@ -88,6 +88,21 @@ export type BiodataTemplateProps = {
   theme?: TemplateTheme;
 };
 
+
+const ReligionIcon = ({ religion, color }: { religion: string, color: string }) => {
+  const norm = religion?.toLowerCase() || 'hindu';
+  const style = { fontSize: '32px', color: color, marginBottom: '20px', lineHeight: 1, fontWeight: 'bold' as const };
+  
+  if (norm === 'hindu') return <div style={style}>ॐ</div>;
+  if (norm === 'muslim') return <div style={style}>☪</div>;
+  if (norm === 'sikh') return <div style={style}>☬</div>;
+  if (norm === 'christian') return <div style={style}>✝</div>;
+  if (norm === 'jain') return <div style={style}>卐</div>;
+  if (norm === 'buddhist') return <div style={style}>☸</div>;
+  
+  return <div style={{ width: '24px', height: '24px', backgroundColor: color, marginBottom: '25px', borderRadius: '4px' }}></div>;
+};
+
 export const BiodataTemplate: React.FC<BiodataTemplateProps> = ({ data, id, theme = templateThemes[0] }) => {
   const { t } = useLanguage();
   return (
@@ -108,7 +123,7 @@ export const BiodataTemplate: React.FC<BiodataTemplateProps> = ({ data, id, them
         {/* Left Side: Name and Details */}
         <div style={{ flex: 1, paddingRight: '40px' }}>
           {/* Small accent square above name */}
-          <div style={{ width: '24px', height: '24px', backgroundColor: theme.primary, marginBottom: '25px', borderRadius: '4px' }}></div>
+          <ReligionIcon religion={data.religion || ''} color={theme.primary} />
           
           <h1 style={{ fontSize: '52px', fontWeight: '800', margin: '0 0 12px 0', letterSpacing: '-1.5px', lineHeight: '1', color: theme.mainText }}>
             {data.fullName}
@@ -154,6 +169,24 @@ export const BiodataTemplate: React.FC<BiodataTemplateProps> = ({ data, id, them
 
       {/* Full Width Sections */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '45px' }}>
+
+
+        {/* About & Interests */}
+        <div>
+          <h3 style={{ fontSize: '20px', fontWeight: '700', letterSpacing: '1px', margin: '0 0 25px 0', color: theme.mainText, display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ width: '8px', height: '20px', backgroundColor: theme.primary, borderRadius: '4px' }}></span>
+            {t('biodata_maker_about_me')}
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', width: '100%' }}>
+             {data.aboutMe && <div style={{ fontSize: '15px', lineHeight: '1.6', color: theme.mainText }}>{data.aboutMe}</div>}
+             {data.interests && data.interests.length > 0 && (
+               <div style={{ marginTop: '10px' }}>
+                 <span style={labelStyle}>{t('biodata_maker_hobbies')}: </span>
+                 <strong style={valueStyle}>{data.interests.join(', ')}</strong>
+               </div>
+             )}
+          </div>
+        </div>
         
         {/* Personal Details */}
         <div>
@@ -193,23 +226,6 @@ export const BiodataTemplate: React.FC<BiodataTemplateProps> = ({ data, id, them
             <div><span style={labelStyle}>{t('biodata_maker_grandparent')}</span> <strong style={valueStyle}>{data.grandparentName || t('not_specified')}</strong></div>
             <div><span style={labelStyle}>{t('biodata_maker_siblings')}</span> <strong style={valueStyle}>{data.siblingsDetail || t('not_specified')}</strong></div>
             <div><span style={labelStyle}>{t('biodata_maker_native_district')}</span> <strong style={valueStyle}>{data.nativeDistrict || t('not_specified')}</strong></div>
-          </div>
-        </div>
-
-        {/* About & Interests */}
-        <div>
-          <h3 style={{ fontSize: '20px', fontWeight: '700', letterSpacing: '1px', margin: '0 0 25px 0', color: theme.mainText, display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ width: '8px', height: '20px', backgroundColor: theme.primary, borderRadius: '4px' }}></span>
-            {t('biodata_maker_about_me')}
-          </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', width: '100%' }}>
-             {data.aboutMe && <div style={{ fontSize: '15px', lineHeight: '1.6', color: theme.mainText }}>{data.aboutMe}</div>}
-             {data.interests && data.interests.length > 0 && (
-               <div style={{ marginTop: '10px' }}>
-                 <span style={labelStyle}>{t('biodata_maker_hobbies')}: </span>
-                 <strong style={valueStyle}>{data.interests.join(', ')}</strong>
-               </div>
-             )}
           </div>
         </div>
 
